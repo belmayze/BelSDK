@@ -17,5 +17,5 @@ BelSDK/Test/BelSDKTest.sln
 2. BelSDK/Lib をライブラリフォルダーとして追加する
 3. BelSDK/Samples 以下にサンプルコードがあるので参考にしてください
 
-## Licence
-[LICENCE](/LICENCE)
+## License
+[LICENSE](/LICENSE)
