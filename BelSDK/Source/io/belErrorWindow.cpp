@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * @file   belErrorWindow.cpp
  * @brief
  * @author belmayze

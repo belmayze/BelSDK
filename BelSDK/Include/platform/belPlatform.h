@@ -1,4 +1,4 @@
-/*!
+ï»¿/*!
  * @file   belPlatform.h
  * @brief  
  * @author belmayze
@@ -19,30 +19,30 @@ namespace bel
 
 //-----------------------------------------------------------------------------
 /*!
- * ƒvƒ‰ƒbƒgƒtƒH[ƒ€‚Ì“à•”ˆ—‚ğs‚¢‚Ü‚·
+ * ãƒ—ãƒ©ãƒƒãƒˆãƒ•ã‚©ãƒ¼ãƒ ã®å†…éƒ¨å‡¦ç†ã‚’è¡Œã„ã¾ã™
  */
 class Platform : public Singleton<Platform>
 {
 public:
     /*!
-     * ƒEƒBƒ“ƒhƒE‚ğ¶¬‚·‚é
-     * @param[in] title ƒEƒBƒ“ƒhƒE–¼
+     * ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ç”Ÿæˆã™ã‚‹
+     * @param[in] title ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦å
      */
     void createWindow(const std::string& title);
 
     /*!
-     * ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒ‹[ƒv‚É“ü‚è‚Ü‚·
-     * @note ‚±‚ÌŠÖ”‚ğŒÄ‚Ô‚ÆAsetExit() ‚ğŒÄ‚Ô‚Ü‚Å•Ô‚Á‚Ä‚«‚Ü‚¹‚ñ
+     * ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãƒ«ãƒ¼ãƒ—ã«å…¥ã‚Šã¾ã™
+     * @note ã“ã®é–¢æ•°ã‚’å‘¼ã¶ã¨ã€setExit() ã‚’å‘¼ã¶ã¾ã§è¿”ã£ã¦ãã¾ã›ã‚“
      */
     void enterApplicationLoop();
 
     /*!
-     * I—¹‚·‚×‚«‚È‚çŒÄ‚Ño‚µ‚Ü‚·
+     * çµ‚äº†ã™ã¹ããªã‚‰å‘¼ã³å‡ºã—ã¾ã™
      */
     void setExit(int exit_code) { mExit = true; mExitCode = exit_code; }
 
     /*!
-     * I—¹‚·‚×‚«‚©ƒ`ƒFƒbƒN
+     * çµ‚äº†ã™ã¹ãã‹ãƒã‚§ãƒƒã‚¯
      */
     bool isExit() const { return mExit; }
 
@@ -50,11 +50,11 @@ public:
     // getter
     //-------------------------------------------------------------------------
 public:
-    //! ƒEƒBƒ“ƒhƒEƒnƒ“ƒhƒ‹
+    //! ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒãƒ³ãƒ‰ãƒ«
     const HWND& getWindowHandle() const { return mWindowHandle; }
-    //! ‰¡•
+    //! æ¨ªå¹…
     uint32_t getWindowWidth() const { return mWidth; }
-    //! ‚‚³
+    //! é«˜ã•
     uint32_t getWindowHeight() const { return mHeight; }
 
     //-------------------------------------------------------------------------
@@ -71,7 +71,7 @@ private:
     //-------------------------------------------------------------------------
 private:
     /*!
-     * ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒ‹[ƒv
+     * ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãƒ«ãƒ¼ãƒ—
      */
     void applicationLoop_();
 

@@ -1,6 +1,6 @@
-/*!
+ï»¿/*!
  * @file   belPrecompile.h
- * @brief  •K‚¸ include ‚³‚ê‚éƒwƒbƒ_[
+ * @brief  å¿…ãš include ã•ã‚Œã‚‹ãƒ˜ãƒƒãƒ€ãƒ¼
  * @author belmayze
  * 
  * Copyright (c) belmayze. All rights reserved.

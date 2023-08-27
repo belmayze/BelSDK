@@ -1,4 +1,4 @@
-/*!
+ï»¿/*!
  * @file   belMain.h
  * @brief  
  * @author belmayze
@@ -7,5 +7,5 @@
  */
 #pragma once
 
-//! ƒGƒ“ƒgƒŠ[ƒ|ƒCƒ“ƒg
+//! ã‚¨ãƒ³ãƒˆãƒªãƒ¼ãƒã‚¤ãƒ³ãƒˆ
 extern int belMain(int argc, const char** argv);

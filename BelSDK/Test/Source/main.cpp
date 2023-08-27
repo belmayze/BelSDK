@@ -1,4 +1,4 @@
-/*!
+ï»¿/*!
  * @file   main.cpp
  * @brief
  * @author belmayze
@@ -9,11 +9,11 @@
 #include "platform/belPlatform.h"
 
 /*!
- * ƒGƒ“ƒgƒŠ[ƒ|ƒCƒ“ƒg
+ * ã‚¨ãƒ³ãƒˆãƒªãƒ¼ãƒã‚¤ãƒ³ãƒˆ
  */
 int belMain(int argc, const char** argv)
 {
-    // ƒvƒ‰ƒbƒgƒtƒH[ƒ€
+    // ãƒ—ãƒ©ãƒƒãƒˆãƒ•ã‚©ãƒ¼ãƒ 
     bel::Platform::GetInstance().createWindow("BelmayzeTest");
     bel::Platform::GetInstance().enterApplicationLoop();
 

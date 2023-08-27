@@ -1,4 +1,4 @@
-/*!
+ï»¿/*!
  * @file   belGraphics.h
  * @brief  
  * @author belmayze
@@ -17,20 +17,50 @@ namespace bel
 
 //-----------------------------------------------------------------------------
 /*!
- * ƒvƒ‰ƒbƒgƒtƒH[ƒ€‚Ì“à•”ˆ—‚ğs‚¢‚Ü‚·
+ * ãƒ—ãƒ©ãƒƒãƒˆãƒ•ã‚©ãƒ¼ãƒ ã®å†…éƒ¨å‡¦ç†ã‚’è¡Œã„ã¾ã™
  */
 class Graphics : public Singleton<Graphics>
 {
 public:
     /*!
-     * ‰Šú‰»
+     * åˆæœŸåŒ–
      */
     bool initialize();
 
+    /*!
+     * ã‚³ãƒãƒ³ãƒ‰ã®å®Ÿè¡Œå¾…ã¡
+     */
+    void waitToExecuteCommand();
+
+    /*!
+     * ã‚³ãƒãƒ³ãƒ‰ã®å®Ÿè¡Œ
+     */
+    void executeCommand();
+
+    /*!
+     * ç”»é¢ã®åæ˜ 
+     */
+    void present();
+
+    /*!
+     * çµ‚äº†å‡¦ç†
+     */
+    void finalize();
+
 private:
+    uint32_t mNumBuffer          = 2;
+    uint32_t mCurrentBufferIndex = 0;
+
     Microsoft::WRL::ComPtr<ID3D12Device6>      mpDevice;
     Microsoft::WRL::ComPtr<IDXGISwapChain4>    mpSwapChain;
     Microsoft::WRL::ComPtr<ID3D12CommandQueue> mpCommandQueue;
+
+    std::unique_ptr<Microsoft::WRL::ComPtr<ID3D12Resource>[]> mpColorBuffers;
+    std::unique_ptr<Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>[]> mpRenderTargetDescriptorHeaps;
+
+    std::unique_ptr<Microsoft::WRL::ComPtr<ID3D12Fence>[]>    mpFences;
+    std::unique_ptr<Microsoft::WRL::ComPtr<ID3D12CommandAllocator>[]>    mpCommandAllocators;
+    std::unique_ptr<Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>[]> mpCommandLists;
 
 private:
     friend class Singleton<Graphics>;

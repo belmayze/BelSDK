@@ -1,4 +1,4 @@
-/*!
+ï»¿/*!
  * @file   belErrorWindow.h
  * @brief  
  * @author belmayze
@@ -15,15 +15,15 @@ namespace bel::io
 {
 //-----------------------------------------------------------------------------
 /*!
- * ƒGƒ‰[ƒEƒBƒ“ƒhƒE‚ğ•\¦‚µ‚Ü‚·
+ * ã‚¨ãƒ©ãƒ¼ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’è¡¨ç¤ºã—ã¾ã™
  */
 class ErrorWindow : public Singleton<ErrorWindow>
 {
 public:
     /*!
-     * •\¦
-     * @param[in] title   ƒ^ƒCƒgƒ‹
-     * @param[in] message ƒƒbƒZ[ƒW
+     * è¡¨ç¤º
+     * @param[in] title   ã‚¿ã‚¤ãƒˆãƒ«
+     * @param[in] message ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
      */
     void show(const std::string& title, const std::string& message);
 };

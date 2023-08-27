@@ -1,4 +1,4 @@
-/*!
+﻿/*!
  * @file   belDefine.h
  * @brief  
  * @author belmayze

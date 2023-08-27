@@ -1,4 +1,4 @@
-/*!
+ï»¿/*!
  * @file   belPlatform.cpp
  * @brief
  * @author belmayze
@@ -18,7 +18,7 @@
 namespace
 {
 //-----------------------------------------------------------------------------
-//! ƒEƒBƒ“ƒhƒEƒCƒxƒ“ƒg
+//! ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¤ãƒ™ãƒ³ãƒˆ
 LRESULT CALLBACK WndProc(HWND handle, UINT msg, WPARAM wparam, LPARAM lparam)
 {
     if (msg == WM_DESTROY || msg == WM_CLOSE) { PostQuitMessage(0); return 0; }
@@ -32,10 +32,10 @@ namespace bel
 //-----------------------------------------------------------------------------
 void Platform::createWindow(const std::string& title)
 {
-    // ƒƒP[ƒVƒ‡ƒ“‚ğ“ú–{Œê‚É
+    // ãƒ­ã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æ—¥æœ¬èªã«
     setlocale(LC_ALL, "");
 
-    // ƒEƒBƒ“ƒhƒE–¼‚ğ¶¬
+    // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦åã‚’ç”Ÿæˆ
     size_t title_strlen = title.length() + 1; // len + null
     std::unique_ptr<TCHAR[]> windw_name = std::make_unique<TCHAR[]>(title_strlen);
 
@@ -46,7 +46,7 @@ void Platform::createWindow(const std::string& title)
     strcpy_s(windw_name.get(), title_strlen, title.c_str());
 #   endif // UNICODE
 
-    // ƒEƒBƒ“ƒhƒE‚Ì“o˜^
+    // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ç™»éŒ²
     HINSTANCE handle = GetModuleHandle(nullptr);
 
     WNDCLASSEX wcex;
@@ -64,15 +64,15 @@ void Platform::createWindow(const std::string& title)
     wcex.lpszClassName = _T("belmayze");
     if (!RegisterClassEx(&wcex))
     {
-        BEL_ERROR_WINDOW("ERROR", "ƒEƒBƒ“ƒhƒE‚Ì“o˜^‚É¸”s‚µ‚Ü‚µ‚½");
+        BEL_ERROR_WINDOW("ERROR", "ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ç™»éŒ²ã«å¤±æ•—ã—ã¾ã—ãŸ");
         return;
     }
 
-    // ƒEƒBƒ“ƒhƒEƒXƒ^ƒCƒ‹
+    // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚¹ã‚¿ã‚¤ãƒ«
     DWORD wnd_style    = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU;
     DWORD wnd_style_ex = 0;
 
-    // ƒEƒBƒ“ƒhƒEƒTƒCƒY‚ğŒvZ
+    // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚µã‚¤ã‚ºã‚’è¨ˆç®—
     RECT rect;
     rect.left   = 0;
     rect.top    = 0;
@@ -80,7 +80,7 @@ void Platform::createWindow(const std::string& title)
     rect.bottom = mHeight;
     AdjustWindowRectEx(&rect, wnd_style, FALSE, wnd_style_ex);
 
-    // ƒEƒBƒ“ƒhƒE‚ğ¶¬
+    // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ç”Ÿæˆ
     mWindowHandle = CreateWindowEx(
         wnd_style_ex,
         _T("belmayze"),
@@ -97,17 +97,17 @@ void Platform::createWindow(const std::string& title)
     );
     if (!mWindowHandle)
     {
-        BEL_ERROR_WINDOW("ERROR", "ƒEƒBƒ“ƒhƒE‚Ì¶¬‚É¸”s‚µ‚Ü‚µ‚½");
+        BEL_ERROR_WINDOW("ERROR", "ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®ç”Ÿæˆã«å¤±æ•—ã—ã¾ã—ãŸ");
         return;
     }
 
-    // ƒOƒ‰ƒtƒBƒbƒNƒX‚Ì‰Šú‰»
+    // ã‚°ãƒ©ãƒ•ã‚£ãƒƒã‚¯ã‚¹ã®åˆæœŸåŒ–
     if (!Graphics::GetInstance().initialize())
     {
         return;
     }
 
-    // ƒEƒBƒ“ƒhƒE‚Ì•\¦
+    // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã®è¡¨ç¤º
     ShowWindow(mWindowHandle, SW_SHOWNORMAL);
     UpdateWindow(mWindowHandle);
 
@@ -116,13 +116,13 @@ void Platform::createWindow(const std::string& title)
 //-----------------------------------------------------------------------------
 void Platform::enterApplicationLoop()
 {
-    // I—¹ƒtƒ‰ƒO‚ª—§‚Á‚Ä‚½‚çA‚±‚±‚ÅI‚í‚é
+    // çµ‚äº†ãƒ•ãƒ©ã‚°ãŒç«‹ã£ã¦ãŸã‚‰ã€ã“ã“ã§çµ‚ã‚ã‚‹
     if (mExit) { return; }
 
-    // ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒ‹[ƒvŠJn
+    // ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ãƒ«ãƒ¼ãƒ—é–‹å§‹
     std::thread app_thread(std::bind(&Platform::applicationLoop_, this));
 
-    // ƒEƒBƒ“ƒhƒEƒƒbƒZ[ƒWŠm”F
+    // ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç¢ºèª
     MSG msg;
     do
     {
@@ -130,15 +130,15 @@ void Platform::enterApplicationLoop()
         {
             DispatchMessage(&msg);
         }
-        // è—L‚µ‚È‚¢‚æ‚¤‚É sleep ‚ğ“ü‚ê‚é
+        // å æœ‰ã—ãªã„ã‚ˆã†ã« sleep ã‚’å…¥ã‚Œã‚‹
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     } while (msg.message != WM_QUIT);
 
-    // ƒ‹[ƒv‚ª”²‚¯‚½‚çƒEƒBƒ“ƒhƒE‚ª•Â‚¶‚ç‚ê‚½‚Ì‚ÅI—¹
+    // ãƒ«ãƒ¼ãƒ—ãŒæŠœã‘ãŸã‚‰ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ãŒé–‰ã˜ã‚‰ã‚ŒãŸã®ã§çµ‚äº†
     ShowWindow(mWindowHandle, SW_HIDE);
     mExit = true;
 
-    // ƒXƒŒƒbƒh‚ÌI—¹‘Ò‚¿
+    // ã‚¹ãƒ¬ãƒƒãƒ‰ã®çµ‚äº†å¾…ã¡
     app_thread.join();
 }
 //-----------------------------------------------------------------------------
@@ -148,11 +148,20 @@ void Platform::applicationLoop_()
 {
     while (!mExit)
     {
+        // ã‚³ãƒãƒ³ãƒ‰ãŒå®Ÿè¡Œã•ã‚Œã‚‹ã¾ã§å¾…æ©Ÿ
+        Graphics::GetInstance().waitToExecuteCommand();
+
         // @TODO:
 
-        // è—L‚µ‚È‚¢‚æ‚¤‚É sleep ‚ğ“ü‚ê‚é
-        std::this_thread::sleep_for(std::chrono::microseconds(1));
+        // ã‚³ãƒãƒ³ãƒ‰ç™ºè¡Œ
+        Graphics::GetInstance().executeCommand();
+
+        // ç”»é¢ã®åæ˜ 
+        Graphics::GetInstance().present();
     }
+
+    // å‡¦ç†ãŒçµ‚ã‚ã£ãŸã‚‰çµ‚äº†å‡¦ç†
+    Graphics::GetInstance().finalize();
 }
 //-----------------------------------------------------------------------------
 }

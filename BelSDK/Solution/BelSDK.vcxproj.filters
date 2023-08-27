@@ -40,6 +40,12 @@
     <Filter Include="ヘッダー ファイル\gfx">
       <UniqueIdentifier>{b8c7798d-2086-4eb7-a4ca-d774a2a54888}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\gfx\core">
+      <UniqueIdentifier>{f2bdf74f-bf20-442a-9597-76648b9ae5b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\gfx\core">
+      <UniqueIdentifier>{f8f1a231-7d97-4c42-a82c-19d3a57e9cbe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\math\belVector2.h">

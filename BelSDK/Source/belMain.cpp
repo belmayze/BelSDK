@@ -1,4 +1,4 @@
-/*!
+ï»¿/*!
  * @file   belMain.cpp
  * @brief
  * @author belmayze
@@ -12,7 +12,7 @@
 
 //-----------------------------------------------------------------------------
 /*!
- * ƒGƒ“ƒgƒŠ[ƒ|ƒCƒ“ƒg
+ * ã‚¨ãƒ³ãƒˆãƒªãƒ¼ãƒã‚¤ãƒ³ãƒˆ
  * Console
  */
 int main(int argc, const char** argv)
@@ -21,7 +21,7 @@ int main(int argc, const char** argv)
 }
 
 /*!
- * ƒGƒ“ƒgƒŠ[ƒ|ƒCƒ“ƒg
+ * ã‚¨ãƒ³ãƒˆãƒªãƒ¼ãƒã‚¤ãƒ³ãƒˆ
  * Windows
  */
 int APIENTRY WinMain(
