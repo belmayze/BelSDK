@@ -11,11 +11,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Source\framework\belMain.cpp" />
+    <ClInclude Include="..\Include\belMain.h" />
+    <ClInclude Include="..\Include\io\belErrorWindow.h" />
+    <ClInclude Include="..\Include\math\belVector2.h" />
+    <ClInclude Include="..\Include\memory\belSingleton.h" />
+    <ClInclude Include="..\Include\platform\belPlatform.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Include\framework\belMain.h" />
-    <ClInclude Include="..\Include\math\belVector2.h" />
+    <ClCompile Include="..\Source\belMain.cpp" />
+    <ClCompile Include="..\Source\io\belErrorWindow.cpp" />
+    <ClCompile Include="..\Source\platform\belPlatform.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -71,6 +76,7 @@
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>$(ProjectDir)..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>belPrecompile.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -93,6 +99,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>$(ProjectDir)..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>belPrecompile.h</ForcedIncludeFiles>
     </ClCompile>
     <Link>
       <SubSystem>

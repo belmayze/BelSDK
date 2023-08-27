@@ -16,27 +16,51 @@
     <Filter Include="ヘッダー ファイル\math">
       <UniqueIdentifier>{6c11fb32-dd30-4cb8-9123-7a7f23b70ae6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="リソース ファイル\math">
+    <Filter Include="ヘッダー ファイル\platform">
+      <UniqueIdentifier>{9ec321df-e645-478e-960f-30bf0fc75593}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\io">
+      <UniqueIdentifier>{8dbe2fd3-8265-41a3-8216-19b7e1ed13c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\memory">
+      <UniqueIdentifier>{3f3fecc8-55c2-41f6-9447-d81525ca15f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\io">
+      <UniqueIdentifier>{69145b4b-0ec0-4304-90d9-5c432f9ab59f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\math">
       <UniqueIdentifier>{06322d65-5272-47f1-bb03-838bab616e50}</UniqueIdentifier>
     </Filter>
-    <Filter Include="リソース ファイル\framework">
-      <UniqueIdentifier>{e58fe2a6-65e8-4d33-acad-fb8493bb2291}</UniqueIdentifier>
+    <Filter Include="ソース ファイル\platform">
+      <UniqueIdentifier>{8061f65c-cf0d-44e7-99f0-a9a80a8ec224}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ヘッダー ファイル\framework">
-      <UniqueIdentifier>{389a45cd-f36e-43df-97b5-258348aff5b0}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\Source\framework\belMain.cpp">
-      <Filter>リソース ファイル\framework</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\math\belVector2.h">
       <Filter>ヘッダー ファイル\math</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\framework\belMain.h">
-      <Filter>ヘッダー ファイル\framework</Filter>
+    <ClInclude Include="..\Include\belMain.h">
+      <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\platform\belPlatform.h">
+      <Filter>ヘッダー ファイル\platform</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\io\belErrorWindow.h">
+      <Filter>ヘッダー ファイル\io</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\memory\belSingleton.h">
+      <Filter>ヘッダー ファイル\memory</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Source\platform\belPlatform.cpp">
+      <Filter>ソース ファイル\platform</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\belMain.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\io\belErrorWindow.cpp">
+      <Filter>ソース ファイル\io</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
