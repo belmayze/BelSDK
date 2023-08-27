@@ -28,3 +28,7 @@
 #else
 #   define BEL_ERROR_WINDOW(title, message) {}
 #endif // BEL_IS_DEBUG()
+
+#pragma comment(lib, "d3d12.lib")
+#pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "xinput.lib")

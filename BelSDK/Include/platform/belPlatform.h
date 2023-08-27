@@ -47,6 +47,17 @@ public:
     bool isExit() const { return mExit; }
 
     //-------------------------------------------------------------------------
+    // getter
+    //-------------------------------------------------------------------------
+public:
+    //! ウィンドウハンドル
+    const HWND& getWindowHandle() const { return mWindowHandle; }
+    //! 横幅
+    uint32_t getWindowWidth() const { return mWidth; }
+    //! 高さ
+    uint32_t getWindowHeight() const { return mHeight; }
+
+    //-------------------------------------------------------------------------
 private:
     HWND mWindowHandle = HWND();
     std::unique_ptr<std::thread> mpWindowMsgThread;
@@ -54,7 +65,7 @@ private:
     uint32_t mWidth  = 1920;
     uint32_t mHeight = 1080;
 
-    bool mExit     = false;
+    bool mExit     = true;
     int  mExitCode = 0;
 
     //-------------------------------------------------------------------------

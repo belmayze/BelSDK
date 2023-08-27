@@ -11,7 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Include\belDefine.h" />
     <ClInclude Include="..\Include\belMain.h" />
+    <ClInclude Include="..\Include\belPrecompile.h" />
+    <ClInclude Include="..\Include\gfx\belGraphics.h" />
     <ClInclude Include="..\Include\io\belErrorWindow.h" />
     <ClInclude Include="..\Include\math\belVector2.h" />
     <ClInclude Include="..\Include\memory\belSingleton.h" />
@@ -19,6 +22,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp" />
+    <ClCompile Include="..\Source\gfx\belGraphics.cpp" />
     <ClCompile Include="..\Source\io\belErrorWindow.cpp" />
     <ClCompile Include="..\Source\platform\belPlatform.cpp" />
   </ItemGroup>
@@ -83,6 +87,10 @@
       </SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -108,6 +116,10 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <Lib>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

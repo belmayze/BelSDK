@@ -34,6 +34,12 @@
     <Filter Include="ソース ファイル\platform">
       <UniqueIdentifier>{8061f65c-cf0d-44e7-99f0-a9a80a8ec224}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\gfx">
+      <UniqueIdentifier>{1d20d872-fd65-4336-a12f-70b461880435}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\gfx">
+      <UniqueIdentifier>{b8c7798d-2086-4eb7-a4ca-d774a2a54888}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\math\belVector2.h">
@@ -51,6 +57,15 @@
     <ClInclude Include="..\Include\memory\belSingleton.h">
       <Filter>ヘッダー ファイル\memory</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\gfx\belGraphics.h">
+      <Filter>ヘッダー ファイル\gfx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\belDefine.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\belPrecompile.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\platform\belPlatform.cpp">
@@ -61,6 +76,9 @@
     </ClCompile>
     <ClCompile Include="..\Source\io\belErrorWindow.cpp">
       <Filter>ソース ファイル\io</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\gfx\belGraphics.cpp">
+      <Filter>ソース ファイル\gfx</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

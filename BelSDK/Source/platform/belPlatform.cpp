@@ -7,10 +7,12 @@
  */
 // C++
 #include <functional>
+#include <locale>
 #include <memory>
 #include <tchar.h>
 #include <Windows.h>
 // bel
+#include "gfx/belGraphics.h"
 #include "platform/belPlatform.h"
 
 namespace
@@ -30,6 +32,9 @@ namespace bel
 //-----------------------------------------------------------------------------
 void Platform::createWindow(const std::string& title)
 {
+    // ロケーションを日本語に
+    setlocale(LC_ALL, "");
+
     // ウィンドウ名を生成
     size_t title_strlen = title.length() + 1; // len + null
     std::unique_ptr<TCHAR[]> windw_name = std::make_unique<TCHAR[]>(title_strlen);
@@ -96,13 +101,24 @@ void Platform::createWindow(const std::string& title)
         return;
     }
 
+    // グラフィックスの初期化
+    if (!Graphics::GetInstance().initialize())
+    {
+        return;
+    }
+
     // ウィンドウの表示
     ShowWindow(mWindowHandle, SW_SHOWNORMAL);
     UpdateWindow(mWindowHandle);
+
+    mExit = false;
 }
 //-----------------------------------------------------------------------------
 void Platform::enterApplicationLoop()
 {
+    // 終了フラグが立ってたら、ここで終わる
+    if (mExit) { return; }
+
     // アプリケーションループ開始
     std::thread app_thread(std::bind(&Platform::applicationLoop_, this));
 
@@ -114,6 +130,7 @@ void Platform::enterApplicationLoop()
         {
             DispatchMessage(&msg);
         }
+        // 占有しないように sleep を入れる
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
     } while (msg.message != WM_QUIT);
 
@@ -133,6 +150,8 @@ void Platform::applicationLoop_()
     {
         // @TODO:
 
+        // 占有しないように sleep を入れる
+        std::this_thread::sleep_for(std::chrono::microseconds(1));
     }
 }
 //-----------------------------------------------------------------------------
