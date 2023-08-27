@@ -226,12 +226,25 @@ void Graphics::waitToExecuteCommand()
 //-----------------------------------------------------------------------------
 void Graphics::executeCommand()
 {
+    // リソースバリア（Present -> RenderTarget）
+    D3D12_RESOURCE_BARRIER desc = {};
+    desc.Type                   = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    desc.Transition.pResource   = mpColorBuffers[mCurrentBufferIndex].Get();
+    desc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+    desc.Transition.StateAfter  = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    mpCommandLists[mCurrentBufferIndex]->ResourceBarrier(1, &desc);
+
     // 仮: 青色にクリア
     float color[4] = {0.f, 0.125f, 0.5f, 1.f};
     mpCommandLists[mCurrentBufferIndex]->ClearRenderTargetView(
         mpRenderTargetDescriptorHeaps[mCurrentBufferIndex]->GetCPUDescriptorHandleForHeapStart(),
         color, 0U, nullptr
     );
+
+    // リソースバリア（RenderTarget -> Present）
+    desc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    desc.Transition.StateAfter  = D3D12_RESOURCE_STATE_PRESENT;
+    mpCommandLists[mCurrentBufferIndex]->ResourceBarrier(1, &desc);
 
     // コマンドの実行
     mpCommandLists[mCurrentBufferIndex]->Close();
