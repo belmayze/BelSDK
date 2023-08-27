@@ -11,11 +11,11 @@ Belmayze SDK
 
 ## 実行方法
 ### SDK テスト
-BelSDK/Test/BelSDKTest.sln
+BelSDK/Test/BelTest.sln
 ### 組み込み方法
 1. BelSDK/Include をインクルードフォルダーとして追加する
 2. BelSDK/Lib をライブラリフォルダーとして追加する
-3. BelSDK/Samples 以下にサンプルコードがあるので参考にしてください
+3. BelSDK/Samples 以下にサンプルコードがあるので参考にしてください（予定）
 
 ## License
 [LICENSE](/LICENSE)
