@@ -256,29 +256,6 @@ void Graphics::present()
 //-----------------------------------------------------------------------------
 void Graphics::finalize()
 {
-    // キューの実行待ち
-    {
-        // フェンスを作ってコマンドに入れる
-        Microsoft::WRL::ComPtr<ID3D12Fence> p_fence;
-        if (FAILED(mpDevice->CreateFence(1, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&p_fence))))
-        {
-            BEL_ERROR_WINDOW("GraphicsError", "フェンスの生成に失敗しました")
-            return;
-        }
-        p_fence->Signal(0);
-        mpCommandQueue->signal(p_fence.Get(), 1);
-
-        // 実行待ち
-        HANDLE handle = CreateEvent(nullptr, FALSE, FALSE, nullptr);
-        if (!handle)
-        {
-            BEL_ERROR_WINDOW("GraphicsError", "ハンドルの生成に失敗しました");
-            return;
-        }
-        p_fence->SetEventOnCompletion(1, handle);
-        WaitForSingleObject(handle, INFINITE);
-        CloseHandle(handle);
-    }
 }
 //-----------------------------------------------------------------------------
 }

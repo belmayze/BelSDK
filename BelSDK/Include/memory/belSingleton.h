@@ -48,6 +48,7 @@ private:
     //-------------------------------------------------------------------------
 protected:
     Singleton() {}
+    virtual ~Singleton() {}
 private:
     Singleton(const Singleton&) = delete;
     Singleton(Singleton&&) = delete;

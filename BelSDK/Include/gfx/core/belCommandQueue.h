@@ -25,6 +25,11 @@ class CommandQueue
     // system
     //-------------------------------------------------------------------------
 public:
+    //! コンストラクター
+    CommandQueue();
+    //! デストラクター
+    ~CommandQueue();
+
     /*!
      * 初期化
      * @param[in] type キューの種類
@@ -60,6 +65,7 @@ public:
     ID3D12CommandQueue& getCommandQueue() const { BEL_ASSERT(mpCommandQueue); return *mpCommandQueue.Get(); }
 
 private:
+    Microsoft::WRL::ComPtr<ID3D12Fence>        mpFence;
     Microsoft::WRL::ComPtr<ID3D12CommandQueue> mpCommandQueue;
 };
 //-----------------------------------------------------------------------------
