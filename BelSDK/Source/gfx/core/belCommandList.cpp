@@ -7,6 +7,7 @@
  */
 // bel
 #include "gfx/core/belCommandList.h"
+#include "gfx/core/belRenderTarget.h"
 #include "gfx/belGraphics.h"
 #include "math/belColor.h"
 
@@ -48,10 +49,11 @@ void CommandList::end()
 //-----------------------------------------------------------------------------
 // clear
 //-----------------------------------------------------------------------------
-void CommandList::clearColor(D3D12_CPU_DESCRIPTOR_HANDLE descriptor_handle, const math::Color& color)
+void CommandList::clearColor(RenderTarget& render_target, const math::Color& color)
 {
     FLOAT v[4] = { color.r(), color.g(), color.b(), color.a() };
-    mpCommandList->ClearRenderTargetView(descriptor_handle, v, 0, nullptr);
+    D3D12_CPU_DESCRIPTOR_HANDLE handle = render_target.getDescriptorHeap().GetCPUDescriptorHandleForHeapStart();
+    mpCommandList->ClearRenderTargetView(handle, v, 0, nullptr);
 }
 //-----------------------------------------------------------------------------
 // resource barrier

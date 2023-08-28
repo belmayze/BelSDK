@@ -10,6 +10,7 @@
 #include <d3d12.h>
 #include <wrl/client.h>
 
+namespace bel::gfx { class RenderTarget; }
 namespace bel::math { class Color; }
 
 namespace bel::gfx
@@ -47,10 +48,10 @@ public:
 public:
     /*!
      * レンダーターゲットをクリアします
-     * @param[in] descriptor_handle
-     * @param[in] color
+     * @param[in] render_target レンダーターゲット
+     * @param[in] color         クリアカラー
      */
-    void clearColor(D3D12_CPU_DESCRIPTOR_HANDLE descriptor_handle, const math::Color& color);
+    void clearColor(RenderTarget& render_target, const math::Color& color);
 
     //-------------------------------------------------------------------------
     // resource barrier

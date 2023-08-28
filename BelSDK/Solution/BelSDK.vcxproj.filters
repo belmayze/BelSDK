@@ -81,6 +81,12 @@
     <ClInclude Include="..\Include\math\belColor.h">
       <Filter>ヘッダー ファイル\math</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\gfx\core\belTexture.h">
+      <Filter>ヘッダー ファイル\gfx\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\gfx\core\belRenderTarget.h">
+      <Filter>ヘッダー ファイル\gfx\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\platform\belPlatform.cpp">
@@ -99,6 +105,12 @@
       <Filter>ソース ファイル\gfx\core</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\gfx\core\belCommandList.cpp">
+      <Filter>ソース ファイル\gfx\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\gfx\core\belTexture.cpp">
+      <Filter>ソース ファイル\gfx\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\gfx\core\belRenderTarget.cpp">
       <Filter>ソース ファイル\gfx\core</Filter>
     </ClCompile>
   </ItemGroup>

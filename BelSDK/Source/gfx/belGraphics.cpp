@@ -11,6 +11,8 @@
 // bel
 #include "gfx/core/belCommandList.h"
 #include "gfx/core/belCommandQueue.h"
+#include "gfx/core/belRenderTarget.h"
+#include "gfx/core/belTexture.h"
 #include "gfx/belGraphics.h"
 #include "platform/belPlatform.h"
 
@@ -154,37 +156,27 @@ bool Graphics::initialize()
     }
 
     // スワップチェーンからテクスチャーを取得
-    mpColorBuffers = std::make_unique<Microsoft::WRL::ComPtr<ID3D12Resource>[]>(mNumBuffer);
-    mpRenderTargetDescriptorHeaps = std::make_unique<Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>[]>(mNumBuffer);
+    mpColorBuffers  = std::make_unique<gfx::Texture[]>(mNumBuffer);
+    mpRenderTargets = std::make_unique<gfx::RenderTarget[]>(mNumBuffer);
     for (uint32_t i_buffer = 0; i_buffer < mNumBuffer; ++i_buffer)
     {
+        // スワップチェーンのリソースからテクスチャーを作る
         Microsoft::WRL::ComPtr<ID3D12Resource> p_color_buffer;
         if (FAILED(mpSwapChain->GetBuffer(i_buffer, IID_PPV_ARGS(&p_color_buffer))))
         {
             BEL_ERROR_WINDOW("GraphicsError", "出力バッファーの取得に失敗しました");
             return false;
         }
-        mpColorBuffers[i_buffer] = std::move(p_color_buffer);
+        mpColorBuffers[i_buffer].initializeFromResource(
+            Platform::GetInstance().getWindowWidth(),
+            Platform::GetInstance().getWindowHeight(),
+            1,
+            DXGI_FORMAT_R8G8B8A8_UNORM,
+            std::move(p_color_buffer)
+        );
 
         // このテクスチャーを使ってレンダーターゲットを作る
-        Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> p_descriptor_heap;
-        {
-            D3D12_DESCRIPTOR_HEAP_DESC desc = {};
-            desc.Type           = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-            desc.NumDescriptors = 1;
-            if (FAILED(mpDevice->CreateDescriptorHeap(&desc, IID_PPV_ARGS(&p_descriptor_heap))))
-            {
-                BEL_ERROR_WINDOW("GraphicsError", "レンダーターゲットのデスクリプターヒープの生成に失敗しました");
-                return false;
-            }
-        }
-        {
-            D3D12_RENDER_TARGET_VIEW_DESC desc = {};
-            desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-            desc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-            mpDevice->CreateRenderTargetView(mpColorBuffers[i_buffer].Get(), &desc, p_descriptor_heap->GetCPUDescriptorHandleForHeapStart());
-        }
-        mpRenderTargetDescriptorHeaps[i_buffer] = std::move(p_descriptor_heap);
+        mpRenderTargets[i_buffer].initialize(mpColorBuffers[i_buffer]);
     }
 
     return true;
@@ -218,20 +210,20 @@ void Graphics::executeCommand()
 
     // リソースバリア（Present -> RenderTarget）
     curr_command_list.resourceBarrierTransition(
-        mpColorBuffers[mCurrentBufferIndex].Get(),
+        &mpColorBuffers[mCurrentBufferIndex].getResource(),
         D3D12_RESOURCE_STATE_PRESENT,
         D3D12_RESOURCE_STATE_RENDER_TARGET
     );
 
     // 仮: 青色にクリア
     curr_command_list.clearColor(
-        mpRenderTargetDescriptorHeaps[mCurrentBufferIndex]->GetCPUDescriptorHandleForHeapStart(),
-        math::Color(0.f, 0.125f, 0.5f)
+        mpRenderTargets[mCurrentBufferIndex],
+        math::Color(0.5f, 0.5f, 0.5f)
     );
 
     // リソースバリア（RenderTarget -> Present）
     curr_command_list.resourceBarrierTransition(
-        mpColorBuffers[mCurrentBufferIndex].Get(),
+        &mpColorBuffers[mCurrentBufferIndex].getResource(),
         D3D12_RESOURCE_STATE_RENDER_TARGET,
         D3D12_RESOURCE_STATE_PRESENT
     );

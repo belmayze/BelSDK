@@ -14,6 +14,8 @@
 
 namespace bel::gfx { class CommandList; }
 namespace bel::gfx { class CommandQueue; }
+namespace bel::gfx { class RenderTarget; }
+namespace bel::gfx { class Texture; }
 
 namespace bel
 {
@@ -66,8 +68,8 @@ private:
     Microsoft::WRL::ComPtr<ID3D12Device6>      mpDevice;
     Microsoft::WRL::ComPtr<IDXGISwapChain4>    mpSwapChain;
 
-    std::unique_ptr<Microsoft::WRL::ComPtr<ID3D12Resource>[]> mpColorBuffers;
-    std::unique_ptr<Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>[]> mpRenderTargetDescriptorHeaps;
+    std::unique_ptr<gfx::Texture[]>      mpColorBuffers;
+    std::unique_ptr<gfx::RenderTarget[]> mpRenderTargets;
 
     std::unique_ptr<Microsoft::WRL::ComPtr<ID3D12Fence>[]>    mpFences;
 
