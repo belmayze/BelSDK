@@ -56,7 +56,16 @@ private:
 
     //-------------------------------------------------------------------------
 private:
-    inline static std::unique_ptr<T> mpInstance;
+    // サブクラスのデストラクターには std::unique_ptr からアクセスできないので
+    // カスタムの Deleter を作る
+    struct Deleter
+    {
+        void operator()(T* ptr) const { delete ptr; }
+    };
+
+    //-------------------------------------------------------------------------
+private:
+    inline static std::unique_ptr<T, Deleter> mpInstance;
 };
 //-----------------------------------------------------------------------------
 }

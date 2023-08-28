@@ -15,7 +15,10 @@
     <ClInclude Include="..\Include\belMain.h" />
     <ClInclude Include="..\Include\belPrecompile.h" />
     <ClInclude Include="..\Include\gfx\belGraphics.h" />
+    <ClInclude Include="..\Include\gfx\core\belCommandList.h" />
+    <ClInclude Include="..\Include\gfx\core\belCommandQueue.h" />
     <ClInclude Include="..\Include\io\belErrorWindow.h" />
+    <ClInclude Include="..\Include\math\belColor.h" />
     <ClInclude Include="..\Include\math\belVector2.h" />
     <ClInclude Include="..\Include\memory\belSingleton.h" />
     <ClInclude Include="..\Include\platform\belPlatform.h" />
@@ -23,6 +26,8 @@
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp" />
     <ClCompile Include="..\Source\gfx\belGraphics.cpp" />
+    <ClCompile Include="..\Source\gfx\core\belCommandList.cpp" />
+    <ClCompile Include="..\Source\gfx\core\belCommandQueue.cpp" />
     <ClCompile Include="..\Source\io\belErrorWindow.cpp" />
     <ClCompile Include="..\Source\platform\belPlatform.cpp" />
   </ItemGroup>

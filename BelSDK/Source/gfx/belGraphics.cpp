@@ -9,11 +9,16 @@
 #include <array>
 #include <Windows.h>
 // bel
+#include "gfx/core/belCommandList.h"
+#include "gfx/core/belCommandQueue.h"
 #include "gfx/belGraphics.h"
 #include "platform/belPlatform.h"
 
 namespace bel
 {
+//-----------------------------------------------------------------------------
+Graphics::Graphics() {}
+Graphics::~Graphics() {}
 //-----------------------------------------------------------------------------
 bool Graphics::initialize()
 {
@@ -76,38 +81,21 @@ bool Graphics::initialize()
     mpDevice = std::move(p_device);
 
     // プライマリーコマンドを生成
+    mpCommandQueue = std::make_unique<gfx::CommandQueue>();
+    if (!mpCommandQueue->initialize(D3D12_COMMAND_LIST_TYPE_DIRECT))
     {
-        D3D12_COMMAND_QUEUE_DESC desc = {};
-        desc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-
-        if (FAILED(mpDevice->CreateCommandQueue(&desc, IID_PPV_ARGS(&mpCommandQueue))))
-        {
-            BEL_ERROR_WINDOW("GraphicsError", "コマンドキューの生成に失敗しました");
-            return false;
-        }
+        return false;
     }
 
     // コマンドバッファー
-    mpCommandAllocators = std::make_unique<Microsoft::WRL::ComPtr<ID3D12CommandAllocator>[]>(mNumBuffer);
-    mpCommandLists = std::make_unique<Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList>[]>(mNumBuffer);
+    // @note: ダブルバッファー用に2つ用意して、交互に実行する
+    mpCommandLists = std::make_unique<gfx::CommandList[]>(mNumBuffer);
     for (uint32_t i_buffer = 0; i_buffer < mNumBuffer; ++i_buffer)
     {
-        Microsoft::WRL::ComPtr<ID3D12CommandAllocator> p_command_allocator;
-        Microsoft::WRL::ComPtr<ID3D12GraphicsCommandList> p_command_list;
-        if (FAILED(mpDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&p_command_allocator))))
+        if (!mpCommandLists[i_buffer].initialize(D3D12_COMMAND_LIST_TYPE_DIRECT))
         {
-            BEL_ERROR_WINDOW("GraphicsError", "コマンドアロケーターの生成に失敗しました");
             return false;
         }
-        if (FAILED(mpDevice->CreateCommandList(1, D3D12_COMMAND_LIST_TYPE_DIRECT, p_command_allocator.Get(), nullptr, IID_PPV_ARGS(&p_command_list))))
-        {
-            BEL_ERROR_WINDOW("GraphicsError", "コマンドリストの生成に失敗しました");
-            return false;
-        }
-        p_command_list->Close();
-
-        mpCommandAllocators[i_buffer] = std::move(p_command_allocator);
-        mpCommandLists[i_buffer] = std::move(p_command_list);
     }
 
     // プライマリーコマンド実行のフェンスを作成
@@ -144,7 +132,7 @@ bool Graphics::initialize()
 
         Microsoft::WRL::ComPtr<IDXGISwapChain1> p_tmp_swap_chain;
         if (FAILED(p_factory->CreateSwapChainForHwnd(
-            mpCommandQueue.Get(),
+            &mpCommandQueue->getCommandQueue(),
             Platform::GetInstance().getWindowHandle(),
             &desc,
             &fullscreen_desc,
@@ -218,42 +206,43 @@ void Graphics::waitToExecuteCommand()
         WaitForSingleObject(handle, INFINITE);
     }
     CloseHandle(handle);
-
-    // コマンド記録開始
-    mpCommandAllocators[mCurrentBufferIndex]->Reset();
-    mpCommandLists[mCurrentBufferIndex]->Reset(mpCommandAllocators[mCurrentBufferIndex].Get(), nullptr);
 }
 //-----------------------------------------------------------------------------
 void Graphics::executeCommand()
 {
+    // カレントのコマンドリスト
+    gfx::CommandList& curr_command_list = mpCommandLists[mCurrentBufferIndex];
+
+    // コマンド記録開始
+    curr_command_list.begin();
+
     // リソースバリア（Present -> RenderTarget）
-    D3D12_RESOURCE_BARRIER desc = {};
-    desc.Type                   = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-    desc.Transition.pResource   = mpColorBuffers[mCurrentBufferIndex].Get();
-    desc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-    desc.Transition.StateAfter  = D3D12_RESOURCE_STATE_RENDER_TARGET;
-    mpCommandLists[mCurrentBufferIndex]->ResourceBarrier(1, &desc);
+    curr_command_list.resourceBarrierTransition(
+        mpColorBuffers[mCurrentBufferIndex].Get(),
+        D3D12_RESOURCE_STATE_PRESENT,
+        D3D12_RESOURCE_STATE_RENDER_TARGET
+    );
 
     // 仮: 青色にクリア
-    float color[4] = {0.f, 0.125f, 0.5f, 1.f};
-    mpCommandLists[mCurrentBufferIndex]->ClearRenderTargetView(
+    curr_command_list.clearColor(
         mpRenderTargetDescriptorHeaps[mCurrentBufferIndex]->GetCPUDescriptorHandleForHeapStart(),
-        color, 0U, nullptr
+        math::Color(0.f, 0.125f, 0.5f)
     );
 
     // リソースバリア（RenderTarget -> Present）
-    desc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-    desc.Transition.StateAfter  = D3D12_RESOURCE_STATE_PRESENT;
-    mpCommandLists[mCurrentBufferIndex]->ResourceBarrier(1, &desc);
+    curr_command_list.resourceBarrierTransition(
+        mpColorBuffers[mCurrentBufferIndex].Get(),
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_PRESENT
+    );
 
     // コマンドの実行
-    mpCommandLists[mCurrentBufferIndex]->Close();
-    std::array<ID3D12CommandList*, 1> command_lists = {mpCommandLists[mCurrentBufferIndex].Get()};
-    mpCommandQueue->ExecuteCommandLists(1, command_lists.data());
+    curr_command_list.end();
+    mpCommandQueue->executeCommand(curr_command_list);
 
     // 実行完了チェックのフェンス追加
     mpFences[mCurrentBufferIndex]->Signal(0);
-    mpCommandQueue->Signal(mpFences[mCurrentBufferIndex].Get(), 1);
+    mpCommandQueue->signal(mpFences[mCurrentBufferIndex].Get(), 1);
 
     // バッファー切り替え
     mCurrentBufferIndex = 1 - mCurrentBufferIndex;
@@ -277,7 +266,7 @@ void Graphics::finalize()
             return;
         }
         p_fence->Signal(0);
-        mpCommandQueue->Signal(p_fence.Get(), 1);
+        mpCommandQueue->signal(p_fence.Get(), 1);
 
         // 実行待ち
         HANDLE handle = CreateEvent(nullptr, FALSE, FALSE, nullptr);
@@ -290,20 +279,6 @@ void Graphics::finalize()
         WaitForSingleObject(handle, INFINITE);
         CloseHandle(handle);
     }
-
-    // バッファー破棄
-    for (uint32_t i_buffer = 0; i_buffer < mNumBuffer; ++i_buffer)
-    {
-        mpColorBuffers[i_buffer].Reset();
-        mpFences[i_buffer].Reset();
-        mpCommandLists[i_buffer].Reset();
-        mpCommandAllocators[i_buffer].Reset();
-    }
-
-    // 破棄
-    mpCommandQueue.Reset();
-    mpSwapChain.Reset();
-    mpDevice.Reset();
 }
 //-----------------------------------------------------------------------------
 }
