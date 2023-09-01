@@ -87,6 +87,12 @@
     <ClInclude Include="..\Include\gfx\core\belRenderTarget.h">
       <Filter>ヘッダー ファイル\gfx\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\gfx\core\belShader.h">
+      <Filter>ヘッダー ファイル\gfx\core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\gfx\core\belPipelineState.h">
+      <Filter>ヘッダー ファイル\gfx\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\platform\belPlatform.cpp">
@@ -111,6 +117,12 @@
       <Filter>ソース ファイル\gfx\core</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\gfx\core\belRenderTarget.cpp">
+      <Filter>ソース ファイル\gfx\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\gfx\core\belShader.cpp">
+      <Filter>ソース ファイル\gfx\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\gfx\core\belPipelineState.cpp">
       <Filter>ソース ファイル\gfx\core</Filter>
     </ClCompile>
   </ItemGroup>
