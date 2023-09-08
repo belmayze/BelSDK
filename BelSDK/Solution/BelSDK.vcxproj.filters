@@ -93,6 +93,9 @@
     <ClInclude Include="..\Include\gfx\core\belPipelineState.h">
       <Filter>ヘッダー ファイル\gfx\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\gfx\core\belTextureDescriptorRegistry.h">
+      <Filter>ヘッダー ファイル\gfx\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\platform\belPlatform.cpp">
@@ -123,6 +126,9 @@
       <Filter>ソース ファイル\gfx\core</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\gfx\core\belPipelineState.cpp">
+      <Filter>ソース ファイル\gfx\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\gfx\core\belTextureDescriptorRegistry.cpp">
       <Filter>ソース ファイル\gfx\core</Filter>
     </ClCompile>
   </ItemGroup>

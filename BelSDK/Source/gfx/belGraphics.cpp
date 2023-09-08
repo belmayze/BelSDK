@@ -13,6 +13,7 @@
 #include "gfx/core/belCommandQueue.h"
 #include "gfx/core/belRenderTarget.h"
 #include "gfx/core/belTexture.h"
+#include "gfx/core/belTextureDescriptorRegistry.h"
 #include "gfx/belGraphics.h"
 #include "platform/belPlatform.h"
 
@@ -154,6 +155,9 @@ bool Graphics::initialize()
         // sRGB
         mpSwapChain->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
     }
+
+    // テクスチャーレジストリーを作る
+    gfx::TextureDescriptorRegistry::GetInstance().allocate(1024);
 
     // スワップチェーンからテクスチャーを取得
     mpColorBuffers  = std::make_unique<gfx::Texture[]>(mNumBuffer);
