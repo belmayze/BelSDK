@@ -20,6 +20,16 @@ namespace bel::gfx
 class Texture
 {
     //-------------------------------------------------------------------------
+public:
+    enum Dimension
+    {
+        Dimension_1D,
+        Dimension_2D,
+        Dimension_3D,
+        Dimension_Cube
+    };
+
+    //-------------------------------------------------------------------------
     // system
     //-------------------------------------------------------------------------
 public:
@@ -38,11 +48,13 @@ public:
      * 初期化（GPUメモリーを使う）
      * @param[in] width      横幅
      * @param[in] height     高さ
+     * @param[in] depth      深さ
      * @param[in] num_mip    ミップマップ数
      * @param[in] format     フォーマット
+     * @param[in] dimension  次元
      * @param[in] p_resource リソース
      */
-    void initializeFromResource(uint32_t width, uint32_t height, uint32_t num_mip, DXGI_FORMAT format, Microsoft::WRL::ComPtr<ID3D12Resource>&& p_resource);
+    void initializeFromResource(uint32_t width, uint32_t height, uint32_t depth, uint32_t num_mip, DXGI_FORMAT format, Dimension dimension, Microsoft::WRL::ComPtr<ID3D12Resource>&& p_resource);
 
     //-------------------------------------------------------------------------
     // getter
@@ -52,10 +64,14 @@ public:
     uint32_t getWidth() const { return mWidth; }
     //! 高さ
     uint32_t getHeight() const { return mHeight; }
+    //! 深さ
+    uint32_t getDepth() const { return mDepth; }
     //! ミップマップ数
     uint32_t getNumMip() const { return mNumMip; }
     //! フォーマット
     DXGI_FORMAT getFormat() const { return mFormat; }
+    //! 次元
+    Dimension getDimension() const { return mDimension; }
 
     //
     ID3D12Resource& getResource() const { BEL_ASSERT(mpResource); return *mpResource.Get(); }
@@ -63,10 +79,12 @@ public:
 private:
     Microsoft::WRL::ComPtr<ID3D12Resource> mpResource;
 
-    uint32_t    mWidth  = 0;
-    uint32_t    mHeight = 0;
-    uint32_t    mNumMip = 0;
-    DXGI_FORMAT mFormat = DXGI_FORMAT_UNKNOWN;
+    uint32_t    mWidth     = 0;
+    uint32_t    mHeight    = 0;
+    uint32_t    mDepth     = 0;
+    uint32_t    mNumMip    = 0;
+    Dimension   mDimension = Dimension_1D;
+    DXGI_FORMAT mFormat    = DXGI_FORMAT_UNKNOWN;
 };
 //-----------------------------------------------------------------------------
 

@@ -175,7 +175,9 @@ bool Graphics::initialize()
             Platform::GetInstance().getWindowWidth(),
             Platform::GetInstance().getWindowHeight(),
             1,
+            1,
             DXGI_FORMAT_R8G8B8A8_UNORM,
+            gfx::Texture::Dimension_2D,
             std::move(p_color_buffer)
         );
 

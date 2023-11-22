@@ -51,19 +51,23 @@ bool Texture::initialize2D(uint32_t width, uint32_t height, uint32_t num_mip, DX
 
     mWidth     = width;
     mHeight    = height;
+    mDepth     = 1;
     mNumMip    = num_mip;
     mFormat    = format;
+    mDimension = Dimension_2D;
     mpResource = std::move(p_resource);
 
     return true;
 }
 //-----------------------------------------------------------------------------
-void Texture::initializeFromResource(uint32_t width, uint32_t height, uint32_t num_mip, DXGI_FORMAT format, Microsoft::WRL::ComPtr<ID3D12Resource>&& p_resource)
+void Texture::initializeFromResource(uint32_t width, uint32_t height, uint32_t depth, uint32_t num_mip, DXGI_FORMAT format, Dimension dimension, Microsoft::WRL::ComPtr<ID3D12Resource>&& p_resource)
 {
     mWidth     = width;
     mHeight    = height;
+    mDepth     = depth;
     mNumMip    = num_mip;
     mFormat    = format;
+    mDimension = dimension;
     mpResource = std::move(p_resource);
 }
 //-----------------------------------------------------------------------------
