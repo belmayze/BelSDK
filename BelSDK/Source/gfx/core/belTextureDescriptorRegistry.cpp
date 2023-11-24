@@ -55,6 +55,9 @@ TextureDescriptorHandle TextureDescriptorRegistry::registerTexture(const Texture
         mFreeList.pop_back();
     }
 
+    // チェック
+    BEL_ASSERT(texture.getDimension() != Texture::cDimensionInvalid);
+
     // 登録
     D3D12_SHADER_RESOURCE_VIEW_DESC desc = {};
     desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -63,7 +66,7 @@ TextureDescriptorHandle TextureDescriptorRegistry::registerTexture(const Texture
     // dimension 変換
     switch (texture.getDimension())
     {
-    case Texture::Dimension_1D:
+    case Texture::cDimension1D:
         if (texture.getDepth() == 1)
         {
             desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE1D;
@@ -77,7 +80,7 @@ TextureDescriptorHandle TextureDescriptorRegistry::registerTexture(const Texture
         }
         break;
 
-    case Texture::Dimension_2D:
+    case Texture::cDimension2D:
         if (texture.getDepth() == 1)
         {
             desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
@@ -91,7 +94,7 @@ TextureDescriptorHandle TextureDescriptorRegistry::registerTexture(const Texture
         }
         break;
 
-    case Texture::Dimension_Cube:
+    case Texture::cDimensionCube:
         if (texture.getDepth() == 6)
         {
             desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
@@ -105,7 +108,7 @@ TextureDescriptorHandle TextureDescriptorRegistry::registerTexture(const Texture
         }
         break;
 
-    case Texture::Dimension_3D:
+    case Texture::cDimension3D:
         desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
         desc.Texture3D.MipLevels = texture.getNumMip();
         break;

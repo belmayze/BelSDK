@@ -19,6 +19,7 @@
     <ClInclude Include="..\Include\gfx\core\belCommandQueue.h" />
     <ClInclude Include="..\Include\gfx\core\belPipelineState.h" />
     <ClInclude Include="..\Include\gfx\core\belRenderTarget.h" />
+    <ClInclude Include="..\Include\gfx\core\belRootSignature.h" />
     <ClInclude Include="..\Include\gfx\core\belShader.h" />
     <ClInclude Include="..\Include\gfx\core\belTexture.h" />
     <ClInclude Include="..\Include\gfx\core\belTextureDescriptorHandle.h" />
@@ -36,6 +37,7 @@
     <ClCompile Include="..\Source\gfx\core\belCommandQueue.cpp" />
     <ClCompile Include="..\Source\gfx\core\belPipelineState.cpp" />
     <ClCompile Include="..\Source\gfx\core\belRenderTarget.cpp" />
+    <ClCompile Include="..\Source\gfx\core\belRootSignature.cpp" />
     <ClCompile Include="..\Source\gfx\core\belShader.cpp" />
     <ClCompile Include="..\Source\gfx\core\belTexture.cpp" />
     <ClCompile Include="..\Source\gfx\core\belTextureDescriptorHandle.cpp" />

@@ -25,10 +25,11 @@ class Texture
 public:
     enum Dimension
     {
-        Dimension_1D,
-        Dimension_2D,
-        Dimension_3D,
-        Dimension_Cube
+        cDimensionInvalid,
+        cDimension1D,
+        cDimension2D,
+        cDimension3D,
+        cDimensionCube
     };
 
     //-------------------------------------------------------------------------
@@ -86,7 +87,7 @@ private:
     uint32_t    mHeight    = 0;
     uint32_t    mDepth     = 0;
     uint32_t    mNumMip    = 0;
-    Dimension   mDimension = Dimension_1D;
+    Dimension   mDimension = cDimensionInvalid;
     DXGI_FORMAT mFormat    = DXGI_FORMAT_UNKNOWN;
 };
 //-----------------------------------------------------------------------------

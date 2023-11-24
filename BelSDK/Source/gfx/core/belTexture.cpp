@@ -55,7 +55,7 @@ bool Texture::initialize2D(uint32_t width, uint32_t height, uint32_t num_mip, DX
     mDepth     = 1;
     mNumMip    = num_mip;
     mFormat    = format;
-    mDimension = Dimension_2D;
+    mDimension = cDimension2D;
     mpResource = std::move(p_resource);
 
     // デスクリプターヒープに登録する

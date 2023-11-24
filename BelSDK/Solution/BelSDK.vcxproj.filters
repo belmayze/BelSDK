@@ -99,6 +99,9 @@
     <ClInclude Include="..\Include\gfx\core\belTextureDescriptorHandle.h">
       <Filter>ヘッダー ファイル\gfx\core</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\gfx\core\belRootSignature.h">
+      <Filter>ヘッダー ファイル\gfx\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\platform\belPlatform.cpp">
@@ -135,6 +138,9 @@
       <Filter>ソース ファイル\gfx\core</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\gfx\core\belTextureDescriptorHandle.cpp">
+      <Filter>ソース ファイル\gfx\core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\gfx\core\belRootSignature.cpp">
       <Filter>ソース ファイル\gfx\core</Filter>
     </ClCompile>
   </ItemGroup>

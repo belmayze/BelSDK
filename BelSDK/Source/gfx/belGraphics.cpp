@@ -12,6 +12,7 @@
 #include "gfx/core/belCommandList.h"
 #include "gfx/core/belCommandQueue.h"
 #include "gfx/core/belRenderTarget.h"
+#include "gfx/core/belRootSignature.h"
 #include "gfx/core/belTexture.h"
 #include "gfx/core/belTextureDescriptorRegistry.h"
 #include "gfx/belGraphics.h"
@@ -163,6 +164,13 @@ bool Graphics::initialize()
         return false;
     }
 
+    // ルートシグネチャは使いまわすので、ここで作っておく
+    if (!gfx::RootSignature::GetInstance().create())
+    {
+        BEL_ERROR_WINDOW("GraphicsError", "ルートシグネチャの作成に失敗しました");
+        return false;
+    }
+
     // スワップチェーンからテクスチャーを取得
     mpColorBuffers  = std::make_unique<gfx::Texture[]>(mNumBuffer);
     mpRenderTargets = std::make_unique<gfx::RenderTarget[]>(mNumBuffer);
@@ -181,7 +189,7 @@ bool Graphics::initialize()
             1,
             1,
             DXGI_FORMAT_R8G8B8A8_UNORM,
-            gfx::Texture::Dimension_2D,
+            gfx::Texture::cDimension2D,
             std::move(p_color_buffer)
         );
 
@@ -225,7 +233,7 @@ void Graphics::executeCommand()
         D3D12_RESOURCE_STATE_RENDER_TARGET
     );
 
-    // 仮: 青色にクリア
+    // 仮: グレーにクリア
     curr_command_list.clearColor(
         mpRenderTargets[mCurrentBufferIndex],
         math::Color(0.5f, 0.5f, 0.5f)

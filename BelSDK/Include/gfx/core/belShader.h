@@ -22,6 +22,17 @@ class Shader
 {
     //-------------------------------------------------------------------------
 public:
+    //! モード
+    enum Mode
+    {
+        cModeInvalid,
+        cModeVertexPixel,
+        cModeCompute,
+        cModeAmplificationMesh
+    };
+
+    //-------------------------------------------------------------------------
+public:
     //! シェーダーオブジェクト
     struct VertexPixel
     {
@@ -76,6 +87,15 @@ public:
     // getter
     //-------------------------------------------------------------------------
 public:
+    // モード取得
+    Mode getMode() const
+    {
+        if (std::holds_alternative<VertexPixel>(mShaderObject)) { return cModeVertexPixel; }
+        if (std::holds_alternative<Compute>(mShaderObject)) { return cModeCompute; }
+        if (std::holds_alternative<AmplificationMesh>(mShaderObject)) { return cModeAmplificationMesh; }
+        return cModeInvalid;
+    }
+
     //
     const VertexPixel& getVertexPixel() const
     {
