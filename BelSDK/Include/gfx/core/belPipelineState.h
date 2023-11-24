@@ -7,6 +7,7 @@
  */
 #pragma once
  // C++
+#define NOMINMAX
 #include <d3d12.h>
 #include <wrl/client.h>
 
@@ -26,7 +27,10 @@ public:
     //! 初期化引数
     struct InitializeArg
     {
+        //! シェーダー
         const Shader& mShader;
+
+        //! 
 
         InitializeArg(const Shader& shader) : mShader(shader) {}
     };
@@ -39,11 +43,10 @@ public:
      * 初期化
      * @param[in] arg 初期化引数
      */
-    void initialize(const InitializeArg& arg);
+    bool initialize(const InitializeArg& arg);
 
     //-------------------------------------------------------------------------
 private:
-    Microsoft::WRL::ComPtr<ID3D12RootSignature> mpRootSignature;
     Microsoft::WRL::ComPtr<ID3D12PipelineState> mpPipelineState;
 };
 //-----------------------------------------------------------------------------

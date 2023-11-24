@@ -7,6 +7,7 @@
  */
 // C++
 #include <tchar.h>
+#define NOMINMAX
 #include <Windows.h>
 // bel
 #include "io/belErrorWindow.h"

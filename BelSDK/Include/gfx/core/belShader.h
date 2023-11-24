@@ -7,6 +7,7 @@
  */
 #pragma once
 // C++
+#define NOMINMAX
 #include <d3d12.h>
 #include <variant>
 #include <wrl/client.h>
@@ -28,7 +29,7 @@ public:
         cModeInvalid,
         cModeVertexPixel,
         cModeCompute,
-        cModeAmplificationMesh
+        cModeAmplificationMeshPixel
     };
 
     //-------------------------------------------------------------------------
@@ -46,12 +47,14 @@ public:
         void*  mComputeShaderPtr  = nullptr;
         size_t mComputeShaderSize = 0;
     };
-    struct AmplificationMesh
+    struct AmplificationMeshPixel
     {
         void*  mAmplificationShaderPtr  = nullptr;
         size_t mAmplificationShaderSize = 0;
         void*  mMeshShaderPtr           = nullptr;
         size_t mMeshShaderSize          = 0;
+        void*  mPixelShaderPtr          = nullptr;
+        size_t mPixelShaderSize         = 0;
     };
 
     //-------------------------------------------------------------------------
@@ -80,8 +83,10 @@ public:
      * @param[in] as_size AS バイナリサイズ
      * @param[in] ms_ptr  MS バイナリ
      * @param[in] ms_size MS バイナリサイズ
+     * @param[in] ps_ptr  PS バイナリ
+     * @param[in] ps_size PS バイナリサイズ
      */
-    void initializeAmplificationMesh(void* as_ptr, size_t as_size, void* ms_ptr, size_t ms_size);
+    void initializeAmplificationMeshPixel(void* as_ptr, size_t as_size, void* ms_ptr, size_t ms_size, void* ps_ptr, size_t ps_size);
 
     //-------------------------------------------------------------------------
     // getter
@@ -92,7 +97,7 @@ public:
     {
         if (std::holds_alternative<VertexPixel>(mShaderObject)) { return cModeVertexPixel; }
         if (std::holds_alternative<Compute>(mShaderObject)) { return cModeCompute; }
-        if (std::holds_alternative<AmplificationMesh>(mShaderObject)) { return cModeAmplificationMesh; }
+        if (std::holds_alternative<AmplificationMeshPixel>(mShaderObject)) { return cModeAmplificationMeshPixel; }
         return cModeInvalid;
     }
 
@@ -111,14 +116,14 @@ public:
     }
 
     //
-    const AmplificationMesh& getAmplificationMesh() const
+    const AmplificationMeshPixel& getAmplificationMeshPixel() const
     {
-        BEL_ASSERT(std::holds_alternative<AmplificationMesh>(mShaderObject));
-        return std::get<AmplificationMesh>(mShaderObject);
+        BEL_ASSERT(std::holds_alternative<AmplificationMeshPixel>(mShaderObject));
+        return std::get<AmplificationMeshPixel>(mShaderObject);
     }
 
 private:
-    std::variant<VertexPixel, Compute, AmplificationMesh> mShaderObject;
+    std::variant<VertexPixel, Compute, AmplificationMeshPixel> mShaderObject;
 };
 //-----------------------------------------------------------------------------
 

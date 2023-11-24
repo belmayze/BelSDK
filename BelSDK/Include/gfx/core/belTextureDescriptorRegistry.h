@@ -7,6 +7,7 @@
  */
 #pragma once
 // C++
+#define NOMINMAX
 #include <d3d12.h>
 #include <mutex>
 #include <optional>

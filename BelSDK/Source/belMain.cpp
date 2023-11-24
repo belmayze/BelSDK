@@ -6,6 +6,7 @@
  * Copyright (c) belmayze. All rights reserved.
  */
 // C++
+#define NOMINMAX
 #include <Windows.h>
 // bel
 #include "belMain.h"

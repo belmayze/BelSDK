@@ -7,6 +7,7 @@
  */
 #pragma once
 // C++
+#define NOMINMAX
 #include <d3d12.h>
 #include <dxgi1_6.h>
 #include <memory>
@@ -59,6 +60,23 @@ public:
 public:
     //! D3D12 デバイス
     ID3D12Device6& getDevice() const { BEL_ASSERT(mpDevice); return *mpDevice.Get(); }
+
+    //-------------------------------------------------------------------------
+    // パラメーター
+    // @todo: 最終的には外部から与えられる定数にする
+    //-------------------------------------------------------------------------
+public:
+    //! テクスチャーハンドルの最大数
+    static constexpr uint32_t cMaxTextureHandle = 1024;
+
+    //! CBV の最大数
+    static constexpr uint32_t cMaxDescriptorCBV = 16;
+    //! SRV の最大数
+    static constexpr uint32_t cMaxDescriptorSRV = 48;
+    //! UAV の最大数
+    static constexpr uint32_t cMaxDescriptorUAV = 16;
+    //! Sampler の最大数
+    static constexpr uint32_t cMaxDescriptorSampler = 16;
 
     //-------------------------------------------------------------------------
 private:

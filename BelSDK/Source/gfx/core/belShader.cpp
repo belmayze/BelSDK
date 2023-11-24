@@ -27,13 +27,15 @@ void Shader::initializeCompute(void* ptr, size_t size)
     object.mComputeShaderSize = size;
 }
 //-----------------------------------------------------------------------------
-void Shader::initializeAmplificationMesh(void* as_ptr, size_t as_size, void* ms_ptr, size_t ms_size)
+void Shader::initializeAmplificationMeshPixel(void* as_ptr, size_t as_size, void* ms_ptr, size_t ms_size, void* ps_ptr, size_t ps_size)
 {
-    AmplificationMesh& object = mShaderObject.emplace<AmplificationMesh>();
+    AmplificationMeshPixel& object = mShaderObject.emplace<AmplificationMeshPixel>();
     object.mAmplificationShaderPtr  = as_ptr;
     object.mAmplificationShaderSize = as_size;
     object.mMeshShaderPtr           = ms_ptr;
     object.mMeshShaderSize          = ms_size;
+    object.mPixelShaderPtr          = ps_ptr;
+    object.mPixelShaderSize         = ps_size;
 }
 //-----------------------------------------------------------------------------
 }

@@ -10,6 +10,7 @@
 #include <locale>
 #include <memory>
 #include <tchar.h>
+#define NOMINMAX
 #include <Windows.h>
 // bel
 #include "gfx/belGraphics.h"

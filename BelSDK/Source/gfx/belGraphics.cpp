@@ -7,6 +7,7 @@
  */
 // C++
 #include <array>
+#define NOMINMAX
 #include <Windows.h>
 // bel
 #include "gfx/core/belCommandList.h"
@@ -49,8 +50,8 @@ bool Graphics::initialize()
         return false;
     }
 
-    // デバイス取得（DirectX 12.1 のみ）
-    D3D_FEATURE_LEVEL feature_level = D3D_FEATURE_LEVEL_12_1;
+    // デバイス取得（DirectX 12.2 のみ）
+    D3D_FEATURE_LEVEL feature_level = D3D_FEATURE_LEVEL_12_2;
     Microsoft::WRL::ComPtr<IDXGIAdapter1> p_adapter;
     Microsoft::WRL::ComPtr<ID3D12Device6> p_device;
     {
@@ -158,7 +159,7 @@ bool Graphics::initialize()
     }
 
     // テクスチャーレジストリーを作る
-    if (!gfx::TextureDescriptorRegistry::GetInstance().allocate(1024))
+    if (!gfx::TextureDescriptorRegistry::GetInstance().allocate(cMaxTextureHandle))
     {
         BEL_ERROR_WINDOW("GraphicsError", "テクスチャー用デスクリプターヒープの作成に失敗しました");
         return false;
@@ -226,6 +227,14 @@ void Graphics::executeCommand()
     // コマンド記録開始
     curr_command_list.begin();
 
+    // 初めに共通のルートシグネチャを設定
+    curr_command_list.getCommandList().SetGraphicsRootSignature(
+        &gfx::RootSignature::GetInstance().getGraphicsRootSignature()
+    );
+    curr_command_list.getCommandList().SetComputeRootSignature(
+        &gfx::RootSignature::GetInstance().getComputeRootSignature()
+    );
+
     // リソースバリア（Present -> RenderTarget）
     curr_command_list.resourceBarrierTransition(
         &mpColorBuffers[mCurrentBufferIndex].getResource(),
@@ -266,6 +275,13 @@ void Graphics::present()
 //-----------------------------------------------------------------------------
 void Graphics::finalize()
 {
+    // オブジェクトの破棄を開始する前に、コマンドの実行完了を待つ
+    for (uint32_t i_buffer = 0; i_buffer < mNumBuffer; ++i_buffer)
+    {
+        mCurrentBufferIndex = i_buffer;
+        waitToExecuteCommand();
+    }
+
     // テクスチャー削除は先に行う
     mpRenderTargets.reset();
     mpColorBuffers.reset();

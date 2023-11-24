@@ -7,6 +7,7 @@
  */
 #pragma once
  // C++
+#define NOMINMAX
 #include <d3d12.h>
 #include <wrl/client.h>
 // bel
@@ -36,11 +37,13 @@ public:
     //-------------------------------------------------------------------------
 public:
     //! Root signature
-    ID3D12RootSignature& getRootSignature() { BEL_ASSERT(mpRootSignature); return *mpRootSignature.Get(); }
+    ID3D12RootSignature& getGraphicsRootSignature() { BEL_ASSERT(mpGraphicsRootSignature); return *mpGraphicsRootSignature.Get(); }
+    ID3D12RootSignature& getComputeRootSignature() { BEL_ASSERT(mpComputeRootSignature); return *mpComputeRootSignature.Get(); }
 
     //-------------------------------------------------------------------------
 private:
-    Microsoft::WRL::ComPtr<ID3D12RootSignature> mpRootSignature;
+    Microsoft::WRL::ComPtr<ID3D12RootSignature> mpGraphicsRootSignature;
+    Microsoft::WRL::ComPtr<ID3D12RootSignature> mpComputeRootSignature;
 
     //-------------------------------------------------------------------------
 private:

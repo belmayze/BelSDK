@@ -10,6 +10,7 @@
 #include <memory>
 #include <string>
 #include <thread>
+#define NOMINMAX
 #include <Windows.h>
 // bel
 #include "memory/belSingleton.h"
