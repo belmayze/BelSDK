@@ -39,7 +39,7 @@ bool TextureDescriptorRegistry::allocate(uint32_t num)
 //-----------------------------------------------------------------------------
 // register / erase
 //-----------------------------------------------------------------------------
-std::optional<uint32_t> TextureDescriptorRegistry::registerTexture(const Texture& texture)
+TextureDescriptorHandle TextureDescriptorRegistry::registerTexture(const Texture& texture)
 {
     uint32_t id = 0;
     {
@@ -48,7 +48,7 @@ std::optional<uint32_t> TextureDescriptorRegistry::registerTexture(const Texture
         if (mFreeList.empty())
         {
             // 登録の上限に達した場合は無効値を返す
-            return std::nullopt;
+            return TextureDescriptorHandle();
         }
 
         id = mFreeList.back();
@@ -64,19 +64,50 @@ std::optional<uint32_t> TextureDescriptorRegistry::registerTexture(const Texture
     switch (texture.getDimension())
     {
     case Texture::Dimension_1D:
-        desc.ViewDimension = texture.getDepth() == 1 ? D3D12_SRV_DIMENSION_TEXTURE1D : D3D12_SRV_DIMENSION_TEXTURE1DARRAY;
+        if (texture.getDepth() == 1)
+        {
+            desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE1D;
+            desc.Texture1D.MipLevels = texture.getNumMip();
+        }
+        else
+        {
+            desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE1DARRAY;
+            desc.Texture1DArray.MipLevels = texture.getNumMip();
+            desc.Texture1DArray.ArraySize = texture.getDepth();
+        }
         break;
 
     case Texture::Dimension_2D:
-        desc.ViewDimension = texture.getDepth() == 1 ? D3D12_SRV_DIMENSION_TEXTURE2D : D3D12_SRV_DIMENSION_TEXTURE2DARRAY;
+        if (texture.getDepth() == 1)
+        {
+            desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+            desc.Texture2D.MipLevels = texture.getNumMip();
+        }
+        else
+        {
+            desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DARRAY;
+            desc.Texture2DArray.MipLevels = texture.getNumMip();
+            desc.Texture2DArray.ArraySize = texture.getDepth();
+        }
         break;
 
     case Texture::Dimension_Cube:
-        desc.ViewDimension = texture.getDepth() == 6 ? D3D12_SRV_DIMENSION_TEXTURECUBE : D3D12_SRV_DIMENSION_TEXTURECUBEARRAY;
+        if (texture.getDepth() == 6)
+        {
+            desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+            desc.TextureCube.MipLevels = texture.getNumMip();
+        }
+        else
+        {
+            desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBEARRAY;
+            desc.TextureCubeArray.MipLevels = texture.getNumMip();
+            desc.TextureCubeArray.NumCubes = texture.getDepth() / 6;
+        }
         break;
 
     case Texture::Dimension_3D:
         desc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
+        desc.Texture3D.MipLevels = texture.getNumMip();
         break;
     }
 
@@ -85,7 +116,25 @@ std::optional<uint32_t> TextureDescriptorRegistry::registerTexture(const Texture
     handle.ptr += Graphics::GetInstance().getDevice().GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * id;
     Graphics::GetInstance().getDevice().CreateShaderResourceView(&texture.getResource(), &desc, handle);
 
-    return id;
+    // ハンドル生成
+    TextureDescriptorHandle retval;
+    TextureDescriptorHandle::Accessor accessor(retval);
+    accessor.setId(id);
+
+    return retval;
+}
+//-----------------------------------------------------------------------------
+void TextureDescriptorRegistry::EraseAccessor::Erase(uint32_t id)
+{
+    TextureDescriptorRegistry& instance = TextureDescriptorRegistry::GetInstance();
+
+    // SRV 削除は不要？
+
+    // フリーリストに戻す
+    {
+        std::lock_guard lock(instance.mListMutex);
+        instance.mFreeList.emplace_back(id);
+    }
 }
 //-----------------------------------------------------------------------------
 TextureDescriptorRegistry::TextureDescriptorRegistry() {}

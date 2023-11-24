@@ -7,6 +7,7 @@
  */
 // bel
 #include "gfx/core/belTexture.h"
+#include "gfx/core/belTextureDescriptorRegistry.h"
 #include "gfx/belGraphics.h"
 
 namespace bel::gfx
@@ -57,6 +58,9 @@ bool Texture::initialize2D(uint32_t width, uint32_t height, uint32_t num_mip, DX
     mDimension = Dimension_2D;
     mpResource = std::move(p_resource);
 
+    // デスクリプターヒープに登録する
+    mDescriptorHandle = TextureDescriptorRegistry::GetInstance().registerTexture(*this);
+
     return true;
 }
 //-----------------------------------------------------------------------------
@@ -69,6 +73,9 @@ void Texture::initializeFromResource(uint32_t width, uint32_t height, uint32_t d
     mFormat    = format;
     mDimension = dimension;
     mpResource = std::move(p_resource);
+
+    // デスクリプターヒープに登録する
+    mDescriptorHandle = TextureDescriptorRegistry::GetInstance().registerTexture(*this);
 }
 //-----------------------------------------------------------------------------
 }

@@ -13,6 +13,7 @@
 #include <vector>
 #include <wrl/client.h>
 // bel
+#include "gfx/core/belTextureDescriptorHandle.h"
 #include "memory/belSingleton.h"
 
 namespace bel::gfx { class Texture; }
@@ -37,20 +38,33 @@ public:
     bool allocate(uint32_t num);
 
     //-------------------------------------------------------------------------
-    // register / erase
+    // register
     //-------------------------------------------------------------------------
 public:
     /*!
      * 登録
      * @param[in] texture 登録するテクスチャー
      */
-    std::optional<uint32_t> registerTexture(const Texture& texture);
+    TextureDescriptorHandle registerTexture(const Texture& texture);
 
+    //-------------------------------------------------------------------------
+    // erase
+    //-------------------------------------------------------------------------
+public:
+    class EraseAccessor
+    {
+        friend TextureDescriptorHandle;
+    private:
+        static void Erase(uint32_t id);
+    };
+
+    //-------------------------------------------------------------------------
 private:
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mpDescriptorHeap;
     std::vector<uint32_t> mFreeList;
     std::mutex            mListMutex;
 
+    //-------------------------------------------------------------------------
 private:
     friend class Singleton<TextureDescriptorRegistry>;
     TextureDescriptorRegistry();

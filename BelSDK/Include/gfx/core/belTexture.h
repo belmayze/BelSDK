@@ -9,6 +9,8 @@
 // C++
 #include <d3d12.h>
 #include <wrl/client.h>
+// bel
+#include "gfx/core/belTextureDescriptorHandle.h"
 
 namespace bel::gfx
 {
@@ -78,6 +80,7 @@ public:
 
 private:
     Microsoft::WRL::ComPtr<ID3D12Resource> mpResource;
+    TextureDescriptorHandle                mDescriptorHandle;
 
     uint32_t    mWidth     = 0;
     uint32_t    mHeight    = 0;

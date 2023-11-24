@@ -157,7 +157,11 @@ bool Graphics::initialize()
     }
 
     // テクスチャーレジストリーを作る
-    gfx::TextureDescriptorRegistry::GetInstance().allocate(1024);
+    if (!gfx::TextureDescriptorRegistry::GetInstance().allocate(1024))
+    {
+        BEL_ERROR_WINDOW("GraphicsError", "テクスチャー用デスクリプターヒープの作成に失敗しました");
+        return false;
+    }
 
     // スワップチェーンからテクスチャーを取得
     mpColorBuffers  = std::make_unique<gfx::Texture[]>(mNumBuffer);
@@ -254,6 +258,9 @@ void Graphics::present()
 //-----------------------------------------------------------------------------
 void Graphics::finalize()
 {
+    // テクスチャー削除は先に行う
+    mpRenderTargets.reset();
+    mpColorBuffers.reset();
 }
 //-----------------------------------------------------------------------------
 }

@@ -21,6 +21,7 @@
     <ClInclude Include="..\Include\gfx\core\belRenderTarget.h" />
     <ClInclude Include="..\Include\gfx\core\belShader.h" />
     <ClInclude Include="..\Include\gfx\core\belTexture.h" />
+    <ClInclude Include="..\Include\gfx\core\belTextureDescriptorHandle.h" />
     <ClInclude Include="..\Include\gfx\core\belTextureDescriptorRegistry.h" />
     <ClInclude Include="..\Include\io\belErrorWindow.h" />
     <ClInclude Include="..\Include\math\belColor.h" />
@@ -37,6 +38,7 @@
     <ClCompile Include="..\Source\gfx\core\belRenderTarget.cpp" />
     <ClCompile Include="..\Source\gfx\core\belShader.cpp" />
     <ClCompile Include="..\Source\gfx\core\belTexture.cpp" />
+    <ClCompile Include="..\Source\gfx\core\belTextureDescriptorHandle.cpp" />
     <ClCompile Include="..\Source\gfx\core\belTextureDescriptorRegistry.cpp" />
     <ClCompile Include="..\Source\io\belErrorWindow.cpp" />
     <ClCompile Include="..\Source\platform\belPlatform.cpp" />
