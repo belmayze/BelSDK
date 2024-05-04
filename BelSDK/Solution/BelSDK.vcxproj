@@ -23,6 +23,9 @@
     <ClInclude Include="..\Include\debug\performance\belPerfTime.h" />
     <ClInclude Include="..\Include\graphics\belGraphicsEngine.h" />
     <ClInclude Include="..\Include\graphics\belGraphicsEngineD3D.h" />
+    <ClInclude Include="..\Include\graphics\common\belGraphicsCommandList.h" />
+    <ClInclude Include="..\Include\graphics\common\belGraphicsCommandQueue.h" />
+    <ClInclude Include="..\Include\graphics\common\belGraphicsCommandType.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsTexture.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsTextureDescriptorHandle.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsTextureDescriptorRegistry.h" />
@@ -40,6 +43,8 @@
     <ClCompile Include="..\Source\debug\performance\belPerfTime.cpp" />
     <ClCompile Include="..\Source\graphics\belGraphicsEngine.cpp" />
     <ClCompile Include="..\Source\graphics\belGraphicsEngineD3D.cpp" />
+    <ClCompile Include="..\Source\graphics\common\belGraphicsCommandList.cpp" />
+    <ClCompile Include="..\Source\graphics\common\belGraphicsCommandQueue.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsTexture.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureDescriptorHandle.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureDescriptorRegistry.cpp" />

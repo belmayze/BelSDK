@@ -10,6 +10,9 @@
 #include "graphics/belGraphicsEngine.h"
 #include "memory/belSingleton.h"
 
+namespace bel::gfx { class CommandList; }
+namespace bel::gfx { class CommandQueue; }
+
 namespace bel {
 //-----------------------------------------------------------------------------
 // アプリケーションのウィンドウ処理を行います
@@ -75,11 +78,12 @@ private:
     //-------------------------------------------------------------------------
 private:
     Microsoft::WRL::ComPtr<ID3D12Device6>       mpDevice;
-    Microsoft::WRL::ComPtr<ID3D12CommandQueue>  mpCommandQueue;
     Microsoft::WRL::ComPtr<IDXGISwapChain4>     mpSwapChain;
     Microsoft::WRL::ComPtr<ID3D12Fence>         mpFence;
     Microsoft::WRL::ComPtr<ID3D12RootSignature> mpGraphicsRootSignature;
     Microsoft::WRL::ComPtr<ID3D12RootSignature> mpComputeRootSignature;
+    std::unique_ptr<gfx::CommandQueue>          mpMainCommandQueue;
+    std::unique_ptr<gfx::CommandList>           mpMainCommandList;
     HANDLE                                      mWaitFenceHandle = HANDLE();
 
     //-------------------------------------------------------------------------

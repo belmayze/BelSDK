@@ -7,6 +7,8 @@
  */
 // bel
 #include "base/belApplicationWindow.h"
+#include "graphics/common/belGraphicsCommandList.h"
+#include "graphics/common/belGraphicsCommandQueue.h"
 #include "graphics/internal/belGraphicsTextureDescriptorRegistry.h"
 #include "graphics/belGraphicsEngineD3D.h"
 
@@ -78,17 +80,25 @@ bool GraphicsEngineD3D::initialize()
         mpDevice = std::move(p_device);
     }
 
-    // メインのコマンドキューを作成
+    // メインのコマンドキューとコマンドリストを作る
     {
-        D3D12_COMMAND_QUEUE_DESC desc = {};
-        desc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-
-        if (FAILED(mpDevice->CreateCommandQueue(&desc, IID_PPV_ARGS(&mpCommandQueue))))
+        mpMainCommandQueue = std::make_unique<gfx::CommandQueue>();
+        if (!mpMainCommandQueue->initialize(gfx::CommandType::cGraphics))
         {
-            BEL_PRINT("メインのコマンドキュー生成に失敗しました\n");
+            BEL_PRINT("メインコマンドキューの生成に失敗しました\n");
             return false;
         }
 
+        mpMainCommandList = std::make_unique<gfx::CommandList>();
+        if (!mpMainCommandList->initialize(gfx::CommandType::cGraphics))
+        {
+            BEL_PRINT("メインコマンドリストの生成に失敗しました\n");
+            return false;
+        }
+    }
+
+    // メインのコマンドキューを待機するフェンス
+    {
         // フェンスを待機するハンドル
         mWaitFenceHandle = CreateEvent(nullptr, FALSE, FALSE, nullptr);
         if (!mWaitFenceHandle)
@@ -96,10 +106,8 @@ bool GraphicsEngineD3D::initialize()
             BEL_PRINT("フェンス用イベントの生成に失敗しました\n");
             return false;
         }
-    }
 
-    // メインのキュー実行完了チェック用フェンス
-    {
+        // メインのキュー実行完了チェック用フェンス
         if (FAILED(mpDevice->CreateFence(1, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mpFence))))
         {
             BEL_PRINT("メインキュー用のフェンス生成に失敗しました\n");
@@ -127,7 +135,7 @@ bool GraphicsEngineD3D::initialize()
 
         Microsoft::WRL::ComPtr<IDXGISwapChain1> p_tmp_swap_chain;
         if (FAILED(p_factory->CreateSwapChainForHwnd(
-            mpCommandQueue.Get(),
+            &mpMainCommandQueue->getCommandQueue(),
             ApplicationWindow::GetInstance().getWindowHandle(),
             &desc, &fullscreen_desc,
             nullptr, &p_tmp_swap_chain
@@ -167,11 +175,18 @@ bool GraphicsEngineD3D::initialize()
 void GraphicsEngineD3D::executeCommand()
 {
     // コマンド実行
+    mpMainCommandList->begin();
+    {
+
+    }
+    mpMainCommandList->end();
+    ID3D12CommandList* p_command_lists[1] = { &mpMainCommandList->getCommandList() };
+    mpMainCommandQueue->getCommandQueue().ExecuteCommandLists(1, p_command_lists);
 
     // 終了したことを知らせるフェンスを最後に入れる
     ResetEvent(mWaitFenceHandle);
     mpFence->Signal(0);
-    mpCommandQueue->Signal(mpFence.Get(), 1);
+    mpMainCommandQueue->getCommandQueue().Signal(mpFence.Get(), 1);
 }
 //-----------------------------------------------------------------------------
 void GraphicsEngineD3D::waitCommandQueue()
