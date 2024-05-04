@@ -63,6 +63,20 @@ constexpr D3D12_SRV_DIMENSION to_native(TextureDimension dimension)
     BEL_ASSERT(0);
     return D3D12_SRV_DIMENSION_TEXTURE1D;
 }
+constexpr D3D12_RTV_DIMENSION to_native_rtv(TextureDimension dimension)
+{
+    switch (dimension)
+    {
+    case bel::gfx::TextureDimension::c1D:        return D3D12_RTV_DIMENSION_TEXTURE1D;
+    case bel::gfx::TextureDimension::c1DArray:   return D3D12_RTV_DIMENSION_TEXTURE1DARRAY;
+    case bel::gfx::TextureDimension::c2D:        return D3D12_RTV_DIMENSION_TEXTURE2D;
+    case bel::gfx::TextureDimension::c2DArray:   return D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
+    case bel::gfx::TextureDimension::c3D:        return D3D12_RTV_DIMENSION_TEXTURE3D;
+    }
+
+    BEL_ASSERT(0);
+    return D3D12_RTV_DIMENSION_TEXTURE1D;
+}
 
 //-----------------------------------------------------------------------------
 }

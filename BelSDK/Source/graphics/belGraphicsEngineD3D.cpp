@@ -10,6 +10,8 @@
 #include "graphics/common/belGraphicsCommandContext.h"
 #include "graphics/common/belGraphicsCommandList.h"
 #include "graphics/common/belGraphicsCommandQueue.h"
+#include "graphics/common/belGraphicsRenderTarget.h"
+#include "graphics/common/belGraphicsTexture.h"
 #include "graphics/internal/belGraphicsTextureDescriptorRegistry.h"
 #include "graphics/belGraphicsEngineD3D.h"
 
@@ -116,12 +118,19 @@ bool GraphicsEngineD3D::initialize()
         }
     }
 
+    // グローバルなテクスチャーデスクリプターを作る
+    if (!gfx::TextureDescriptorRegistry::GetInstance().allocate(cMaxTextureHandle))
+    {
+        BEL_PRINT("テクスチャー用デスクリプターヒープの作成に失敗しました\n");
+        return false;
+    }
+
     // スワップチェーン
     {
         DXGI_SWAP_CHAIN_DESC1 desc = {};
         desc.Width              = ApplicationWindow::GetInstance().getRenderWidth();
         desc.Height             = ApplicationWindow::GetInstance().getRenderHeight();
-        desc.Format             = DXGI_FORMAT_R8G8B8A8_UNORM;
+        desc.Format             = gfx::to_native(cTextureFormat);
         desc.Stereo             = FALSE;
         desc.SampleDesc.Count   = 1;
         desc.SampleDesc.Quality = 0;
@@ -154,13 +163,33 @@ bool GraphicsEngineD3D::initialize()
 
         // カラースペースの設定
         mpSwapChain->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
-    }
 
-    // グローバルなテクスチャーデスクリプターを作る
-    if (!gfx::TextureDescriptorRegistry::GetInstance().allocate(cMaxTextureHandle))
-    {
-        BEL_PRINT("テクスチャー用デスクリプターヒープの作成に失敗しました\n");
-        return false;
+        // スワップチェーンからテクスチャーを取得する
+        mSwapChainTextures = std::make_unique<gfx::Texture[]>(cNumBuffer);
+        mSwapChainRenderTargets = std::make_unique<gfx::RenderTarget[]>(cNumBuffer);
+        for (uint32_t i_buffer = 0; i_buffer < cNumBuffer; ++i_buffer)
+        {
+            // リソースを取得してテクスチャーを生成
+            Microsoft::WRL::ComPtr<ID3D12Resource> p_resource;
+            if (FAILED(mpSwapChain->GetBuffer(i_buffer, IID_PPV_ARGS(&p_resource))))
+            {
+                BEL_PRINT("スワップチェーンのバッファー取得に失敗しました\n");
+                return false;
+            }
+
+            gfx::Texture::InitializeArg init_arg;
+            init_arg.mWidth     = desc.Width;
+            init_arg.mHeight    = desc.Height;
+            init_arg.mFormat    = cTextureFormat;
+            init_arg.mDimension = gfx::TextureDimension::c2D;
+            mSwapChainTextures[i_buffer].initializeFromGPUMemory(
+                init_arg,
+                std::move(p_resource)
+            );
+
+            // テクスチャーからレンダーターゲットを作る
+            mSwapChainRenderTargets[i_buffer].initialize(mSwapChainTextures[i_buffer]);
+        }
     }
 
     // 共通のシグネチャを作る
@@ -181,6 +210,35 @@ void GraphicsEngineD3D::executeCommand()
         mpMainCommandList->begin();
         {
             // @TODO
+            // 仮でクリア処理
+            uint32_t buffer_index = mpSwapChain->GetCurrentBackBufferIndex();
+
+            // PRESENT -> RENDER_TARGET
+            {
+                D3D12_RESOURCE_BARRIER desc = {};
+                desc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+                desc.Transition.pResource   = &mSwapChainTextures[buffer_index].getResource();
+                desc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+                desc.Transition.StateAfter  = D3D12_RESOURCE_STATE_RENDER_TARGET;
+                mpMainCommandList->getCommandList().ResourceBarrier(1, &desc);
+            }
+
+            // clear
+            FLOAT color[4] = { 0.5f, 0.5f, 0.5f, 1.f };
+            mpMainCommandList->getCommandList().ClearRenderTargetView(
+                mSwapChainRenderTargets[buffer_index].getDescriptorHandle(),
+                color, 0, nullptr
+            );
+
+            // RENDER_TARGET -> PRESENT
+            {
+                D3D12_RESOURCE_BARRIER desc = {};
+                desc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+                desc.Transition.pResource   = &mSwapChainTextures[buffer_index].getResource();
+                desc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+                desc.Transition.StateAfter  = D3D12_RESOURCE_STATE_PRESENT;
+                mpMainCommandList->getCommandList().ResourceBarrier(1, &desc);
+            }
         }
         mpMainCommandList->end();
 
@@ -211,6 +269,7 @@ void GraphicsEngineD3D::present()
 //-----------------------------------------------------------------------------
 void GraphicsEngineD3D::finalize()
 {
+    mSwapChainTextures.reset();
 }
 //-----------------------------------------------------------------------------
 // internal

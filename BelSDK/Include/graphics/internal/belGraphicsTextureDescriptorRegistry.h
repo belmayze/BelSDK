@@ -32,7 +32,7 @@ public:
      * テクスチャーを登録する
      * @param[in] texture 登録するテクスチャー
      */
-    TextureDescriptorHandle registerTexture(Texture& texture);
+    TextureDescriptorHandle registerTexture(const Texture& texture);
 
     /*!
      * デスクリプターハンドルを取得する

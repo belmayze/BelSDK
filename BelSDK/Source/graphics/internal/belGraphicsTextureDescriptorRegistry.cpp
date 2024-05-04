@@ -38,7 +38,7 @@ bool TextureDescriptorRegistry::allocate(uint32_t num)
     return true;
 }
 //-----------------------------------------------------------------------------
-TextureDescriptorHandle TextureDescriptorRegistry::registerTexture(Texture& texture)
+TextureDescriptorHandle TextureDescriptorRegistry::registerTexture(const Texture& texture)
 {
     // フリーリストから取得
     uint32_t index = 0;

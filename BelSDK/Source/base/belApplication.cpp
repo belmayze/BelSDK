@@ -40,6 +40,9 @@ bool Application::initialize(const InitializeArg& arg)
     // グラフィックス初期化
     if (!GraphicsEngine::GetInstance().initialize())
     {
+        // 終了処理
+        GraphicsEngine::GetInstance().finalize();
+
         // 失敗したらウィンドウの終了を待つ
         mIsQuit.store(true, std::memory_order_release);
         mQuitEvent.signal();

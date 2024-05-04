@@ -27,6 +27,7 @@
     <ClInclude Include="..\Include\graphics\common\belGraphicsCommandList.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsCommandQueue.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsCommandType.h" />
+    <ClInclude Include="..\Include\graphics\common\belGraphicsRenderTarget.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsTexture.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsTextureType.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsTextureDescriptorHandle.h" />
@@ -48,6 +49,7 @@
     <ClCompile Include="..\Source\graphics\common\belGraphicsCommandContext.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsCommandList.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsCommandQueue.cpp" />
+    <ClCompile Include="..\Source\graphics\common\belGraphicsRenderTarget.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsTexture.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureDescriptorHandle.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureDescriptorRegistry.cpp" />

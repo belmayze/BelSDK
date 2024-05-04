@@ -11,6 +11,8 @@
 
 namespace bel::gfx {
 //-----------------------------------------------------------------------------
+// initialize
+//-----------------------------------------------------------------------------
 void Texture::initializeFromGPUMemory(const InitializeArg& arg, Microsoft::WRL::ComPtr<ID3D12Resource>&& p_resource)
 {
     // GPU メモリーなので記録するだけ
@@ -20,9 +22,6 @@ void Texture::initializeFromGPUMemory(const InitializeArg& arg, Microsoft::WRL::
     mFormat    = arg.mFormat;
     mDimension = arg.mDimension;
     mpResource = std::move(p_resource);
-
-    // デスクリプターヒープに登録
-    mDescriptorHandle = TextureDescriptorRegistry::GetInstance().registerTexture(*this);
 }
 //-----------------------------------------------------------------------------
 }

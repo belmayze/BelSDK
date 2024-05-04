@@ -59,8 +59,7 @@ public:
     TextureDimension getDimension() const { return mDimension; }
 
     //! リソース取得
-    ID3D12Resource& getResource() { BEL_ASSERT(mpResource.Get() != nullptr); return *mpResource.Get(); }
-    const ID3D12Resource& getResource() const { BEL_ASSERT(mpResource.Get() != nullptr); return *mpResource.Get(); }
+    ID3D12Resource& getResource() const { BEL_ASSERT(mpResource.Get() != nullptr); return *mpResource.Get(); }
 
     //-------------------------------------------------------------------------
 private:
@@ -72,8 +71,6 @@ private:
     uint32_t         mNumMip    = 1;
     TextureFormat    mFormat    = TextureFormat::cR8G8B8A8_uNorm;
     TextureDimension mDimension = TextureDimension::c2D;
-
-    TextureDescriptorHandle mDescriptorHandle;
 };
 //-----------------------------------------------------------------------------
 }

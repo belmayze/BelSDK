@@ -7,11 +7,14 @@
  */
 #pragma once
 // bel
+#include "graphics/common/belGraphicsTextureType.h"
 #include "graphics/belGraphicsEngine.h"
 #include "memory/belSingleton.h"
 
 namespace bel::gfx { class CommandList; }
 namespace bel::gfx { class CommandQueue; }
+namespace bel::gfx { class RenderTarget; }
+namespace bel::gfx { class Texture; }
 
 namespace bel {
 //-----------------------------------------------------------------------------
@@ -62,6 +65,9 @@ public:
     // @note 最終的には外部から指定できるようにする
     //-------------------------------------------------------------------------
 private:
+    //! フォーマット
+    static constexpr gfx::TextureFormat cTextureFormat = gfx::TextureFormat::cR8G8B8A8_uNorm;
+
     //! バッファー数
     static constexpr uint32_t cNumBuffer = 3;
     //! テクスチャーハンドルの最大数
@@ -84,6 +90,8 @@ private:
     Microsoft::WRL::ComPtr<ID3D12RootSignature> mpComputeRootSignature;
     std::unique_ptr<gfx::CommandQueue>          mpMainCommandQueue;
     std::unique_ptr<gfx::CommandList>           mpMainCommandList;
+    std::unique_ptr<gfx::Texture[]>             mSwapChainTextures;
+    std::unique_ptr<gfx::RenderTarget[]>        mSwapChainRenderTargets;
     HANDLE                                      mWaitFenceHandle = HANDLE();
 
     //-------------------------------------------------------------------------
