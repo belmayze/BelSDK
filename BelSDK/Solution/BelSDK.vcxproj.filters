@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\base">
+      <UniqueIdentifier>{3db35133-1df3-494b-a49c-2c0c4509973d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\graphics">
+      <UniqueIdentifier>{971ad885-e50f-4954-af1c-d5e92377c4ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\debug">
+      <UniqueIdentifier>{587289fe-e895-4dce-9691-b2d25e04b314}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\base">
+      <UniqueIdentifier>{444563ba-8c30-4225-b09e-14285a66457c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\debug">
+      <UniqueIdentifier>{164489c5-793a-4c3f-b68e-a8061f6d9643}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\graphics">
+      <UniqueIdentifier>{1ee5a020-3271-46a6-911d-56a065b62572}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\memory">
+      <UniqueIdentifier>{aaf1b2b3-fccb-4cb4-8575-5582e90ec186}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\memory">
+      <UniqueIdentifier>{02df326a-494a-4545-8f79-937439a35f29}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\debug\performance">
+      <UniqueIdentifier>{7a9a43c0-e4e6-4b20-8b5b-e2b236852236}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\debug\performance">
+      <UniqueIdentifier>{51119c18-cfb9-40d5-9e18-227e7a788730}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\thread">
+      <UniqueIdentifier>{af663afe-74c2-492d-8413-58fe774ea444}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\thread">
+      <UniqueIdentifier>{6acb165d-4a77-4d96-91e8-0e1ea981b026}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\container">
+      <UniqueIdentifier>{d21d379e-6fbb-4ebc-8ccf-9d5905ca903e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\graphics\common">
+      <UniqueIdentifier>{acee1d37-3492-4975-8962-090da90b3ffc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\graphics\internal">
+      <UniqueIdentifier>{f632f701-0c95-4136-9dec-ae0f0af8fdc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\graphics\common">
+      <UniqueIdentifier>{d562b616-aaa5-4fc4-994d-730959c14eb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\graphics\internal">
+      <UniqueIdentifier>{cae8f0f8-d3d7-477a-881b-89f8e1b9a7dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\util">
+      <UniqueIdentifier>{b45b0e71-4ccc-44b9-839d-35b404207fe6}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Include\belMain.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\belPrecompile.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\base\belApplication.h">
+      <Filter>ヘッダー ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\memory\belSingleton.h">
+      <Filter>ヘッダー ファイル\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\base\belApplicationWindow.h">
+      <Filter>ヘッダー ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\base\belApplicationWindowWin.h">
+      <Filter>ヘッダー ファイル\base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\belDefine.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\debug\belConsole.h">
+      <Filter>ヘッダー ファイル\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\debug\performance\belPerfTime.h">
+      <Filter>ヘッダー ファイル\debug\performance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\thread\belThread.h">
+      <Filter>ヘッダー ファイル\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\thread\belEvent.h">
+      <Filter>ヘッダー ファイル\thread</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\graphics\belGraphicsEngine.h">
+      <Filter>ヘッダー ファイル\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\graphics\belGraphicsEngineD3D.h">
+      <Filter>ヘッダー ファイル\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\container\belDeque.h">
+      <Filter>ヘッダー ファイル\container</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\container\belVector.h">
+      <Filter>ヘッダー ファイル\container</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\graphics\internal\belGraphicsTextureDescriptorHandle.h">
+      <Filter>ヘッダー ファイル\graphics\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\graphics\internal\belGraphicsTextureDescriptorRegistry.h">
+      <Filter>ヘッダー ファイル\graphics\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\graphics\common\belGraphicsTexture.h">
+      <Filter>ヘッダー ファイル\graphics\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\util\belUtilEnum.h">
+      <Filter>ヘッダー ファイル\util</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Source\belMain.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\base\belApplication.cpp">
+      <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\base\belApplicationWindow.cpp">
+      <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\base\belApplicationWindowWin.cpp">
+      <Filter>ソース ファイル\base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\debug\belConsole.cpp">
+      <Filter>ソース ファイル\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\debug\performance\belPerfTime.cpp">
+      <Filter>ソース ファイル\debug\performance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\thread\belThread.cpp">
+      <Filter>ソース ファイル\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\thread\belEvent.cpp">
+      <Filter>ソース ファイル\thread</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\graphics\belGraphicsEngineD3D.cpp">
+      <Filter>ソース ファイル\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\graphics\belGraphicsEngine.cpp">
+      <Filter>ソース ファイル\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureDescriptorHandle.cpp">
+      <Filter>ソース ファイル\graphics\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureDescriptorRegistry.cpp">
+      <Filter>ソース ファイル\graphics\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\graphics\common\belGraphicsTexture.cpp">
+      <Filter>ソース ファイル\graphics\common</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
