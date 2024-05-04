@@ -53,7 +53,7 @@ TextureDescriptorHandle TextureDescriptorRegistry::registerTexture(const Texture
     D3D12_SHADER_RESOURCE_VIEW_DESC desc = {};
     desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     desc.Format                  = to_native(texture.getFormat());
-    desc.ViewDimension           = to_native(texture.getDimension());
+    desc.ViewDimension           = to_native_srv(texture.getDimension());
 
     // SRV 作成
     D3D12_CPU_DESCRIPTOR_HANDLE descriptor_handle = mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart();

@@ -47,7 +47,7 @@ enum class TextureDimension
 };
 
 // cast
-constexpr D3D12_SRV_DIMENSION to_native(TextureDimension dimension)
+constexpr D3D12_SRV_DIMENSION to_native_srv(TextureDimension dimension)
 {
     switch (dimension)
     {
