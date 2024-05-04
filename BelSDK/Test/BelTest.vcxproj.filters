@@ -13,10 +13,39 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="ソース ファイル\test">
+      <UniqueIdentifier>{0a7d5c60-4448-4b29-924a-dd316290c6e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\test\container">
+      <UniqueIdentifier>{251101ea-4fe1-491d-b7ec-de67644b1dea}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Source\test\testExecutor.cpp">
+      <Filter>ソース ファイル\test</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\test\container\testDeque.cpp">
+      <Filter>ソース ファイル\test\container</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\test\container\testVector.cpp">
+      <Filter>ソース ファイル\test\container</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\test\test.h">
+      <Filter>ソース ファイル\test</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\test\testExecutor.h">
+      <Filter>ソース ファイル\test</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\test\container\testDeque.h">
+      <Filter>ソース ファイル\test\container</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\test\container\testVector.h">
+      <Filter>ソース ファイル\test\container</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

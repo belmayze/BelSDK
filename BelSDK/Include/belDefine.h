@@ -1,39 +1,56 @@
 ﻿/*!
  * @file   belDefine.h
- * @brief  
+ * @brief
  * @author belmayze
  * 
  * Copyright (c) belmayze. All rights reserved.
  */
 #pragma once
 
-// DEBUG / RELEASE
-#ifdef _DEBUG
-#   define BEL_DEBUG    (1)
-#   define BEL_RELEASE  (0)
+//-----------------------------------------------------------------------------
+// platform
+#define BEL_PLATFORM_WIN (0)
+
+#ifdef _WIN32
+#   define BEL_PLATFORM (BEL_PLATFORM_WIN)
 #else
-#   define BEL_DEBUG    (0)
-#   define BEL_RELEASE  (1)
+#   error "Unsupported platform."
+#endif //
+
+#define BEL_PLATFORM_IS_WIN() (BEL_PLATFORM == BEL_PLATFORM_WIN)
+
+//-----------------------------------------------------------------------------
+// library
+#define BEL_GRAPHICS_D3D (0)
+
+#if BEL_PLATFORM_IS_WIN()
+#   define BEL_GRAPHICS (BEL_GRAPHICS_D3D)
+#else
+#   error "Unsupported platform."
+#endif // BEL_PLATFORM_IS_***()
+
+#define BEL_GRAPHICS_IS_D3D() (BEL_GRAPHICS == BEL_GRAPHICS_D3D)
+
+//-----------------------------------------------------------------------------
+// target
+#define BEL_TARGET_DEBUG   (0)
+#define BEL_TARGET_RELEASE (1)
+
+#ifdef _DEBUG
+#   define BEL_TARGET (BEL_TARGET_DEBUG)
+#else
+#   define BEL_TARGET (BEL_TARGET_RELEASE)
 #endif // _DEBUG
 
-#define BEL_IS_DEBUG()   (BEL_DEBUG   == 1)
-#define BEL_IS_RELEASE() (BEL_RELEASE == 1)
+#define BEL_TARGET_IS_DEBUG()   (BEL_TARGET == BEL_TARGET_DEBUG)
+#define BEL_TARGET_IS_RELEASE() (BEL_TARGET == BEL_TARGET_RELEASE)
 
-// include
-#include <cassert>
-#include "io/belErrorWindow.h"
-// math
-#include "math/belColor.h"
 
-// ErrorWindow
-#if BEL_IS_DEBUG()
-#   define BEL_ERROR_WINDOW(title, message) { bel::io::ErrorWindow::GetInstance().show(title, message); }
-#   define BEL_ASSERT(cond)                 { assert(cond); }
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+// assert
+#if BEL_TARGET_IS_DEBUG()
+#   define BEL_ASSERT(cond)     { assert(cond); }
 #else
-#   define BEL_ERROR_WINDOW(title, message) {}
-#   define BEL_ASSERT(cond)                 {}
-#endif // BEL_IS_DEBUG()
-
-#pragma comment(lib, "d3d12.lib")
-#pragma comment(lib, "dxgi.lib")
-#pragma comment(lib, "xinput.lib")
+#   define BEL_ASSERT(cond)
+#endif // BEL_TARGET_IS_DEBUG()

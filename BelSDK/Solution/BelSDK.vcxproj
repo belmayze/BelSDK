@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -11,41 +11,40 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Include\base\belApplication.h" />
+    <ClInclude Include="..\Include\base\belApplicationWindow.h" />
+    <ClInclude Include="..\Include\base\belApplicationWindowWin.h" />
     <ClInclude Include="..\Include\belDefine.h" />
     <ClInclude Include="..\Include\belMain.h" />
     <ClInclude Include="..\Include\belPrecompile.h" />
-    <ClInclude Include="..\Include\gfx\belGraphics.h" />
-    <ClInclude Include="..\Include\gfx\core\belCommandList.h" />
-    <ClInclude Include="..\Include\gfx\core\belCommandQueue.h" />
-    <ClInclude Include="..\Include\gfx\core\belPipelineState.h" />
-    <ClInclude Include="..\Include\gfx\core\belPipelineStateContext.h" />
-    <ClInclude Include="..\Include\gfx\core\belRenderTarget.h" />
-    <ClInclude Include="..\Include\gfx\core\belRootSignature.h" />
-    <ClInclude Include="..\Include\gfx\core\belShader.h" />
-    <ClInclude Include="..\Include\gfx\core\belTexture.h" />
-    <ClInclude Include="..\Include\gfx\core\belTextureDescriptorHandle.h" />
-    <ClInclude Include="..\Include\gfx\core\belTextureDescriptorRegistry.h" />
-    <ClInclude Include="..\Include\io\belErrorWindow.h" />
-    <ClInclude Include="..\Include\math\belColor.h" />
-    <ClInclude Include="..\Include\math\belVector2.h" />
+    <ClInclude Include="..\Include\container\belDeque.h" />
+    <ClInclude Include="..\Include\container\belVector.h" />
+    <ClInclude Include="..\Include\debug\belConsole.h" />
+    <ClInclude Include="..\Include\debug\performance\belPerfTime.h" />
+    <ClInclude Include="..\Include\graphics\belGraphicsEngine.h" />
+    <ClInclude Include="..\Include\graphics\belGraphicsEngineD3D.h" />
+    <ClInclude Include="..\Include\graphics\common\belGraphicsTexture.h" />
+    <ClInclude Include="..\Include\graphics\internal\belGraphicsTextureDescriptorHandle.h" />
+    <ClInclude Include="..\Include\graphics\internal\belGraphicsTextureDescriptorRegistry.h" />
     <ClInclude Include="..\Include\memory\belSingleton.h" />
-    <ClInclude Include="..\Include\platform\belPlatform.h" />
+    <ClInclude Include="..\Include\thread\belEvent.h" />
+    <ClInclude Include="..\Include\thread\belThread.h" />
+    <ClInclude Include="..\Include\util\belUtilEnum.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Source\base\belApplication.cpp" />
+    <ClCompile Include="..\Source\base\belApplicationWindow.cpp" />
+    <ClCompile Include="..\Source\base\belApplicationWindowWin.cpp" />
     <ClCompile Include="..\Source\belMain.cpp" />
-    <ClCompile Include="..\Source\gfx\belGraphics.cpp" />
-    <ClCompile Include="..\Source\gfx\core\belCommandList.cpp" />
-    <ClCompile Include="..\Source\gfx\core\belCommandQueue.cpp" />
-    <ClCompile Include="..\Source\gfx\core\belPipelineState.cpp" />
-    <ClCompile Include="..\Source\gfx\core\belPipelineStateContext.cpp" />
-    <ClCompile Include="..\Source\gfx\core\belRenderTarget.cpp" />
-    <ClCompile Include="..\Source\gfx\core\belRootSignature.cpp" />
-    <ClCompile Include="..\Source\gfx\core\belShader.cpp" />
-    <ClCompile Include="..\Source\gfx\core\belTexture.cpp" />
-    <ClCompile Include="..\Source\gfx\core\belTextureDescriptorHandle.cpp" />
-    <ClCompile Include="..\Source\gfx\core\belTextureDescriptorRegistry.cpp" />
-    <ClCompile Include="..\Source\io\belErrorWindow.cpp" />
-    <ClCompile Include="..\Source\platform\belPlatform.cpp" />
+    <ClCompile Include="..\Source\debug\belConsole.cpp" />
+    <ClCompile Include="..\Source\debug\performance\belPerfTime.cpp" />
+    <ClCompile Include="..\Source\graphics\belGraphicsEngine.cpp" />
+    <ClCompile Include="..\Source\graphics\belGraphicsEngineD3D.cpp" />
+    <ClCompile Include="..\Source\graphics\common\belGraphicsTexture.cpp" />
+    <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureDescriptorHandle.cpp" />
+    <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureDescriptorRegistry.cpp" />
+    <ClCompile Include="..\Source\thread\belEvent.cpp" />
+    <ClCompile Include="..\Source\thread\belThread.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
