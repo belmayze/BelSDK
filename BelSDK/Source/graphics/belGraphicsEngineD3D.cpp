@@ -7,6 +7,7 @@
  */
 // bel
 #include "base/belApplicationWindow.h"
+#include "graphics/common/belGraphicsCommandContext.h"
 #include "graphics/common/belGraphicsCommandList.h"
 #include "graphics/common/belGraphicsCommandQueue.h"
 #include "graphics/internal/belGraphicsTextureDescriptorRegistry.h"
@@ -175,13 +176,17 @@ bool GraphicsEngineD3D::initialize()
 void GraphicsEngineD3D::executeCommand()
 {
     // コマンド実行
-    mpMainCommandList->begin();
     {
+        gfx::CommandContext context(*mpMainCommandList);
+        mpMainCommandList->begin();
+        {
+            // @TODO
+        }
+        mpMainCommandList->end();
 
+        // 実行して終了
+        context.executeCommand(*mpMainCommandQueue);
     }
-    mpMainCommandList->end();
-    ID3D12CommandList* p_command_lists[1] = { &mpMainCommandList->getCommandList() };
-    mpMainCommandQueue->getCommandQueue().ExecuteCommandLists(1, p_command_lists);
 
     // 終了したことを知らせるフェンスを最後に入れる
     ResetEvent(mWaitFenceHandle);

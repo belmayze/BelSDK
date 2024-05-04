@@ -6,6 +6,7 @@
  * Copyright (c) belmayze. All rights reserved.
  */
 // bel
+#include "graphics/common/belGraphicsTexture.h"
 #include "graphics/internal/belGraphicsTextureDescriptorRegistry.h"
 #include "graphics/belGraphicsEngine.h"
 
@@ -37,7 +38,7 @@ bool TextureDescriptorRegistry::allocate(uint32_t num)
     return true;
 }
 //-----------------------------------------------------------------------------
-TextureDescriptorHandle TextureDescriptorRegistry::registerTexture(const Texture& texture)
+TextureDescriptorHandle TextureDescriptorRegistry::registerTexture(Texture& texture)
 {
     // フリーリストから取得
     uint32_t index = 0;
@@ -48,9 +49,34 @@ TextureDescriptorHandle TextureDescriptorRegistry::registerTexture(const Texture
         mFreeIndices.pop_back();
     }
 
+    // 登録情報生成
+    D3D12_SHADER_RESOURCE_VIEW_DESC desc = {};
+    desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+    desc.Format                  = to_native(texture.getFormat());
+    desc.ViewDimension           = to_native(texture.getDimension());
+
+    // SRV 作成
+    D3D12_CPU_DESCRIPTOR_HANDLE descriptor_handle = mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+    descriptor_handle.ptr += GraphicsEngine::GetInstance().getDevice().GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * index;
+    GraphicsEngine::GetInstance().getDevice().CreateShaderResourceView(&texture.getResource(), &desc, descriptor_handle);
+
     TextureDescriptorHandle handle;
     TextureDescriptorHandle::Accessor(handle).setId(index);
     return handle;
+}
+//-----------------------------------------------------------------------------
+D3D12_CPU_DESCRIPTOR_HANDLE TextureDescriptorRegistry::getDescriptorHandle(const TextureDescriptorHandle& handle)
+{
+    if (!handle.hasValue())
+    {
+        // エラー
+        BEL_PRINT("ハンドルが未登録なので動作が不安定です\n");
+        return mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+    }
+
+    D3D12_CPU_DESCRIPTOR_HANDLE descriptor_handle = mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+    descriptor_handle.ptr += GraphicsEngine::GetInstance().getDevice().GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * handle.getId();
+    return descriptor_handle;
 }
 //-----------------------------------------------------------------------------
 // EraseAccessor

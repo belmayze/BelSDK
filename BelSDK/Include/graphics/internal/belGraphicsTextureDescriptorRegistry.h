@@ -32,7 +32,13 @@ public:
      * テクスチャーを登録する
      * @param[in] texture 登録するテクスチャー
      */
-    TextureDescriptorHandle registerTexture(const Texture& texture);
+    TextureDescriptorHandle registerTexture(Texture& texture);
+
+    /*!
+     * デスクリプターハンドルを取得する
+     * @param[in] handle ハンドル
+     */
+    D3D12_CPU_DESCRIPTOR_HANDLE getDescriptorHandle(const TextureDescriptorHandle& handle);
 
     //-------------------------------------------------------------------------
     // eraser

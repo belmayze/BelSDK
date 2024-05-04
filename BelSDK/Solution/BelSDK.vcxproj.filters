@@ -135,6 +135,12 @@
     <ClInclude Include="..\Include\graphics\common\belGraphicsCommandQueue.h">
       <Filter>ヘッダー ファイル\graphics\common</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\graphics\common\belGraphicsCommandContext.h">
+      <Filter>ヘッダー ファイル\graphics\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\graphics\common\belGraphicsTextureType.h">
+      <Filter>ヘッダー ファイル\graphics\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -180,6 +186,9 @@
       <Filter>ソース ファイル\graphics\common</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\graphics\common\belGraphicsCommandQueue.cpp">
+      <Filter>ソース ファイル\graphics\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\graphics\common\belGraphicsCommandContext.cpp">
       <Filter>ソース ファイル\graphics\common</Filter>
     </ClCompile>
   </ItemGroup>
