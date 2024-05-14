@@ -244,9 +244,8 @@ void GraphicsEngineD3D::executeCommand()
             }
 
             // clear
-            mpMainCommandList->getCommandList().ClearRenderTargetView(
-                mSwapChainRenderTargets[buffer_index].getDescriptorHandle(),
-                Color::cGray(), 0, nullptr
+            mSwapChainRenderTargets[buffer_index].clear(
+                context, Color::cGray()
             );
 
             // RENDER_TARGET -> PRESENT

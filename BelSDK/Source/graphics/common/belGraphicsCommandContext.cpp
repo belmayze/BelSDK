@@ -17,5 +17,13 @@ void CommandContext::executeCommand(CommandQueue& command_queue)
     ID3D12CommandList* p_command_lists[1] = { &mCommandList.getCommandList() };
     command_queue.getCommandQueue().ExecuteCommandLists(1, p_command_lists);
 }
+
+//-----------------------------------------------------------------------------
+// getter
+//-----------------------------------------------------------------------------
+ID3D12GraphicsCommandList& CommandContext::getCommandList()
+{
+    return mCommandList.getCommandList();
+}
 //-----------------------------------------------------------------------------
 }

@@ -32,16 +32,16 @@ public:
     //! テクスチャーを取得
     const Texture& getTexture() const { BEL_ASSERT(mpTexture != nullptr); return *mpTexture; }
 
-    //! デスクリプターハンドルを取得
-    D3D12_CPU_DESCRIPTOR_HANDLE getDescriptorHandle() const { return mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart(); }
-
     //-------------------------------------------------------------------------
     // command
     //-------------------------------------------------------------------------
 public:
     /*!
      * 任意の色でクリアします
+     * @param[in] command コマンド
+     * @param[in] color   クリアカラー
      */
+    void clear(CommandContext& command, const Color& color) const;
 
     //-------------------------------------------------------------------------
 private:

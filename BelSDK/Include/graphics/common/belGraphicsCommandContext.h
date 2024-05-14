@@ -32,6 +32,13 @@ public:
     void executeCommand(CommandQueue& command_queue);
 
     //-------------------------------------------------------------------------
+    // getter
+    //-------------------------------------------------------------------------
+public:
+    //! コマンドリストを取得する
+    ID3D12GraphicsCommandList& getCommandList();
+
+    //-------------------------------------------------------------------------
 private:
     CommandList& mCommandList;
 };

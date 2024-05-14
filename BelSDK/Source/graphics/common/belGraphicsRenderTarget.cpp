@@ -48,4 +48,15 @@ bool RenderTarget::initialize(const Texture& texture)
     return true;
 }
 //-----------------------------------------------------------------------------
+// command
+//-----------------------------------------------------------------------------
+void RenderTarget::clear(CommandContext& command, const Color& color) const
+{
+    command.getCommandList().ClearRenderTargetView(
+        mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart(),
+        color,
+        0, nullptr
+    );
+}
+//-----------------------------------------------------------------------------
 }

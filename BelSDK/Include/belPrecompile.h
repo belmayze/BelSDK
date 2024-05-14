@@ -46,6 +46,8 @@
 // bel/container
 #include "container/belDeque.h"
 #include "container/belVector.h"
+// bel/graphics
+#include "graphics/common/belGraphicsCommandContext.h"
 
 // ライブラリーリンク
 #pragma comment(lib, "d3d12.lib")
