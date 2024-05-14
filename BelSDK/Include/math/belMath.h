@@ -22,6 +22,7 @@ public:
 }
 
 // math includes
+#include "math/belColor.h"
 #include "math/belVector2.h"
 #include "math/belVector3.h"
 #include "math/belVector4.h"

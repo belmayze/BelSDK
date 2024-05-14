@@ -41,6 +41,8 @@
 #include "util/belUtilEnum.h"
 #include "debug/performance/belPerfTime.h"
 #include "debug/belConsole.h"
+// bel/math
+#include "math/belMath.h"
 // bel/container
 #include "container/belDeque.h"
 #include "container/belVector.h"

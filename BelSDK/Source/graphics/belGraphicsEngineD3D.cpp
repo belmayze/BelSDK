@@ -55,6 +55,8 @@ bool GraphicsEngineD3D::initialize()
         D3D_FEATURE_LEVEL feature_level = D3D_FEATURE_LEVEL_12_0;
         Microsoft::WRL::ComPtr<IDXGIAdapter1> p_adapter;
         Microsoft::WRL::ComPtr<ID3D12Device6> p_device;
+        Microsoft::WRL::ComPtr<IDXGIOutput>   p_tmp_output;
+        Microsoft::WRL::ComPtr<IDXGIOutput6>  p_output;
         bool found_adapter = false;
 
         for (uint32_t i_adapter = 0; !found_adapter && p_factory->EnumAdapters1(i_adapter, p_adapter.GetAddressOf()) != DXGI_ERROR_NOT_FOUND; ++i_adapter)
@@ -69,9 +71,26 @@ bool GraphicsEngineD3D::initialize()
                 continue;
             }
 
+            // 出力を取得
+            if (FAILED(p_adapter->EnumOutputs(0, p_tmp_output.GetAddressOf())))
+            {
+                // 出力先が見つからない
+                continue;
+            }
+            if (FAILED(p_tmp_output->QueryInterface(IID_PPV_ARGS(&p_output))))
+            {
+                continue;
+            }
+
             if (SUCCEEDED(D3D12CreateDevice(p_adapter.Get(), feature_level, IID_PPV_ARGS(&p_device))))
             {
                 found_adapter = true;
+
+                // ディスプレイの情報を取得
+                DXGI_OUTPUT_DESC1 output_desc;
+                p_output->GetDesc1(&output_desc);
+
+                mIsSupportedHDR = (output_desc.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
             }
         }
 
@@ -162,7 +181,8 @@ bool GraphicsEngineD3D::initialize()
         }
 
         // カラースペースの設定
-        mpSwapChain->SetColorSpace1(DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
+        mpSwapChain->SetColorSpace1(mIsSupportedHDR ? DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020
+                                                    : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
 
         // スワップチェーンからテクスチャーを取得する
         mSwapChainTextures = std::make_unique<gfx::Texture[]>(cNumBuffer);
@@ -224,10 +244,9 @@ void GraphicsEngineD3D::executeCommand()
             }
 
             // clear
-            FLOAT color[4] = { 0.5f, 0.5f, 0.5f, 1.f };
             mpMainCommandList->getCommandList().ClearRenderTargetView(
                 mSwapChainRenderTargets[buffer_index].getDescriptorHandle(),
-                color, 0, nullptr
+                Color::cGray(), 0, nullptr
             );
 
             // RENDER_TARGET -> PRESENT

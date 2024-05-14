@@ -13,8 +13,10 @@ namespace bel::gfx {
 //-----------------------------------------------------------------------------
 enum class TextureFormat
 {
-    cR8G8B8A8_uNorm, //!< RGBA 32ビット符号なし正規化整数
-    cR8G8B8A8_sRGB,  //!< RGBA 32ビット符号なし正規化整数（sRGB）
+    cR8G8B8A8_uNorm,    //!< RGBA 32ビット符号なし正規化整数
+    cR8G8B8A8_sRGB,     //!< RGBA 32ビット符号なし正規化整数（sRGB）
+    cR10G10B10A2_uNorm, //!< RGBA 32ビット符号なし正規化整数
+    cR11G11B10_Float,   //!< RGB  32ビット符号なし浮動小数
     cNum
 };
 
@@ -23,8 +25,10 @@ constexpr DXGI_FORMAT to_native(TextureFormat format)
 {
     switch (format)
     {
-    case bel::gfx::TextureFormat::cR8G8B8A8_uNorm: return DXGI_FORMAT_R8G8B8A8_UNORM;
-    case bel::gfx::TextureFormat::cR8G8B8A8_sRGB:  return DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+    case bel::gfx::TextureFormat::cR8G8B8A8_uNorm:    return DXGI_FORMAT_R8G8B8A8_UNORM;
+    case bel::gfx::TextureFormat::cR8G8B8A8_sRGB:     return DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+    case bel::gfx::TextureFormat::cR10G10B10A2_uNorm: return DXGI_FORMAT_R10G10B10A2_UNORM;
+    case bel::gfx::TextureFormat::cR11G11B10_Float:   return DXGI_FORMAT_R11G11B10_FLOAT;
     }
 
     BEL_ASSERT(0);

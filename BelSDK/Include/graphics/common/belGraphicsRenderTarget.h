@@ -36,6 +36,14 @@ public:
     D3D12_CPU_DESCRIPTOR_HANDLE getDescriptorHandle() const { return mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart(); }
 
     //-------------------------------------------------------------------------
+    // command
+    //-------------------------------------------------------------------------
+public:
+    /*!
+     * 任意の色でクリアします
+     */
+
+    //-------------------------------------------------------------------------
 private:
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mpDescriptorHeap;
     const Texture* mpTexture = nullptr;

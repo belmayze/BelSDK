@@ -66,7 +66,7 @@ public:
     //-------------------------------------------------------------------------
 private:
     //! フォーマット
-    static constexpr gfx::TextureFormat cTextureFormat = gfx::TextureFormat::cR8G8B8A8_uNorm;
+    static constexpr gfx::TextureFormat cTextureFormat = gfx::TextureFormat::cR10G10B10A2_uNorm;
 
     //! バッファー数
     static constexpr uint32_t cNumBuffer = 3;
@@ -93,6 +93,8 @@ private:
     std::unique_ptr<gfx::Texture[]>             mSwapChainTextures;
     std::unique_ptr<gfx::RenderTarget[]>        mSwapChainRenderTargets;
     HANDLE                                      mWaitFenceHandle = HANDLE();
+
+    bool mIsSupportedHDR = false;
 
     //-------------------------------------------------------------------------
     // internal
