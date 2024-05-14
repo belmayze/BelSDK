@@ -18,70 +18,70 @@ class Vector3
     //-------------------------------------------------------------------------
 public:
     //! 0で初期化するコンストラクター
-    Vector3() {}
+    constexpr Vector3() {}
     //! すべて同じ数値で初期化するコンストラクター
-    Vector3(float f) : mX(f), mY(f), mZ(f) {}
+    constexpr Vector3(float f) : mX(f), mY(f), mZ(f) {}
     //! 任意の数値で初期化するコンストラクター
-    Vector3(const Vector2& v, float z);
-    Vector3(float x, float y, float z) : mX(x), mY(y), mZ(z) {}
+    constexpr Vector3(const Vector2& v, float z);
+    constexpr Vector3(float x, float y, float z) : mX(x), mY(y), mZ(z) {}
     //! 配列で初期化するコンストラクター
-    Vector3(float* p) : mX(p[0]), mY(p[1]), mZ(p[2]) {}
+    constexpr Vector3(float* p) : mX(p[0]), mY(p[1]), mZ(p[2]) {}
 
     //-------------------------------------------------------------------------
     // getter
     //-------------------------------------------------------------------------
 public:
     //! X
-    float&       x()       { return mX; }
-    const float& x() const { return mX; }
+    constexpr float&       x()       { return mX; }
+    constexpr const float& x() const { return mX; }
 
     //! Y
-    float&       y()       { return mY; }
-    const float& y() const { return mY; }
+    constexpr float&       y()       { return mY; }
+    constexpr const float& y() const { return mY; }
 
     //! Z
-    float&       z()       { return mZ; }
-    const float& z() const { return mZ; }
+    constexpr float&       z()       { return mZ; }
+    constexpr const float& z() const { return mZ; }
 
     //-------------------------------------------------------------------------
     // cast
     //-------------------------------------------------------------------------
 public:
     //! 配列キャスト
-    operator       float* ()       { return &mX; }
-    operator const float* () const { return &mX; }
+    constexpr operator       float* ()       { return &mX; }
+    constexpr operator const float* () const { return &mX; }
 
     //-------------------------------------------------------------------------
     // assignment operators
     //-------------------------------------------------------------------------
 public:
-    inline Vector3& operator += (const Vector3& rhs);
-    inline Vector3& operator -= (const Vector3& rhs);
-    inline Vector3& operator *= (float rhs);
-    inline Vector3& operator /= (float rhs);
+    inline constexpr Vector3& operator += (const Vector3& rhs);
+    inline constexpr Vector3& operator -= (const Vector3& rhs);
+    inline constexpr Vector3& operator *= (float rhs);
+    inline constexpr Vector3& operator /= (float rhs);
 
     //-------------------------------------------------------------------------
     // unary operators
     //-------------------------------------------------------------------------
 public:
-    inline Vector3 operator + () const;
-    inline Vector3 operator - () const;
+    inline constexpr Vector3 operator + () const;
+    inline constexpr Vector3 operator - () const;
 
     //-------------------------------------------------------------------------
     // binary operators
     //-------------------------------------------------------------------------
 public:
-    inline Vector3 operator + (const Vector3& rhs) const;
-    inline Vector3 operator - (const Vector3& rhs) const;
-    inline Vector3 operator * (float rhs) const;
-    inline Vector3 operator / (float rhs) const;
+    inline constexpr Vector3 operator + (const Vector3& rhs) const;
+    inline constexpr Vector3 operator - (const Vector3& rhs) const;
+    inline constexpr Vector3 operator * (float rhs) const;
+    inline constexpr Vector3 operator / (float rhs) const;
 
     //-------------------------------------------------------------------------
     // equals operators
     //-------------------------------------------------------------------------
 public:
-    inline bool operator == (const Vector3& rhs) const;
-    inline bool operator != (const Vector3& rhs) const;
+    inline constexpr bool operator == (const Vector3& rhs) const;
+    inline constexpr bool operator != (const Vector3& rhs) const;
 
     //-------------------------------------------------------------------------
 private:
@@ -95,6 +95,6 @@ private:
 //-----------------------------------------------------------------------------
 // binary operators
 //-----------------------------------------------------------------------------
-static bel::Vector3 operator * (float f, const bel::Vector3& rhs);
+static constexpr bel::Vector3 operator * (float f, const bel::Vector3& rhs);
 
 #include "math/belVector3.inl.h"

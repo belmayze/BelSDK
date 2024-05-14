@@ -11,7 +11,7 @@ namespace bel {
 //-----------------------------------------------------------------------------
 // assignment operators
 //-----------------------------------------------------------------------------
-Vector3& Vector3::operator += (const Vector3& rhs)
+constexpr Vector3& Vector3::operator += (const Vector3& rhs)
 {
     mX += rhs.mX;
     mY += rhs.mY;
@@ -19,7 +19,7 @@ Vector3& Vector3::operator += (const Vector3& rhs)
     return *this;
 }
 //-----------------------------------------------------------------------------
-Vector3& Vector3::operator -= (const Vector3& rhs)
+constexpr Vector3& Vector3::operator -= (const Vector3& rhs)
 {
     mX -= rhs.mX;
     mY -= rhs.mY;
@@ -27,7 +27,7 @@ Vector3& Vector3::operator -= (const Vector3& rhs)
     return *this;
 }
 //-----------------------------------------------------------------------------
-Vector3& Vector3::operator *= (float rhs)
+constexpr Vector3& Vector3::operator *= (float rhs)
 {
     mX *= rhs;
     mY *= rhs;
@@ -35,7 +35,7 @@ Vector3& Vector3::operator *= (float rhs)
     return *this;
 }
 //-----------------------------------------------------------------------------
-Vector3& Vector3::operator /= (float rhs)
+constexpr Vector3& Vector3::operator /= (float rhs)
 {
     float f_inv = 1.f / rhs;
     mX *= f_inv;
@@ -46,19 +46,19 @@ Vector3& Vector3::operator /= (float rhs)
 //-----------------------------------------------------------------------------
 // unary operators
 //-----------------------------------------------------------------------------
-Vector3 Vector3::operator + () const
+constexpr Vector3 Vector3::operator + () const
 {
     return Vector3(mX, mY, mZ);
 }
 //-----------------------------------------------------------------------------
-Vector3 Vector3::operator - () const
+constexpr Vector3 Vector3::operator - () const
 {
     return Vector3(-mX, -mY, -mZ);
 }
 //-----------------------------------------------------------------------------
 // binary operators
 //-----------------------------------------------------------------------------
-Vector3 Vector3::operator + (const Vector3& rhs) const
+constexpr Vector3 Vector3::operator + (const Vector3& rhs) const
 {
     return Vector3(
         mX + rhs.mX,
@@ -67,7 +67,7 @@ Vector3 Vector3::operator + (const Vector3& rhs) const
     );
 }
 //-----------------------------------------------------------------------------
-Vector3 Vector3::operator - (const Vector3& rhs) const
+constexpr Vector3 Vector3::operator - (const Vector3& rhs) const
 {
     return Vector3(
         mX - rhs.mX,
@@ -76,7 +76,7 @@ Vector3 Vector3::operator - (const Vector3& rhs) const
     );
 }
 //-----------------------------------------------------------------------------
-Vector3 Vector3::operator * (float rhs) const
+constexpr Vector3 Vector3::operator * (float rhs) const
 {
     return Vector3(
         mX * rhs,
@@ -85,7 +85,7 @@ Vector3 Vector3::operator * (float rhs) const
     );
 }
 //-----------------------------------------------------------------------------
-Vector3 Vector3::operator / (float rhs) const
+constexpr Vector3 Vector3::operator / (float rhs) const
 {
     float f_inv = 1.f / rhs;
     return Vector3(
@@ -97,12 +97,12 @@ Vector3 Vector3::operator / (float rhs) const
 //-----------------------------------------------------------------------------
 // equals operators
 //-----------------------------------------------------------------------------
-bool Vector3::operator == (const Vector3& rhs) const
+constexpr bool Vector3::operator == (const Vector3& rhs) const
 {
     return mX == rhs.mX && mY == rhs.mY && mZ == rhs.mZ;
 }
 //-----------------------------------------------------------------------------
-bool Vector3::operator != (const Vector3& rhs) const
+constexpr bool Vector3::operator != (const Vector3& rhs) const
 {
     return mX != rhs.mX || mY != rhs.mY || mZ != rhs.mZ;
 }
@@ -112,7 +112,7 @@ bool Vector3::operator != (const Vector3& rhs) const
 //-----------------------------------------------------------------------------
 // binary operators
 //-----------------------------------------------------------------------------
-bel::Vector3 operator * (float f, const bel::Vector3& rhs)
+constexpr bel::Vector3 operator * (float f, const bel::Vector3& rhs)
 {
     return bel::Vector3(
         f * rhs.x(),

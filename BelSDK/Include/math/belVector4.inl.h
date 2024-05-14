@@ -11,7 +11,7 @@ namespace bel {
 //-----------------------------------------------------------------------------
 // assignment operators
 //-----------------------------------------------------------------------------
-Vector4& Vector4::operator += (const Vector4& rhs)
+constexpr Vector4& Vector4::operator += (const Vector4& rhs)
 {
     mX += rhs.mX;
     mY += rhs.mY;
@@ -20,7 +20,7 @@ Vector4& Vector4::operator += (const Vector4& rhs)
     return *this;
 }
 //-----------------------------------------------------------------------------
-Vector4& Vector4::operator -= (const Vector4& rhs)
+constexpr Vector4& Vector4::operator -= (const Vector4& rhs)
 {
     mX -= rhs.mX;
     mY -= rhs.mY;
@@ -29,7 +29,7 @@ Vector4& Vector4::operator -= (const Vector4& rhs)
     return *this;
 }
 //-----------------------------------------------------------------------------
-Vector4& Vector4::operator *= (float rhs)
+constexpr Vector4& Vector4::operator *= (float rhs)
 {
     mX *= rhs;
     mY *= rhs;
@@ -38,7 +38,7 @@ Vector4& Vector4::operator *= (float rhs)
     return *this;
 }
 //-----------------------------------------------------------------------------
-Vector4& Vector4::operator /= (float rhs)
+constexpr Vector4& Vector4::operator /= (float rhs)
 {
     float f_inv = 1.f / rhs;
     mX *= f_inv;
@@ -50,19 +50,19 @@ Vector4& Vector4::operator /= (float rhs)
 //-----------------------------------------------------------------------------
 // unary operators
 //-----------------------------------------------------------------------------
-Vector4 Vector4::operator + () const
+constexpr Vector4 Vector4::operator + () const
 {
     return Vector4(mX, mY, mZ, mW);
 }
 //-----------------------------------------------------------------------------
-Vector4 Vector4::operator - () const
+constexpr Vector4 Vector4::operator - () const
 {
     return Vector4(-mX, -mY, -mZ, -mW);
 }
 //-----------------------------------------------------------------------------
 // binary operators
 //-----------------------------------------------------------------------------
-Vector4 Vector4::operator + (const Vector4& rhs) const
+constexpr Vector4 Vector4::operator + (const Vector4& rhs) const
 {
     return Vector4(
         mX + rhs.mX,
@@ -72,7 +72,7 @@ Vector4 Vector4::operator + (const Vector4& rhs) const
     );
 }
 //-----------------------------------------------------------------------------
-Vector4 Vector4::operator - (const Vector4& rhs) const
+constexpr Vector4 Vector4::operator - (const Vector4& rhs) const
 {
     return Vector4(
         mX - rhs.mX,
@@ -82,7 +82,7 @@ Vector4 Vector4::operator - (const Vector4& rhs) const
     );
 }
 //-----------------------------------------------------------------------------
-Vector4 Vector4::operator * (float rhs) const
+constexpr Vector4 Vector4::operator * (float rhs) const
 {
     return Vector4(
         mX * rhs,
@@ -92,7 +92,7 @@ Vector4 Vector4::operator * (float rhs) const
     );
 }
 //-----------------------------------------------------------------------------
-Vector4 Vector4::operator / (float rhs) const
+constexpr Vector4 Vector4::operator / (float rhs) const
 {
     float f_inv = 1.f / rhs;
     return Vector4(
@@ -105,12 +105,12 @@ Vector4 Vector4::operator / (float rhs) const
 //-----------------------------------------------------------------------------
 // equals operators
 //-----------------------------------------------------------------------------
-bool Vector4::operator == (const Vector4& rhs) const
+constexpr bool Vector4::operator == (const Vector4& rhs) const
 {
     return mX == rhs.mX && mY == rhs.mY && mZ == rhs.mZ && mW == rhs.mW;
 }
 //-----------------------------------------------------------------------------
-bool Vector4::operator != (const Vector4& rhs) const
+constexpr bool Vector4::operator != (const Vector4& rhs) const
 {
     return mX != rhs.mX || mY != rhs.mY || mZ != rhs.mZ || mW != rhs.mW;
 }
@@ -120,7 +120,7 @@ bool Vector4::operator != (const Vector4& rhs) const
 //-----------------------------------------------------------------------------
 // binary operators
 //-----------------------------------------------------------------------------
-bel::Vector4 operator * (float f, const bel::Vector4& rhs)
+constexpr bel::Vector4 operator * (float f, const bel::Vector4& rhs)
 {
     return bel::Vector4(
         f * rhs.x(),

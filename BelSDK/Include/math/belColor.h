@@ -1,5 +1,5 @@
 ﻿/*!
- * @file   belVector2.h
+ * @file   belColor.h
  * @brief  
  * @author belmayze
  * 
@@ -7,79 +7,81 @@
  */
 #pragma once
 
+namespace bel { class Vector3; }
+namespace bel { class Vector4; }
+
 namespace bel {
 //-----------------------------------------------------------------------------
-class Vector2
+class Color
 {
     //-------------------------------------------------------------------------
     // constructor
     //-------------------------------------------------------------------------
 public:
     //! 0で初期化するコンストラクター
-    constexpr Vector2() {}
-    //! すべて同じ数値で初期化するコンストラクター
-    constexpr Vector2(float f) : mX(f), mY(f) {}
+    constexpr Color() {}
     //! 任意の数値で初期化するコンストラクター
-    constexpr Vector2(float x, float y) : mX(x), mY(y) {}
+    constexpr Color(const Vector3& rgb, float a = 1.f);
+    constexpr Color(const Vector4& rgba);
+    constexpr Color(float r, float g, float b, float a = 1.f) : mR(r), mG(g), mB(b), mA(a) {}
     //! 配列で初期化するコンストラクター
-    constexpr Vector2(float* p) : mX(p[0]), mY(p[1]) {}
+    constexpr Color(float* p) : mR(p[0]), mG(p[1]), mB(p[2]), mA(p[3]) {}
 
     //-------------------------------------------------------------------------
     // getter
     //-------------------------------------------------------------------------
 public:
     //! X
-    constexpr float&       x()       { return mX; }
-    constexpr const float& x() const { return mX; }
+    constexpr float&       r()       { return mR; }
+    constexpr const float& r() const { return mR; }
 
     //! Y
-    constexpr float&       y()       { return mY; }
-    constexpr const float& y() const { return mY; }
+    constexpr float&       g()       { return mG; }
+    constexpr const float& g() const { return mG; }
+
+    //! Z
+    constexpr float&       b()       { return mB; }
+    constexpr const float& b() const { return mB; }
+
+    //! W
+    constexpr float&       a()       { return mA; }
+    constexpr const float& a() const { return mA; }
 
     //-------------------------------------------------------------------------
     // cast
     //-------------------------------------------------------------------------
 public:
     //! 配列キャスト
-    constexpr operator       float* ()       { return &mX; }
-    constexpr operator const float* () const { return &mX; }
+    constexpr operator       float* ()       { return &mR; }
+    constexpr operator const float* () const { return &mR; }
 
     //-------------------------------------------------------------------------
     // assignment operators
     //-------------------------------------------------------------------------
 public:
-    inline constexpr Vector2& operator += (const Vector2& rhs);
-    inline constexpr Vector2& operator -= (const Vector2& rhs);
-    inline constexpr Vector2& operator *= (float rhs);
-    inline constexpr Vector2& operator /= (float rhs);
-
-    //-------------------------------------------------------------------------
-    // unary operators
-    //-------------------------------------------------------------------------
-public:
-    inline constexpr Vector2 operator + () const;
-    inline constexpr Vector2 operator - () const;
+    inline constexpr Color& operator *= (float rhs);
+    inline constexpr Color& operator /= (float rhs);
 
     //-------------------------------------------------------------------------
     // binary operators
     //-------------------------------------------------------------------------
 public:
-    inline constexpr Vector2 operator + (const Vector2& rhs) const;
-    inline constexpr Vector2 operator - (const Vector2& rhs) const;
-    inline constexpr Vector2 operator * (float rhs) const;
-    inline constexpr Vector2 operator / (float rhs) const;
+    inline constexpr Color operator * (float rhs) const;
+    inline constexpr Color operator / (float rhs) const;
 
     //-------------------------------------------------------------------------
     // equals operators
     //-------------------------------------------------------------------------
 public:
-    inline constexpr bool operator == (const Vector2& rhs) const;
-    inline constexpr bool operator != (const Vector2& rhs) const;
+    inline constexpr bool operator == (const Color& rhs) const;
+    inline constexpr bool operator != (const Color& rhs) const;
 
     //-------------------------------------------------------------------------
 private:
-    float mX = 0.f;
-    float mY = 0.f;
+    float mR = 0.f;
+    float mG = 0.f;
+    float mB = 0.f;
+    float mA = 1.f;
 };
 //-----------------------------------------------------------------------------
 } // bel::
@@ -87,6 +89,6 @@ private:
 //-----------------------------------------------------------------------------
 // binary operators
 //-----------------------------------------------------------------------------
-static bel::Vector2 operator * (float f, const bel::Vector2& rhs);
+static constexpr bel::Color operator * (float f, const bel::Color& rhs);
 
-#include "math/belVector2.inl.h"
+#include "math/belColor.inl.h"

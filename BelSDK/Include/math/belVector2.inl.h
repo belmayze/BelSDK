@@ -11,28 +11,28 @@ namespace bel {
 //-----------------------------------------------------------------------------
 // assignment operators
 //-----------------------------------------------------------------------------
-Vector2& Vector2::operator += (const Vector2& rhs)
+constexpr Vector2& Vector2::operator += (const Vector2& rhs)
 {
     mX += rhs.mX;
     mY += rhs.mY;
     return *this;
 }
 //-----------------------------------------------------------------------------
-Vector2& Vector2::operator -= (const Vector2& rhs)
+constexpr Vector2& Vector2::operator -= (const Vector2& rhs)
 {
     mX -= rhs.mX;
     mY -= rhs.mY;
     return *this;
 }
 //-----------------------------------------------------------------------------
-Vector2& Vector2::operator *= (float rhs)
+constexpr Vector2& Vector2::operator *= (float rhs)
 {
     mX *= rhs;
     mY *= rhs;
     return *this;
 }
 //-----------------------------------------------------------------------------
-Vector2& Vector2::operator /= (float rhs)
+constexpr Vector2& Vector2::operator /= (float rhs)
 {
     float f_inv = 1.f / rhs;
     mX *= f_inv;
@@ -42,19 +42,19 @@ Vector2& Vector2::operator /= (float rhs)
 //-----------------------------------------------------------------------------
 // unary operators
 //-----------------------------------------------------------------------------
-Vector2 Vector2::operator + () const
+constexpr Vector2 Vector2::operator + () const
 {
     return Vector2(mX, mY);
 }
 //-----------------------------------------------------------------------------
-Vector2 Vector2::operator - () const
+constexpr Vector2 Vector2::operator - () const
 {
     return Vector2(-mX, -mY);
 }
 //-----------------------------------------------------------------------------
 // binary operators
 //-----------------------------------------------------------------------------
-Vector2 Vector2::operator + (const Vector2& rhs) const
+constexpr Vector2 Vector2::operator + (const Vector2& rhs) const
 {
     return Vector2(
         mX + rhs.mX,
@@ -62,7 +62,7 @@ Vector2 Vector2::operator + (const Vector2& rhs) const
     );
 }
 //-----------------------------------------------------------------------------
-Vector2 Vector2::operator - (const Vector2& rhs) const
+constexpr Vector2 Vector2::operator - (const Vector2& rhs) const
 {
     return Vector2(
         mX - rhs.mX,
@@ -70,7 +70,7 @@ Vector2 Vector2::operator - (const Vector2& rhs) const
     );
 }
 //-----------------------------------------------------------------------------
-Vector2 Vector2::operator * (float rhs) const
+constexpr Vector2 Vector2::operator * (float rhs) const
 {
     return Vector2(
         mX * rhs,
@@ -78,7 +78,7 @@ Vector2 Vector2::operator * (float rhs) const
     );
 }
 //-----------------------------------------------------------------------------
-Vector2 Vector2::operator / (float rhs) const
+constexpr Vector2 Vector2::operator / (float rhs) const
 {
     float f_inv = 1.f / rhs;
     return Vector2(
@@ -89,12 +89,12 @@ Vector2 Vector2::operator / (float rhs) const
 //-----------------------------------------------------------------------------
 // equals operators
 //-----------------------------------------------------------------------------
-bool Vector2::operator == (const Vector2& rhs) const
+constexpr bool Vector2::operator == (const Vector2& rhs) const
 {
     return mX == rhs.mX && mY == rhs.mY;
 }
 //-----------------------------------------------------------------------------
-bool Vector2::operator != (const Vector2& rhs) const
+constexpr bool Vector2::operator != (const Vector2& rhs) const
 {
     return mX != rhs.mX || mY != rhs.mY;
 }
