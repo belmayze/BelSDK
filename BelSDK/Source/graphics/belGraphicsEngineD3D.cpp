@@ -184,6 +184,43 @@ bool GraphicsEngineD3D::initialize()
         mpSwapChain->SetColorSpace1(mIsSupportedHDR ? DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020
                                                     : DXGI_COLOR_SPACE_RGB_FULL_G22_NONE_P709);
 
+        // HDR の設定
+        if (mIsSupportedHDR)
+        {
+            // 色空間情報
+            constexpr DisplayChromaticity cDisplayChromaticities[] =
+            {
+                { 0.6400f, 0.3300f, 0.3000f, 0.6000f, 0.1500f, 0.0600f, 0.3127f, 0.3290f }, // Rec.709
+                { 0.7080f, 0.2920f, 0.1700f, 0.7970f, 0.1310f, 0.0460f, 0.3127f, 0.3290f }  // Rec.2020
+            };
+            // 輝度情報 (DCI-P3 基準)
+            constexpr float cMaxOutputNits = 1000.f;
+            constexpr float cMinOutputNits = 0.001f;
+            constexpr float cMaxCLL        = 2000.f;
+            constexpr float cMaxFALL       = 500.f;
+
+            DXGI_HDR_METADATA_HDR10 metadata = {};
+            // D3D12HDR のサンプルコードから
+            // https://msdn.microsoft.com/en-us/library/windows/desktop/mt732700(v=vs.85).aspx
+            metadata.RedPrimary[0]   = static_cast<UINT16>(cDisplayChromaticities[1].red_x   * 50000.f);
+            metadata.RedPrimary[1]   = static_cast<UINT16>(cDisplayChromaticities[1].red_y   * 50000.f);
+            metadata.GreenPrimary[0] = static_cast<UINT16>(cDisplayChromaticities[1].green_x * 50000.f);
+            metadata.GreenPrimary[1] = static_cast<UINT16>(cDisplayChromaticities[1].green_y * 50000.f);
+            metadata.BluePrimary[0]  = static_cast<UINT16>(cDisplayChromaticities[1].blue_x  * 50000.f);
+            metadata.BluePrimary[1]  = static_cast<UINT16>(cDisplayChromaticities[1].blue_y  * 50000.f);
+            metadata.WhitePoint[0]   = static_cast<UINT16>(cDisplayChromaticities[1].white_x * 50000.f);
+            metadata.WhitePoint[1]   = static_cast<UINT16>(cDisplayChromaticities[1].white_y * 50000.f);
+            metadata.MaxMasteringLuminance     = static_cast<UINT>(cMaxOutputNits * 10000.f);
+            metadata.MinMasteringLuminance     = static_cast<UINT>(cMinOutputNits * 10000.f);
+            metadata.MaxContentLightLevel      = static_cast<UINT16>(cMaxCLL);
+            metadata.MaxFrameAverageLightLevel = static_cast<UINT16>(cMaxFALL);
+            mpSwapChain->SetHDRMetaData(DXGI_HDR_METADATA_TYPE_HDR10, sizeof(metadata), &metadata);
+        }
+        else
+        {
+            mpSwapChain->SetHDRMetaData(DXGI_HDR_METADATA_TYPE_NONE, 0, nullptr);
+        }
+
         // スワップチェーンからテクスチャーを取得する
         mSwapChainTextures = std::make_unique<gfx::Texture[]>(cNumBuffer);
         mSwapChainRenderTargets = std::make_unique<gfx::RenderTarget[]>(cNumBuffer);

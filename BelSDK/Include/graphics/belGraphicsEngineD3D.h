@@ -85,6 +85,17 @@ private:
 
     //-------------------------------------------------------------------------
 private:
+    //! 色空間
+    struct DisplayChromaticity
+    {
+        float red_x,   red_y;
+        float green_x, green_y;
+        float blue_x,  blue_y;
+        float white_x, white_y;
+    };
+
+    //-------------------------------------------------------------------------
+private:
     Microsoft::WRL::ComPtr<ID3D12Device6>       mpDevice;
     Microsoft::WRL::ComPtr<IDXGISwapChain4>     mpSwapChain;
     Microsoft::WRL::ComPtr<ID3D12Fence>         mpFence;
