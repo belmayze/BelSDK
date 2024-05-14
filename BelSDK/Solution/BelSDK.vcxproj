@@ -32,6 +32,13 @@
     <ClInclude Include="..\Include\graphics\common\belGraphicsTextureType.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsTextureDescriptorHandle.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsTextureDescriptorRegistry.h" />
+    <ClInclude Include="..\Include\math\belMath.h" />
+    <ClInclude Include="..\Include\math\belVector2.h" />
+    <ClInclude Include="..\Include\math\belVector2.inl.h" />
+    <ClInclude Include="..\Include\math\belVector3.h" />
+    <ClInclude Include="..\Include\math\belVector3.inl.h" />
+    <ClInclude Include="..\Include\math\belVector4.h" />
+    <ClInclude Include="..\Include\math\belVector4.inl.h" />
     <ClInclude Include="..\Include\memory\belSingleton.h" />
     <ClInclude Include="..\Include\thread\belEvent.h" />
     <ClInclude Include="..\Include\thread\belThread.h" />
@@ -53,6 +60,8 @@
     <ClCompile Include="..\Source\graphics\common\belGraphicsTexture.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureDescriptorHandle.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureDescriptorRegistry.cpp" />
+    <ClCompile Include="..\Source\math\belVector3.cpp" />
+    <ClCompile Include="..\Source\math\belVector4.cpp" />
     <ClCompile Include="..\Source\thread\belEvent.cpp" />
     <ClCompile Include="..\Source\thread\belThread.cpp" />
   </ItemGroup>
