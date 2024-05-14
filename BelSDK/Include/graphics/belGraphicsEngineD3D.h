@@ -66,7 +66,9 @@ public:
     //-------------------------------------------------------------------------
 private:
     //! フォーマット
-    static constexpr gfx::TextureFormat cTextureFormat = gfx::TextureFormat::cR10G10B10A2_uNorm;
+    static constexpr gfx::TextureFormat cSDRTextureFormat     = gfx::TextureFormat::cR8G8B8A8_uNorm;
+    static constexpr gfx::TextureFormat cSDRsRGBTextureFormat = gfx::TextureFormat::cR8G8B8A8_sRGB;
+    static constexpr gfx::TextureFormat cHDRTextureFormat     = gfx::TextureFormat::cR10G10B10A2_uNorm;
 
     //! バッファー数
     static constexpr uint32_t cNumBuffer = 3;

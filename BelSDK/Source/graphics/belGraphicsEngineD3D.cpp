@@ -149,7 +149,7 @@ bool GraphicsEngineD3D::initialize()
         DXGI_SWAP_CHAIN_DESC1 desc = {};
         desc.Width              = ApplicationWindow::GetInstance().getRenderWidth();
         desc.Height             = ApplicationWindow::GetInstance().getRenderHeight();
-        desc.Format             = gfx::to_native(cTextureFormat);
+        desc.Format             = gfx::to_native(mIsSupportedHDR ? cHDRTextureFormat : cSDRTextureFormat);
         desc.Stereo             = FALSE;
         desc.SampleDesc.Count   = 1;
         desc.SampleDesc.Quality = 0;
@@ -200,7 +200,7 @@ bool GraphicsEngineD3D::initialize()
             gfx::Texture::InitializeArg init_arg;
             init_arg.mWidth     = desc.Width;
             init_arg.mHeight    = desc.Height;
-            init_arg.mFormat    = cTextureFormat;
+            init_arg.mFormat    = mIsSupportedHDR ? cHDRTextureFormat : cSDRsRGBTextureFormat;
             init_arg.mDimension = gfx::TextureDimension::c2D;
             mSwapChainTextures[i_buffer].initializeFromGPUMemory(
                 init_arg,
