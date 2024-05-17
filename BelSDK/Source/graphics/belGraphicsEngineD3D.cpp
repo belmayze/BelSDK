@@ -216,10 +216,6 @@ bool GraphicsEngineD3D::initialize()
             metadata.MaxFrameAverageLightLevel = static_cast<UINT16>(cMaxFALL);
             mpSwapChain->SetHDRMetaData(DXGI_HDR_METADATA_TYPE_HDR10, sizeof(metadata), &metadata);
         }
-        else
-        {
-            mpSwapChain->SetHDRMetaData(DXGI_HDR_METADATA_TYPE_NONE, 0, nullptr);
-        }
 
         // スワップチェーンからテクスチャーを取得する
         mSwapChainTextures = std::make_unique<gfx::Texture[]>(cNumBuffer);
@@ -266,6 +262,10 @@ void GraphicsEngineD3D::executeCommand()
         gfx::CommandContext context(*mpMainCommandList);
         mpMainCommandList->begin();
         {
+            // 処理前にコマンドに積む必要のあるものをここで積む
+            mpMainCommandList->getCommandList().SetGraphicsRootSignature(mpGraphicsRootSignature.Get());
+            mpMainCommandList->getCommandList().SetComputeRootSignature(mpComputeRootSignature.Get());
+
             // @TODO
             // 仮でクリア処理
             uint32_t buffer_index = mpSwapChain->GetCurrentBackBufferIndex();
