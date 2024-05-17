@@ -44,7 +44,7 @@ public:
     static constexpr Color cLime()        { return Color(0.000f, 1.000f, 0.000f); }
     //! 空色
     static constexpr Color cSkyBlue()     { return Color(0.242f, 0.617f, 0.831f); }
-    //! 紫
+    //! 薄紫
     static constexpr Color cViolet()      { return Color(0.855f, 0.223f, 0.855f); }
     //! 紫
     static constexpr Color cPurple()      { return Color(0.214f, 0.000f, 0.214f); }
