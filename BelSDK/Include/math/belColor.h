@@ -15,15 +15,39 @@ namespace bel {
 class Color
 {
     //-------------------------------------------------------------------------
-    // 定数
+    // 定数 (Rec.709 Color space / Linear gamma)
     //-------------------------------------------------------------------------
 public:
     //! 黒
-    static constexpr Color cBlack() { return Color(0.00f, 0.00f, 0.00f); }
+    static constexpr Color cBlack()       { return Color(0.000f, 0.000f, 0.000f); }
     //! 18% グレー
-    static constexpr Color cGray()  { return Color(0.18f, 0.18f, 0.18f); }
+    static constexpr Color cGray()        { return Color(0.180f, 0.180f, 0.180f); }
     //! 白
-    static constexpr Color cWhite() { return Color(1.00f, 1.00f, 1.00f); }
+    static constexpr Color cWhite()       { return Color(1.000f, 1.000f, 1.000f); }
+    //! 赤
+    static constexpr Color cRed()         { return Color(1.000f, 0.000f, 0.000f); }
+    //! 緑
+    static constexpr Color cGreen()       { return Color(0.000f, 0.214f, 0.000f); }
+    //! 青
+    static constexpr Color cBlue()        { return Color(0.000f, 0.000f, 1.000f); }
+    //! 黄色
+    static constexpr Color cYellow()      { return Color(1.000f, 1.000f, 0.000f); }
+    //! シアン
+    static constexpr Color cCyan()        { return Color(0.000f, 1.000f, 1.000f); }
+    //! マゼンタ
+    static constexpr Color cMagenta()     { return Color(1.000f, 0.000f, 1.000f); }
+    //! オレンジ
+    static constexpr Color cOrange()      { return Color(1.000f, 0.376f, 0.000f); }
+    //! 黄緑
+    static constexpr Color cYellowGreen() { return Color(0.323f, 0.610f, 0.032f); }
+    //! ライム
+    static constexpr Color cLime()        { return Color(0.000f, 1.000f, 0.000f); }
+    //! 空色
+    static constexpr Color cSkyBlue()     { return Color(0.242f, 0.617f, 0.831f); }
+    //! 紫
+    static constexpr Color cViolet()      { return Color(0.855f, 0.223f, 0.855f); }
+    //! 紫
+    static constexpr Color cPurple()      { return Color(0.214f, 0.000f, 0.214f); }
 
     //-------------------------------------------------------------------------
     // constructor
