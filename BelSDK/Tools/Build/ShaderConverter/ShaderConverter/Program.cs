@@ -66,6 +66,8 @@ namespace ShaderConverter
 
     class Program
     {
+        static int ShadingModelMajorVersion = 5;
+
         static int Main(string[] args)
         {
             // 引数解析
@@ -131,6 +133,15 @@ namespace ShaderConverter
                 foreach (string file in files) { File.Copy(file, $"{workingPath}\\{Path.GetFileName(file)}"); }
             }
 
+            // バージョンチェック
+            {
+                Match match = Regex.Match(fileData.Setting.Profile, "(?<version>[0-9]+?)_.*");
+                if (match.Success && match.Groups["version"].Success)
+                {
+                    ShadingModelMajorVersion = Int32.Parse(match.Groups["version"].Value);
+                }
+            }
+
             // Windows10 SDK のインストール先チェック
             string windowsBinDir = "";
             {
@@ -175,6 +186,16 @@ namespace ShaderConverter
 
                 // ディレクトリ決定
                 windowsBinDir = $"{windowsSdkDirRoot}\\bin\\{windowsSdkVersion}\\{architectureName}";
+
+                // Shading Model 6.0 以降なら dxc.exe を使う
+                if (ShadingModelMajorVersion < 6)
+                {
+                    Console.WriteLine($"Use compiler. {windowsBinDir}\\fxc.exe");
+                }
+                else
+                {
+                    Console.WriteLine($"Use compiler. {windowsBinDir}\\dxc.exe");
+                }
             }
 
             // シェーダーコンバート
@@ -189,12 +210,16 @@ namespace ShaderConverter
                 {
                     // シェーダーコンパイラー起動
                     Process process = new Process();
-                    process.StartInfo.FileName = $"{windowsBinDir}\\fxc.exe";
+                    process.StartInfo.FileName =
+                        ShadingModelMajorVersion < 6 ? $"{windowsBinDir}\\fxc.exe"
+                                                     : $"{windowsBinDir}\\dxc.exe";
                     process.StartInfo.CreateNoWindow         = true;
                     process.StartInfo.UseShellExecute        = false;
                     process.StartInfo.RedirectStandardOutput = true;
                     process.StartInfo.RedirectStandardError  = true;
-                    process.ErrorDataReceived += ConsoleError_;
+                    // エラーだけ表示する
+                    //process.OutputDataReceived += ConsoleOutput_;
+                    process.ErrorDataReceived  += ConsoleError_;
 
                     // 成功フラグ
                     bool is_success = true;
@@ -363,6 +388,11 @@ namespace ShaderConverter
                     // 成功したら中間ファイルを出力する
                     if (is_success)
                     {
+                        // 同名ファイルは削除
+                        string[] files = Directory.GetFiles(outputDir, $"{target.Name}.*.cso", SearchOption.TopDirectoryOnly);
+                        foreach (string file in files) { File.Delete(file); }
+
+                        // コピー
                         string[] intermediateFiles = Directory.GetFiles(workingPath, $"{target.Name}.*.cso", SearchOption.TopDirectoryOnly);
                         foreach (string file in intermediateFiles) { File.Copy(file, $"{outputDir}\\{Path.GetFileName(file)}"); }
                     }
@@ -375,11 +405,23 @@ namespace ShaderConverter
                     {
                         Console.Error.WriteLine($"Compile failed [{filepath}]");
                     }
+                    // ヒント
+                    Console.Error.WriteLine("[BelSDK] [dxc failed : error code 0x80070459.] が出る場合、シェーダーを Shift-JIS で保存してみてください.");
                     return 3;
                 }
             }
 
             return 0;
+        }
+
+        /// <summary>
+        /// 標準出力
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="args"></param>
+        static void ConsoleOutput_(object sender, DataReceivedEventArgs args)
+        {
+            Console.WriteLine(args.Data);
         }
 
         /// <summary>
@@ -404,10 +446,14 @@ namespace ShaderConverter
         /// <returns></returns>
         static int Compile_(Process process, string name, string inputPath, string outputPath, string profileName, List<string> defines)
         {
-            process.StartInfo.Arguments = $"{inputPath} /T {profileName} /E main /Fo {outputPath}";
+            process.StartInfo.Arguments
+                = ShadingModelMajorVersion < 6 ? $"{inputPath} /T {profileName} /E main /Fo {outputPath}"
+                                               : $"{inputPath} -T {profileName} -E main -Fo {outputPath}";
             foreach (string define in defines)
             {
-                process.StartInfo.Arguments += $" /D {define}";
+                process.StartInfo.Arguments +=
+                    ShadingModelMajorVersion < 6 ? $" /D {define}"
+                                                 : $" -D {define}";
             }
             Console.WriteLine($"Convert shader... [{name} ({profileName})]");
 

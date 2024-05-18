@@ -35,7 +35,7 @@ PS_INPUT main(VS_INPUT input)
 {
     float3 position_view = mul(float4(input.position, 1.f), cViewMatrix);
 
-    // Âá∫Âäõ
+    // èoóÕ
     PS_INPUT output;
     output.position = mul(float4(position_view, 1.f), cProjectionMatrix);
     return output;
