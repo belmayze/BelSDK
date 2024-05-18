@@ -19,8 +19,8 @@ namespace ShaderConverter
     {
         [Option('i', "input", Required = true, HelpText = "入力")]
         public string Input { get; set; } = "";
-        [Option('o', "output", HelpText = "出力")]
-        public string Output { get; set; } = "";
+        [Option('o', "output-dir", HelpText = "出力ディレクトリ")]
+        public string? OutputDir { get; set; } = null;
     }
 
     /// <summary>
@@ -98,6 +98,12 @@ namespace ShaderConverter
                 return 2;
             }
             if (fileData is null) { return -3; }
+
+            // 出力パスの決定
+            string? outputDir = Path.GetDirectoryName(Path.GetFullPath(options.Input));
+            if (outputDir is null) { return 1; }
+            if (options.OutputDir is not null) { outputDir = options.OutputDir; }
+            if (!Directory.Exists(outputDir)) { Directory.CreateDirectory(outputDir); }
 
             // ワーキングパス
             string workingPath = Environment.ExpandEnvironmentVariables("%TEMP%\\BelSDK\\ShaderConverter");
@@ -184,20 +190,24 @@ namespace ShaderConverter
                     // シェーダーコンパイラー起動
                     Process process = new Process();
                     process.StartInfo.FileName = $"{windowsBinDir}\\fxc.exe";
-                    process.StartInfo.CreateNoWindow = true;
-                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.CreateNoWindow         = true;
+                    process.StartInfo.UseShellExecute        = false;
                     process.StartInfo.RedirectStandardOutput = true;
-                    process.StartInfo.RedirectStandardError = true;
+                    process.StartInfo.RedirectStandardError  = true;
                     process.ErrorDataReceived += ConsoleError_;
+
+                    // 成功フラグ
+                    bool is_success = true;
 
                     if (target.VertexShader is not null)
                     {
                         // 頂点シェーダー
                         string inputPath   = $"{workingPath}\\{target.VertexShader}";
-                        string outputPath  = $"{workingPath}\\{target.VertexShader}.vs.cso";
+                        string outputPath  = $"{workingPath}\\{target.Name}.vs.cso";
                         string profileName = $"vs_{fileData.Setting.Profile}";
                         if (Compile_(process, target.Name, inputPath, outputPath, profileName, new List<string> { "BEL_VERTEX_SHADER=1" }) != 0)
                         {
+                            is_success = false;
                             locker.EnterWriteLock();
                             try
                             {
@@ -213,10 +223,11 @@ namespace ShaderConverter
                     {
                         // ジオメトリシェーダー
                         string inputPath   = $"{workingPath}\\{target.GeometryShader}";
-                        string outputPath  = $"{workingPath}\\{target.GeometryShader}.gs.cso";
+                        string outputPath  = $"{workingPath}\\{target.Name}.gs.cso";
                         string profileName = $"gs_{fileData.Setting.Profile}";
                         if (Compile_(process, target.Name, inputPath, outputPath, profileName, new List<string> { "BEL_GEOMETRY_SHADER=1" }) != 0)
                         {
+                            is_success = false;
                             locker.EnterWriteLock();
                             try
                             {
@@ -232,10 +243,11 @@ namespace ShaderConverter
                     {
                         // ピクセルシェーダー
                         string inputPath   = $"{workingPath}\\{target.PixelShader}";
-                        string outputPath  = $"{workingPath}\\{target.PixelShader}.ps.cso";
+                        string outputPath  = $"{workingPath}\\{target.Name}.ps.cso";
                         string profileName = $"ps_{fileData.Setting.Profile}";
                         if (Compile_(process, target.Name, inputPath, outputPath, profileName, new List<string> { "BEL_PIXEL_SHADER=1" }) != 0)
                         {
+                            is_success = false;
                             locker.EnterWriteLock();
                             try
                             {
@@ -251,10 +263,11 @@ namespace ShaderConverter
                     {
                         // コンピュートシェーダー
                         string inputPath   = $"{workingPath}\\{target.ComputeShader}";
-                        string outputPath  = $"{workingPath}\\{target.ComputeShader}.cs.cso";
+                        string outputPath  = $"{workingPath}\\{target.Name}.cs.cso";
                         string profileName = $"cs_{fileData.Setting.Profile}";
                         if (Compile_(process, target.Name, inputPath, outputPath, profileName, new List<string> { "BEL_COMPUTE_SHADER=1" }) != 0)
                         {
+                            is_success = false;
                             locker.EnterWriteLock();
                             try
                             {
@@ -270,10 +283,11 @@ namespace ShaderConverter
                     {
                         // ドメインシェーダー
                         string inputPath   = $"{workingPath}\\{target.DomainShader}";
-                        string outputPath  = $"{workingPath}\\{target.DomainShader}.ds.cso";
+                        string outputPath  = $"{workingPath}\\{target.Name}.ds.cso";
                         string profileName = $"ds_{fileData.Setting.Profile}";
                         if (Compile_(process, target.Name, inputPath, outputPath, profileName, new List<string> { "BEL_DOMAIN_SHADER=1" }) != 0)
                         {
+                            is_success = false;
                             locker.EnterWriteLock();
                             try
                             {
@@ -289,10 +303,11 @@ namespace ShaderConverter
                     {
                         // ハルシェーダー
                         string inputPath   = $"{workingPath}\\{target.HullShader}";
-                        string outputPath  = $"{workingPath}\\{target.HullShader}.hs.cso";
+                        string outputPath  = $"{workingPath}\\{target.Name}.hs.cso";
                         string profileName = $"hs_{fileData.Setting.Profile}";
                         if (Compile_(process, target.Name, inputPath, outputPath, profileName, new List<string> { "BEL_HULL_SHADER=1" }) != 0)
                         {
+                            is_success = false;
                             locker.EnterWriteLock();
                             try
                             {
@@ -308,10 +323,11 @@ namespace ShaderConverter
                     {
                         // アンプリフィケーションシェーダー
                         string inputPath   = $"{workingPath}\\{target.AmplificationShader}";
-                        string outputPath  = $"{workingPath}\\{target.AmplificationShader}.as.cso";
+                        string outputPath  = $"{workingPath}\\{target.Name}.as.cso";
                         string profileName = $"as_{fileData.Setting.Profile}";
                         if (Compile_(process, target.Name, inputPath, outputPath, profileName, new List<string> { "BEL_AMPLIFICATION_SHADER=1" }) != 0)
                         {
+                            is_success = false;
                             locker.EnterWriteLock();
                             try
                             {
@@ -327,10 +343,11 @@ namespace ShaderConverter
                     {
                         // メッシュシェーダー
                         string inputPath   = $"{workingPath}\\{target.MeshShader}";
-                        string outputPath  = $"{workingPath}\\{target.MeshShader}.ms.cso";
+                        string outputPath  = $"{workingPath}\\{target.Name}.ms.cso";
                         string profileName = $"ms_{fileData.Setting.Profile}";
                         if (Compile_(process, target.Name, inputPath, outputPath, profileName, new List<string> { "BEL_MESH_SHADER=1" }) != 0)
                         {
+                            is_success = false;
                             locker.EnterWriteLock();
                             try
                             {
@@ -343,8 +360,12 @@ namespace ShaderConverter
                         }
                     }
 
-                    // @TODO: ここでアーカイバーを作る
-
+                    // 成功したら中間ファイルを出力する
+                    if (is_success)
+                    {
+                        string[] intermediateFiles = Directory.GetFiles(workingPath, $"{target.Name}.*.cso", SearchOption.AllDirectories);
+                        foreach (string file in intermediateFiles) { File.Copy(file, $"{outputDir}\\{Path.GetFileName(file)}"); }
+                    }
                 });
 
                 // 失敗したらここで止める
