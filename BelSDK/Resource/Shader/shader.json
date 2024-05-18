@@ -1,0 +1,15 @@
+{
+    "Setting": {
+        "Profile": "5_1"
+    },
+    "Includes": [
+        "."
+    ],
+    "Targets": [
+        {
+            "Name": "Sample",
+            "VertexShader": "sample.hlsl",
+            "PixelShader": "sample.hlsl"
+        }
+    ]
+}
