@@ -72,7 +72,7 @@ namespace ShaderConverter
             ParserResult<Options> parserResult = Parser.Default.ParseArguments<Options>(args);
             if (parserResult.Tag == ParserResultType.NotParsed)
             {
-                return -1;
+                return 1;
             }
             Options options = parserResult.Value;
 
@@ -89,13 +89,13 @@ namespace ShaderConverter
                 catch (Exception e)
                 {
                     Console.Error.WriteLine($"Error: {e.Message}");
-                    return -2;
+                    return 2;
                 }
             }
             catch (Exception e)
             {
                 Console.Error.WriteLine($"Error: {e.Message}");
-                return -2;
+                return 2;
             }
             if (fileData is null) { return -3; }
 
@@ -113,7 +113,7 @@ namespace ShaderConverter
 
             // include に含まれているファイルをすべてコピーする
             string? relativeRootPath = Path.GetDirectoryName(Path.GetFullPath(options.Input));
-            if (relativeRootPath is null) { return -3; }
+            if (relativeRootPath is null) { return 1; }
 
             foreach (string include in fileData.Includes)
             {
@@ -354,7 +354,7 @@ namespace ShaderConverter
                     {
                         Console.Error.WriteLine($"Compile failed [{filepath}]");
                     }
-                    return -4;
+                    return 3;
                 }
             }
 
