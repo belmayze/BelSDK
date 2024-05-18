@@ -363,7 +363,7 @@ namespace ShaderConverter
                     // 成功したら中間ファイルを出力する
                     if (is_success)
                     {
-                        string[] intermediateFiles = Directory.GetFiles(workingPath, $"{target.Name}.*.cso", SearchOption.AllDirectories);
+                        string[] intermediateFiles = Directory.GetFiles(workingPath, $"{target.Name}.*.cso", SearchOption.TopDirectoryOnly);
                         foreach (string file in intermediateFiles) { File.Copy(file, $"{outputDir}\\{Path.GetFileName(file)}"); }
                     }
                 });
