@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="if not $(ConfigurationName) == Release exit&#xD;&#xA;&#xD;&#xA;set COPY_DIRECTORY=$(SolutionDir)..\..\$(SolutionName)&#xD;&#xA;if not exist %25COPY_DIRECTORY%25 md %25COPY_DIRECTORY%25&#xD;&#xA;cd $(TargetDir)&#xD;&#xA;robocopy . %25COPY_DIRECTORY%25 /MIR /xf *.pdb /xf *.ilk&#xD;&#xA;if ERRORLEVEL 8 exit 1&#xD;&#xA;exit 0" />
+    <Exec Command="if not $(ConfigurationName) == Release exit&#xD;&#xA;&#xD;&#xA;set COPY_DIRECTORY=$(SolutionDir)..\..\$(SolutionName)&#xD;&#xA;if not exist %25COPY_DIRECTORY%25 md %25COPY_DIRECTORY%25&#xD;&#xA;cd $(TargetDir)&#xD;&#xA;robocopy . %25COPY_DIRECTORY%25 /xf *.pdb /xf *.ilk&#xD;&#xA;if ERRORLEVEL 8 exit 1&#xD;&#xA;exit 0" />
   </Target>
 
 </Project>
