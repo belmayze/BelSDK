@@ -73,6 +73,12 @@
     <Filter Include="ヘッダー ファイル\math">
       <UniqueIdentifier>{73ca0d2a-2029-4ede-9c87-b6bc239d4a86}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\resource">
+      <UniqueIdentifier>{b875716d-2051-4114-bcd3-cd8fdfb5eefa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\resource">
+      <UniqueIdentifier>{4ace3e66-8ec3-4ebe-b528-c3817d3c3613}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\belMain.h">
@@ -177,6 +183,12 @@
     <ClInclude Include="..\Include\math\belColor.inl.h">
       <Filter>ヘッダー ファイル\math</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\resource\belResourceLoader.h">
+      <Filter>ヘッダー ファイル\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\resource\belResource.h">
+      <Filter>ヘッダー ファイル\resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -238,6 +250,12 @@
     </ClCompile>
     <ClCompile Include="..\Source\math\belColor.cpp">
       <Filter>ソース ファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\resource\belResourceLoader.cpp">
+      <Filter>ソース ファイル\resource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\resource\belResource.cpp">
+      <Filter>ソース ファイル\resource</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

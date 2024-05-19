@@ -19,6 +19,13 @@ public:
      * @param[in] args... 引数
      */
     static void Output(const char* format, ...);
+
+    /*!
+     * エラー出力
+     * @param[in] format  フォーマット
+     * @param[in] args... 引数
+     */
+    static void Error(const char* format, ...);
 };
 //-----------------------------------------------------------------------------
 }
@@ -28,7 +35,9 @@ public:
 //-----------------------------------------------------------------------------
 #if BEL_TARGET_IS_DEBUG()
 #   define BEL_PRINT(...)   bel::debug::Console::Output(__VA_ARGS__)
+#   define BEL_ERROR(...)   bel::debug::Console::Error(__VA_ARGS__)
 #else
 #   define BEL_PRINT(...)
+#   define BEL_ERROR(...)
 #endif // BEL_TARGET_IS_DEBUG()
 //-----------------------------------------------------------------------------

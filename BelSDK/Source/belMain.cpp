@@ -14,6 +14,7 @@
 #include "base/belApplication.h"
 #include "debug/performance/belPerfTime.h"
 #include "graphics/belGraphicsEngine.h"
+#include "resource/belResourceLoader.h"
 
 namespace {
 
@@ -29,6 +30,7 @@ static void PreMain()
     bel::Application::GetInstance();
     bel::debug::PerfTime::GetInstance().initialize();
     bel::GraphicsEngine::GetInstance();
+    bel::res::Loader::GetInstance();
 }
 
 }
