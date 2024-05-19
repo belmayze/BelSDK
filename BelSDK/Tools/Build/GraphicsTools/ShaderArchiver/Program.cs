@@ -255,6 +255,137 @@ namespace ShaderArchiver
                                 WriteShader(writer, shaderFiles.VertexShaderFilepath!);
                                 WriteShader(writer, shaderFiles.PixelShaderFilepath!);
                                 break;
+
+                            case ShaderType.VertexGeometryPixel:
+                                // ヘッダー構築
+                                header.VertexSize   = (uint)new FileInfo(shaderFiles.VertexShaderFilepath!).Length;
+                                header.VertexOffset = baseOffset;
+                                baseOffset += header.VertexSize;
+
+                                header.GeometrySize   = (uint)new FileInfo(shaderFiles.GeometryShaderFilepath!).Length;
+                                header.GeometryOffset = baseOffset;
+                                baseOffset += header.GeometrySize;
+
+                                header.PixelSize   = (uint)new FileInfo(shaderFiles.PixelShaderFilepath!).Length;
+                                header.PixelOffset = baseOffset;
+
+                                // ヘッダー出力
+                                WriteHeader(writer, header);
+
+                                // ファイル出力
+                                WriteShader(writer, shaderFiles.VertexShaderFilepath!);
+                                WriteShader(writer, shaderFiles.GeometryShaderFilepath!);
+                                WriteShader(writer, shaderFiles.PixelShaderFilepath!);
+                                break;
+
+                            case ShaderType.Tessellation:
+                                // ヘッダー構築
+                                header.HullSize   = (uint)new FileInfo(shaderFiles.HullShaderFilepath!).Length;
+                                header.HullOffset = baseOffset;
+                                baseOffset += header.HullSize;
+
+                                header.VertexSize   = (uint)new FileInfo(shaderFiles.VertexShaderFilepath!).Length;
+                                header.VertexOffset = baseOffset;
+                                baseOffset += header.VertexSize;
+
+                                header.DomainSize   = (uint)new FileInfo(shaderFiles.DomainShaderFilepath!).Length;
+                                header.DomainOffset = baseOffset;
+                                baseOffset += header.DomainSize;
+
+                                header.PixelSize   = (uint)new FileInfo(shaderFiles.PixelShaderFilepath!).Length;
+                                header.PixelOffset = baseOffset;
+
+                                // ヘッダー出力
+                                WriteHeader(writer, header);
+
+                                // ファイル出力
+                                WriteShader(writer, shaderFiles.HullShaderFilepath!);
+                                WriteShader(writer, shaderFiles.VertexShaderFilepath!);
+                                WriteShader(writer, shaderFiles.DomainShaderFilepath!);
+                                WriteShader(writer, shaderFiles.PixelShaderFilepath!);
+                                break;
+
+                            case ShaderType.TessellationGeometry:
+                                // ヘッダー構築
+                                header.HullSize   = (uint)new FileInfo(shaderFiles.HullShaderFilepath!).Length;
+                                header.HullOffset = baseOffset;
+                                baseOffset += header.HullSize;
+
+                                header.VertexSize   = (uint)new FileInfo(shaderFiles.VertexShaderFilepath!).Length;
+                                header.VertexOffset = baseOffset;
+                                baseOffset += header.VertexSize;
+
+                                header.DomainSize   = (uint)new FileInfo(shaderFiles.DomainShaderFilepath!).Length;
+                                header.DomainOffset = baseOffset;
+                                baseOffset += header.DomainSize;
+
+                                header.GeometrySize   = (uint)new FileInfo(shaderFiles.GeometryShaderFilepath!).Length;
+                                header.GeometryOffset = baseOffset;
+                                baseOffset += header.GeometrySize;
+
+                                header.PixelSize   = (uint)new FileInfo(shaderFiles.PixelShaderFilepath!).Length;
+                                header.PixelOffset = baseOffset;
+
+                                // ヘッダー出力
+                                WriteHeader(writer, header);
+
+                                // ファイル出力
+                                WriteShader(writer, shaderFiles.HullShaderFilepath!);
+                                WriteShader(writer, shaderFiles.VertexShaderFilepath!);
+                                WriteShader(writer, shaderFiles.DomainShaderFilepath!);
+                                WriteShader(writer, shaderFiles.PixelShaderFilepath!);
+                                break;
+
+                            case ShaderType.Compute:
+                                // ヘッダー構築
+                                header.ComputeSize   = (uint)new FileInfo(shaderFiles.ComputeShaderFilepath!).Length;
+                                header.ComputeOffset = baseOffset;
+
+                                // ヘッダー出力
+                                WriteHeader(writer, header);
+
+                                // ファイル出力
+                                WriteShader(writer, shaderFiles.ComputeShaderFilepath!);
+                                break;
+
+                            case ShaderType.Mesh:
+                                // ヘッダー構築
+                                header.MeshSize = (uint)new FileInfo(shaderFiles.MeshShaderFilepath!).Length;
+                                header.MeshOffset = baseOffset;
+                                baseOffset += header.MeshSize;
+
+                                header.PixelSize   = (uint)new FileInfo(shaderFiles.PixelShaderFilepath!).Length;
+                                header.PixelOffset = baseOffset;
+
+                                // ヘッダー出力
+                                WriteHeader(writer, header);
+
+                                // ファイル出力
+                                WriteShader(writer, shaderFiles.MeshShaderFilepath!);
+                                WriteShader(writer, shaderFiles.PixelShaderFilepath!);
+                                break;
+
+                            case ShaderType.MeshAmplification:
+                                // ヘッダー構築
+                                header.AmplificationSize   = (uint)new FileInfo(shaderFiles.AmplificationShaderFilepath!).Length;
+                                header.AmplificationOffset = baseOffset;
+                                baseOffset += header.AmplificationSize;
+
+                                header.MeshSize = (uint)new FileInfo(shaderFiles.MeshShaderFilepath!).Length;
+                                header.MeshOffset = baseOffset;
+                                baseOffset += header.MeshSize;
+
+                                header.PixelSize   = (uint)new FileInfo(shaderFiles.PixelShaderFilepath!).Length;
+                                header.PixelOffset = baseOffset;
+
+                                // ヘッダー出力
+                                WriteHeader(writer, header);
+
+                                // ファイル出力
+                                WriteShader(writer, shaderFiles.AmplificationShaderFilepath!);
+                                WriteShader(writer, shaderFiles.MeshShaderFilepath!);
+                                WriteShader(writer, shaderFiles.PixelShaderFilepath!);
+                                break;
                         }
                     }
                 }
@@ -294,7 +425,8 @@ namespace ShaderArchiver
         /// <param name="filepath"></param>
         static void WriteShader(BinaryWriter writer, string filepath)
         {
-
+            byte[] fileBytes = File.ReadAllBytes(filepath);
+            writer.Write(fileBytes);
         }
     }
 }
