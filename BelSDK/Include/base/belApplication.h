@@ -27,6 +27,7 @@ public:
         uint32_t    height       = 480;
         const char* title        = nullptr;
         const char* window_class = nullptr;
+        const char* content_root = nullptr;
     };
 
     //-------------------------------------------------------------------------

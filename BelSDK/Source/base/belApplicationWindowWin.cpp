@@ -104,6 +104,36 @@ bool ApplicationWindowWin::createWindow(const char* title, const char* class_nam
     return true;
 }
 //-----------------------------------------------------------------------------
+void ApplicationWindowWin::setContentRoot(const std::string& path)
+{
+    std::unique_ptr<TCHAR[]> dir_path = std::make_unique<TCHAR[]>(MAX_PATH);
+
+    if (path.empty())
+    {
+        // 設定がない場合は実行パスを設定する
+        GetModuleFileName(nullptr, dir_path.get(), MAX_PATH);
+
+        // 実行ルートパス / Content
+        TCHAR* p = _tcsrchr(dir_path.get(), _T('\\'));
+        if (p)
+        {
+            std::memcpy(p, _T("\\Content\\\0"), sizeof(TCHAR) * 10);
+        }
+    }
+    else
+    {
+        // 設定がある場合はそのパスを設定する
+        size_t ret = 0;
+#       ifdef UNICODE
+        mbstowcs_s(&ret, dir_path.get(), path.size() + 1, path.c_str(), MAX_PATH);
+#       else
+        strcpy_s(dir_path.get(), path.size() + 1, path.c_str());
+#       endif // UNICODE
+    }
+
+    SetCurrentDirectory(dir_path.get());
+}
+//-----------------------------------------------------------------------------
 bool ApplicationWindowWin::peekWindowMessage()
 {
     // メッセージチェック

@@ -25,6 +25,12 @@ public:
     virtual bool createWindow(const char* title, const char* class_name, uint32_t width, uint32_t height) = 0;
 
     /*!
+     * Content のルートパスを設定する
+     * @param[in] path パス
+     */
+    virtual void setContentRoot(const std::string& path) = 0;
+
+    /*!
      * メッセージを処理します
      * @note true が返ってきた場合はアプリケーションループを終了させます
      * @return 終了メッセージが来たら true を返します

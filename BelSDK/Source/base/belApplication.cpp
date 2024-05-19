@@ -106,6 +106,10 @@ int Application::onInvokeWindowMessage(const Thread& thread, const InitializeArg
         mIsQuit.store(true, std::memory_order_release);
         return -1;
     }
+
+    // コンテントルートを設定
+    ApplicationWindow::GetInstance().setContentRoot(arg.content_root ? arg.content_root : "");
+
     // ウィンドウ生成が終わったらシグナル
     mInitializedEvent.signal();
 
