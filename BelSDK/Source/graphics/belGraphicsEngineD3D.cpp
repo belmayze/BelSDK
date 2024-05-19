@@ -52,7 +52,7 @@ bool GraphicsEngineD3D::initialize()
 
     // デバイス取得
     {
-        D3D_FEATURE_LEVEL feature_level = D3D_FEATURE_LEVEL_12_0;
+        D3D_FEATURE_LEVEL feature_level = D3D_FEATURE_LEVEL_12_1;
         Microsoft::WRL::ComPtr<IDXGIAdapter1> p_adapter;
         Microsoft::WRL::ComPtr<ID3D12Device6> p_device;
         Microsoft::WRL::ComPtr<IDXGIOutput>   p_tmp_output;
