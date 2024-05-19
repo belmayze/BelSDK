@@ -6,6 +6,7 @@
  * Copyright (c) belmayze. All rights reserved.
  */
 using CommandLine;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 
 namespace ShaderArchiver
@@ -32,8 +33,8 @@ namespace ShaderArchiver
         public string? GeometryShaderFilepath { get; set; } = null;
         public string? PixelShaderFilepath { get; set; } = null;
         public string? ComputeShaderFilepath { get; set; } = null;
-        public string? DomainShaderFilepath { get; set; } = null;
         public string? HullShaderFilepath { get; set; } = null;
+        public string? DomainShaderFilepath { get; set; } = null;
         public string? AmplificationShaderFilepath { get; set; } = null;
         public string? MeshShaderFilepath { get; set; } = null;
     }
@@ -166,6 +167,43 @@ namespace ShaderArchiver
             return 0;
         }
 
+        [StructLayout(LayoutKind.Sequential)]
+        class ArchiveHeader
+        {
+            // vs
+            public uint VertexSize { get; set; } = 0;
+            public uint VertexOffset { get; set; } = 0;
+
+            // gs
+            public uint GeometrySize { get; set; } = 0;
+            public uint GeometryOffset { get; set; } = 0;
+
+            // ps
+            public uint PixelSize { get; set; } = 0;
+            public uint PixelOffset { get; set; } = 0;
+
+            // cs
+            public uint ComputeSize { get; set; } = 0;
+            public uint ComputeOffset { get; set; } = 0;
+
+            // hs
+            public uint HullSize { get; set; } = 0;
+            public uint HullOffset { get; set; } = 0;
+
+            // ds
+            public uint DomainSize { get; set; } = 0;
+            public uint DomainOffset { get; set; } = 0;
+
+            // as
+            public uint AmplificationSize { get; set; } = 0;
+            public uint AmplificationOffset { get; set; } = 0;
+
+            // ms
+            public uint MeshSize { get; set; } = 0;
+            public uint MeshOffset { get; set; } = 0;
+
+        }
+
         /// <summary>
         /// アーカイブ
         /// </summary>
@@ -180,6 +218,8 @@ namespace ShaderArchiver
             {
                 using (BinaryWriter writer = new BinaryWriter(stream))
                 {
+                    uint baseOffset = 8 + (uint)Marshal.SizeOf(typeof(ArchiveHeader)); // magic + type + padding
+
                     // ヘッダー書き出し
                     {
                         // マジック
@@ -188,11 +228,73 @@ namespace ShaderArchiver
 
                         // シェーダー種別
                         writer.Write((char)type);
+
+                        // パディング
+                        writer.Write(new char[] { '\0', '\0', '\0' });
+                    }
+
+                    // シェーダー実装
+                    {
+                        ArchiveHeader header = new ArchiveHeader();
+
+                        switch (type)
+                        {
+                            case ShaderType.VertexPixel:
+                                // ヘッダー構築
+                                header.VertexSize   = (uint)new FileInfo(shaderFiles.VertexShaderFilepath!).Length;
+                                header.VertexOffset = baseOffset;
+                                baseOffset += header.VertexSize;
+
+                                header.PixelSize   = (uint)new FileInfo(shaderFiles.PixelShaderFilepath!).Length;
+                                header.PixelOffset = baseOffset;
+
+                                // ヘッダー出力
+                                WriteHeader(writer, header);
+
+                                // ファイル出力
+                                WriteShader(writer, shaderFiles.VertexShaderFilepath!);
+                                WriteShader(writer, shaderFiles.PixelShaderFilepath!);
+                                break;
+                        }
                     }
                 }
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// ヘッダー出力
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="header"></param>
+        static void WriteHeader(BinaryWriter writer, ArchiveHeader header)
+        {
+            int    size   = Marshal.SizeOf(typeof(ArchiveHeader));
+            byte[] buffer = new byte[size];
+            IntPtr ptr    = IntPtr.Zero;
+
+            try
+            {
+                ptr = Marshal.AllocHGlobal(size);
+                Marshal.StructureToPtr(header, ptr, false);
+                Marshal.Copy(ptr, buffer, 0, size);
+            }
+            finally
+            {
+                if (ptr != IntPtr.Zero) { Marshal.FreeHGlobal(ptr); }
+            }
+            writer.Write(buffer);
+        }
+
+        /// <summary>
+        /// シェーダーを書き出す
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="filepath"></param>
+        static void WriteShader(BinaryWriter writer, string filepath)
+        {
+
         }
     }
 }
