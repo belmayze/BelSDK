@@ -15,6 +15,7 @@ namespace bel::gfx { class CommandList; }
 namespace bel::gfx { class CommandQueue; }
 namespace bel::gfx { class RenderTarget; }
 namespace bel::gfx { class Texture; }
+namespace bel { class Application; }
 
 namespace bel {
 //-----------------------------------------------------------------------------
@@ -41,6 +42,12 @@ public:
     virtual void executeCommand() override;
 
     /*!
+     * コマンド生成前に必要なコマンドを積みます
+     * @param[in] command_context コマンドコンテキスト
+     */
+    virtual void makeInitialCommand(gfx::CommandContext& command_context) const override;
+
+    /*!
      * メインキューのコマンド実行完了を待機する
      */
     virtual void waitCommandQueue() override;
@@ -59,6 +66,17 @@ public:
 public:
     //! デバイス取得
     ID3D12Device6& getDevice() { BEL_ASSERT(mpDevice.Get()); return *mpDevice.Get(); }
+
+    //-------------------------------------------------------------------------
+public:
+    //! アプリケーションクラスから取得できる関数
+    class ApplicationAccessor
+    {
+        friend Application;
+    private:
+        gfx::CommandQueue& getMainCommandQueue();
+        gfx::CommandList&  getMainCommandList();
+    };
 
     //-------------------------------------------------------------------------
     // パラメーター

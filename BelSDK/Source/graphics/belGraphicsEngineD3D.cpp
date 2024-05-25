@@ -259,52 +259,50 @@ void GraphicsEngineD3D::executeCommand()
 {
     // コマンド実行
     {
-        gfx::CommandContext context(*mpMainCommandList);
-        mpMainCommandList->begin();
-        {
-            // 処理前にコマンドに積む必要のあるものをここで積む
-            mpMainCommandList->getCommandList().SetGraphicsRootSignature(mpGraphicsRootSignature.Get());
-            mpMainCommandList->getCommandList().SetComputeRootSignature(mpComputeRootSignature.Get());
-
-            // @TODO
-            // 仮でクリア処理
-            uint32_t buffer_index = mpSwapChain->GetCurrentBackBufferIndex();
-
-            // PRESENT -> RENDER_TARGET
-            {
-                D3D12_RESOURCE_BARRIER desc = {};
-                desc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-                desc.Transition.pResource   = &mSwapChainTextures[buffer_index].getResource();
-                desc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-                desc.Transition.StateAfter  = D3D12_RESOURCE_STATE_RENDER_TARGET;
-                mpMainCommandList->getCommandList().ResourceBarrier(1, &desc);
-            }
-
-            // clear
-            mSwapChainRenderTargets[buffer_index].clear(
-                context, Color::cGray()
-            );
-
-            // RENDER_TARGET -> PRESENT
-            {
-                D3D12_RESOURCE_BARRIER desc = {};
-                desc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-                desc.Transition.pResource   = &mSwapChainTextures[buffer_index].getResource();
-                desc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-                desc.Transition.StateAfter  = D3D12_RESOURCE_STATE_PRESENT;
-                mpMainCommandList->getCommandList().ResourceBarrier(1, &desc);
-            }
-        }
-        mpMainCommandList->end();
-
-        // 実行して終了
-        context.executeCommand(*mpMainCommandQueue);
+        ID3D12CommandList* p_command_lists[1] = { &mpMainCommandList->getCommandList() };
+        mpMainCommandQueue->getCommandQueue().ExecuteCommandLists(1, p_command_lists);
     }
 
     // 終了したことを知らせるフェンスを最後に入れる
     ResetEvent(mWaitFenceHandle);
     mpFence->Signal(0);
     mpMainCommandQueue->getCommandQueue().Signal(mpFence.Get(), 1);
+}
+//-----------------------------------------------------------------------------
+void GraphicsEngineD3D::makeInitialCommand(gfx::CommandContext& command_context) const
+{
+    // 処理前にコマンドに積む必要のあるものをここで積む
+    command_context.getCommandList().SetGraphicsRootSignature(mpGraphicsRootSignature.Get());
+    command_context.getCommandList().SetComputeRootSignature(mpComputeRootSignature.Get());
+
+    // @TODO
+    // 仮でクリア処理
+    uint32_t buffer_index = mpSwapChain->GetCurrentBackBufferIndex();
+
+    // PRESENT -> RENDER_TARGET
+    {
+        D3D12_RESOURCE_BARRIER desc = {};
+        desc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+        desc.Transition.pResource   = &mSwapChainTextures[buffer_index].getResource();
+        desc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+        desc.Transition.StateAfter  = D3D12_RESOURCE_STATE_RENDER_TARGET;
+        command_context.getCommandList().ResourceBarrier(1, &desc);
+    }
+
+    // clear
+    mSwapChainRenderTargets[buffer_index].clear(
+        command_context, Color::cGray()
+    );
+
+    // RENDER_TARGET -> PRESENT
+    {
+        D3D12_RESOURCE_BARRIER desc = {};
+        desc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+        desc.Transition.pResource   = &mSwapChainTextures[buffer_index].getResource();
+        desc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+        desc.Transition.StateAfter  = D3D12_RESOURCE_STATE_PRESENT;
+        command_context.getCommandList().ResourceBarrier(1, &desc);
+    }
 }
 //-----------------------------------------------------------------------------
 void GraphicsEngineD3D::waitCommandQueue()
@@ -325,6 +323,20 @@ void GraphicsEngineD3D::present()
 void GraphicsEngineD3D::finalize()
 {
     mSwapChainTextures.reset();
+}
+//-----------------------------------------------------------------------------
+// Accessor
+//-----------------------------------------------------------------------------
+gfx::CommandQueue& GraphicsEngineD3D::ApplicationAccessor::getMainCommandQueue()
+{
+    BEL_ASSERT(GraphicsEngineD3D::GetInstance().mpMainCommandQueue.get());
+    return *GraphicsEngineD3D::GetInstance().mpMainCommandQueue;
+}
+//-----------------------------------------------------------------------------
+gfx::CommandList& GraphicsEngineD3D::ApplicationAccessor::getMainCommandList()
+{
+    BEL_ASSERT(GraphicsEngineD3D::GetInstance().mpMainCommandList.get());
+    return *GraphicsEngineD3D::GetInstance().mpMainCommandList;
 }
 //-----------------------------------------------------------------------------
 // internal

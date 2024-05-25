@@ -14,6 +14,7 @@
     <ClInclude Include="..\Include\base\belApplication.h" />
     <ClInclude Include="..\Include\base\belApplicationWindow.h" />
     <ClInclude Include="..\Include\base\belApplicationWindowWin.h" />
+    <ClInclude Include="..\Include\base\belIApplicationCallback.h" />
     <ClInclude Include="..\Include\belDefine.h" />
     <ClInclude Include="..\Include\belMain.h" />
     <ClInclude Include="..\Include\belPrecompile.h" />

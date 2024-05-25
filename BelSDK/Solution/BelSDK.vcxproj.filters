@@ -189,6 +189,9 @@
     <ClInclude Include="..\Include\resource\belResource.h">
       <Filter>ヘッダー ファイル\resource</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\base\belIApplicationCallback.h">
+      <Filter>ヘッダー ファイル\base</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">

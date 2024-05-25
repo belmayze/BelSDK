@@ -9,7 +9,9 @@
 #include <clocale>
 // bel
 #include "base/belApplication.h"
+#include "base/belIApplicationCallback.h"
 #include "base/belApplicationWindow.h"
+#include "graphics/common/belGraphicsCommandList.h"
 #include "graphics/belGraphicsEngine.h"
 #include "thread/belThread.h"
 
@@ -50,6 +52,9 @@ bool Application::initialize(const InitializeArg& arg)
         return false;
     }
 
+    // コールバック登録
+    mpCallback = arg.p_callback;
+
     return true;
 }
 //-----------------------------------------------------------------------------
@@ -73,10 +78,28 @@ int Application::enterLoop()
         // 前フレームの画面反映
         GraphicsEngine::GetInstance().present();
         
+        // コマンドの生成
+        {
+            GraphicsEngine::ApplicationAccessor accessor;
+            accessor.getMainCommandList().begin();
+            {
+                // コマンドコンテキスト生成
+                gfx::CommandContext context(accessor.getMainCommandList());
+
+                // 初回コマンド生成
+                GraphicsEngine::GetInstance().makeInitialCommand(context);
+
+                // コールバック
+                if (mpCallback) { mpCallback->onMakeCommand(context); }
+            }
+            accessor.getMainCommandList().end();
+        }
+        
         // コマンド実行
         GraphicsEngine::GetInstance().executeCommand();
 
-        // @TODO: 処理
+        // 計算処理
+        if (mpCallback) { mpCallback->onCalc(); }
 
         // コマンド実行と VSync 待ち
         GraphicsEngine::GetInstance().waitCommandQueue();
@@ -99,7 +122,7 @@ int Application::onInvokeWindowMessage(const Thread& thread, const InitializeArg
 {
     // ウィンドウ生成
     // 生成したスレッドでしかメッセージ処理できないのでここでやる
-    if (!ApplicationWindow::GetInstance().createWindow(arg.title, arg.window_class, arg.width, arg.height))
+    if (!ApplicationWindow::GetInstance().createWindow(arg.title, arg.window_class_name, arg.width, arg.height))
     {
         // 失敗したら終了
         mInitializedEvent.signal();

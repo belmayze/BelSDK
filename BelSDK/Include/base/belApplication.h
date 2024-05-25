@@ -10,6 +10,7 @@
 #include "memory/belSingleton.h"
 #include "thread/belEvent.h"
 
+namespace bel { class IApplicationCallback; }
 namespace bel { class Thread; }
 
 namespace bel {
@@ -23,11 +24,12 @@ public:
     //! 初期化引数
     struct InitializeArg
     {
-        uint32_t    width        = 640;
-        uint32_t    height       = 480;
-        const char* title        = nullptr;
-        const char* window_class = nullptr;
-        const char* content_root = nullptr;
+        uint32_t              width             = 640;
+        uint32_t              height            = 480;
+        const char*           title             = nullptr;
+        const char*           window_class_name = nullptr;
+        const char*           content_root      = nullptr;
+        IApplicationCallback* p_callback        = nullptr;
     };
 
     //-------------------------------------------------------------------------
@@ -55,7 +57,8 @@ public:
     //-------------------------------------------------------------------------
 private:
     std::unique_ptr<Thread> mpWindowMessageThread;
-    std::atomic_bool        mIsQuit = false;
+    IApplicationCallback*   mpCallback = nullptr;
+    std::atomic_bool        mIsQuit    = false;
     Event                   mInitializedEvent;
     Event                   mQuitEvent;
 

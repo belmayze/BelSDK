@@ -37,11 +37,11 @@ int belMain(int argc, const char** argv)
     // 初期化
     {
         bel::Application::InitializeArg init_arg;
-        init_arg.width        = 1280;
-        init_arg.height       = 720;
-        init_arg.title        = "BelTest";
-        init_arg.window_class = "belmayze";
-        init_arg.content_root = p_content;
+        init_arg.width             = 1280;
+        init_arg.height            = 720;
+        init_arg.title             = "BelTest";
+        init_arg.window_class_name = "belmayze";
+        init_arg.content_root      = p_content;
 
         if (!application.initialize(init_arg)) { return -1; }
     }
