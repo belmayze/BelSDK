@@ -7,6 +7,7 @@
  */
 // bel
 #include "base/belApplication.h"
+#include "test/testApplication.h"
 #include "test/testExecutor.h"
 
 /*!
@@ -14,9 +15,6 @@
  */
 int belMain(int argc, const char** argv)
 {
-    // アプリケーション作成
-    bel::Application& application = bel::Application::GetInstance();
-
     // テスト実行
     app::test::Executor::GetInstance().execute();
 
@@ -34,6 +32,9 @@ int belMain(int argc, const char** argv)
         }
     }
 
+    // テストアプリケーション
+    app::test::Application application;
+
     // 初期化
     {
         bel::Application::InitializeArg init_arg;
@@ -42,10 +43,14 @@ int belMain(int argc, const char** argv)
         init_arg.title             = "BelTest";
         init_arg.window_class_name = "belmayze";
         init_arg.content_root      = p_content;
+        init_arg.p_callback        = &application;
 
-        if (!application.initialize(init_arg)) { return -1; }
+        if (!bel::Application::GetInstance().initialize(init_arg)) { return -1; }
     }
 
+    // 初期化
+    application.initialize();
+
     // ゲームループ開始
-    return application.enterLoop();
+    return bel::Application::GetInstance().enterLoop();
 }

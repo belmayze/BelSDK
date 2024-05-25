@@ -27,7 +27,7 @@ bool Application::initialize(const InitializeArg& arg)
 {
     // ウィンドウメッセージ処理スレッドを初期化
     mpWindowMessageThread = std::make_unique<Thread>(
-        "WindowMessage",
+        "[bel] WindowMessage",
         [&arg, this](const Thread& thread)
         {
             return onInvokeWindowMessage(thread, arg);
