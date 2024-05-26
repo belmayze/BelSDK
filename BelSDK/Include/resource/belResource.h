@@ -15,8 +15,20 @@ class Resource
     // ctor / dtor
     //-------------------------------------------------------------------------
 public:
+    //! 無効状態で初期化
+    Resource() {}
+    
+    //! リソース初期化
     Resource(std::unique_ptr<uint8_t[]>&& p_buffer, size_t size)
         : mpBuffer(std::move(p_buffer)), mSize(size) {}
+
+    //! コピー禁止
+    Resource(const Resource&) = delete;
+    Resource& operator=(const Resource&) = delete;
+
+    //! move
+    Resource(Resource&& rhs) noexcept;
+    Resource& operator=(Resource&& rhs) noexcept;
 
     //-------------------------------------------------------------------------
     // getter

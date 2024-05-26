@@ -13,14 +13,14 @@
 
 namespace bel::res {
 //-----------------------------------------------------------------------------
-std::unique_ptr<Resource> Loader::loadSync(const std::string& filepath)
+Resource Loader::loadSync(const std::string& filepath)
 {
     // ファイル読み込み
     std::ifstream stream(filepath.c_str(), std::ios::binary);
     if (!stream)
     {
         BEL_ERROR("ファイルが見つかりませんでした. [%s]\n", filepath.c_str());
-        return nullptr;
+        return Resource();
     }
 
     // ファイルサイズを取得
@@ -29,14 +29,14 @@ std::unique_ptr<Resource> Loader::loadSync(const std::string& filepath)
     if (size < 0)
     {
         BEL_ERROR("ファイルサイズが取得できませんでした. [%s]\n", filepath.c_str());
-        return nullptr;
+        return Resource();
     }
     stream.seekg(0, std::ios::beg);
 
     // ファイルサイズが 0 ならここで終了
     if (size == 0)
     {
-        return std::make_unique<Resource>(nullptr, 0);
+        return Resource(nullptr, 0);
     }
 
     // メモリー確保
@@ -44,7 +44,7 @@ std::unique_ptr<Resource> Loader::loadSync(const std::string& filepath)
     if (!buffer)
     {
         BEL_ERROR("メモリー不足でファイル読み込みに失敗しました. [%s]\n", filepath.c_str());
-        return nullptr;
+        return Resource();
     }
 
     // ファイルを読み込んで閉じる
@@ -52,7 +52,7 @@ std::unique_ptr<Resource> Loader::loadSync(const std::string& filepath)
     stream.close();
 
     // リソース生成
-    return std::make_unique<Resource>(std::move(buffer), static_cast<size_t>(size));
+    return Resource(std::move(buffer), static_cast<size_t>(size));
 }
 //-----------------------------------------------------------------------------
 } // bel::res::

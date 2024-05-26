@@ -23,7 +23,14 @@ public:
      * ファイル読み込み
      * @param[in] filepath ファイルパス
      */
-    std::unique_ptr<Resource> loadSync(const std::string& filepath);
+    Resource loadSync(const std::string& filepath);
+
+    /*!
+     * ファイル読み込み (cast 版)
+     * @param[in] filepath ファイルパス
+     */
+    template <class T>
+    T loadSyncAs(const std::string& filepath) { return T(); }
 };
 //-----------------------------------------------------------------------------
 } // bel::res::

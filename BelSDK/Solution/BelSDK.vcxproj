@@ -44,7 +44,9 @@
     <ClInclude Include="..\Include\math\belVector4.inl.h" />
     <ClInclude Include="..\Include\memory\belSingleton.h" />
     <ClInclude Include="..\Include\resource\belResource.h" />
+    <ClInclude Include="..\Include\resource\belResourceFactory.h" />
     <ClInclude Include="..\Include\resource\belResourceLoader.h" />
+    <ClInclude Include="..\Include\resource\belResourceShaderArchive.h" />
     <ClInclude Include="..\Include\thread\belEvent.h" />
     <ClInclude Include="..\Include\thread\belThread.h" />
     <ClInclude Include="..\Include\util\belUtilEnum.h" />
@@ -70,6 +72,7 @@
     <ClCompile Include="..\Source\math\belVector4.cpp" />
     <ClCompile Include="..\Source\resource\belResource.cpp" />
     <ClCompile Include="..\Source\resource\belResourceLoader.cpp" />
+    <ClCompile Include="..\Source\resource\belResourceShaderArchive.cpp" />
     <ClCompile Include="..\Source\thread\belEvent.cpp" />
     <ClCompile Include="..\Source\thread\belThread.cpp" />
   </ItemGroup>

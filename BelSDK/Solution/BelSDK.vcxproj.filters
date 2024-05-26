@@ -192,6 +192,12 @@
     <ClInclude Include="..\Include\base\belIApplicationCallback.h">
       <Filter>ヘッダー ファイル\base</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\resource\belResourceShaderArchive.h">
+      <Filter>ヘッダー ファイル\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\resource\belResourceFactory.h">
+      <Filter>ヘッダー ファイル\resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -258,6 +264,9 @@
       <Filter>ソース ファイル\resource</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\resource\belResource.cpp">
+      <Filter>ソース ファイル\resource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\resource\belResourceShaderArchive.cpp">
       <Filter>ソース ファイル\resource</Filter>
     </ClCompile>
   </ItemGroup>

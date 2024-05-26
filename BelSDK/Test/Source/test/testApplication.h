@@ -8,6 +8,7 @@
 #pragma once
 // bel
 #include "base/belIApplicationCallback.h"
+#include "resource/belResourceShaderArchive.h"
 
 namespace app::test {
 //-----------------------------------------------------------------------------
@@ -34,6 +35,9 @@ public:
      * @param[in] command_context コマンドコンテキスト
      */
     virtual void onMakeCommand(bel::gfx::CommandContext& command_context) const override;
+
+private:
+    bel::res::ShaderArchive mResShaderArchive;
 };
 //-----------------------------------------------------------------------------
 }

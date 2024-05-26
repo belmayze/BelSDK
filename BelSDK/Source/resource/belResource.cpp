@@ -10,5 +10,19 @@
 
 namespace bel::res {
 //-----------------------------------------------------------------------------
+// move
+//-----------------------------------------------------------------------------
+Resource::Resource(Resource&& rhs) noexcept
+    : mpBuffer(std::move(rhs.mpBuffer)), mSize(rhs.mSize)
+{
+    rhs.mSize = 0;
+}
+//-----------------------------------------------------------------------------
+Resource& Resource::operator=(Resource&& rhs) noexcept
+{
+    mpBuffer = std::move(rhs.mpBuffer);
+    mSize    = rhs.mSize; rhs.mSize = 0;
+    return *this;
+}
 //-----------------------------------------------------------------------------
 } // bel::res::
