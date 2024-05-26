@@ -16,21 +16,31 @@ namespace bel::res {
 //-----------------------------------------------------------------------------
 // factory
 //-----------------------------------------------------------------------------
-ShaderArchive ShaderArchiveFactory::MakeResource(Resource&& resource)
+ShaderArchive ShaderArchiveFactory::Create(Resource&& resource)
 {
-    return ShaderArchive();
+    BEL_ASSERT(resource.isValid());
+
+    // ヘッダー取得
+    const ShaderArchive::FileHeader* p_header = reinterpret_cast<const ShaderArchive::FileHeader*>(resource.getBuffer());
+    if (strcmp(reinterpret_cast<const char*>(p_header->magic), "BSHA") != 0)
+    {
+        // ファイル破損
+        return ShaderArchive();
+    }
+
+    // ヘッダーを登録してシェーダーアーカイブを構築
+    return ShaderArchive(std::move(resource), *p_header);
 }
 //-----------------------------------------------------------------------------
-
-} // bel::res::
-
-// loadSyncAs 特殊化
-namespace bel::res {
-
 template <>
 ShaderArchive Loader::loadSyncAs<ShaderArchive>(const std::string& filepath)
 {
-    return ShaderArchiveFactory::MakeResource(loadSync(filepath));
+    // ファイル読み込み
+    Resource resource = loadSync(filepath);
+    if (!resource) { return ShaderArchive(); }
+
+    // 構築
+    return ShaderArchiveFactory::Create(std::move(resource));
 }
 
-}
+} // bel::res::

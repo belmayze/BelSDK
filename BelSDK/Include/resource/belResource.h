@@ -44,6 +44,18 @@ public:
      */
     size_t getSize() const { return mSize; }
 
+    /*!
+     * 有効判定
+     */
+    bool isValid() const { return mSize != 0; }
+
+    //-------------------------------------------------------------------------
+    // operator
+    //-------------------------------------------------------------------------
+public:
+    //! bool オペレーター
+    operator bool() const { return isValid(); }
+
     //-------------------------------------------------------------------------
 private:
     std::unique_ptr<uint8_t[]> mpBuffer;

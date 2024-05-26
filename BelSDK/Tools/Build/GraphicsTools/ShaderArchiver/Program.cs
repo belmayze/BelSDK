@@ -37,6 +37,7 @@ namespace ShaderArchiver
         public string? DomainShaderFilepath { get; set; } = null;
         public string? AmplificationShaderFilepath { get; set; } = null;
         public string? MeshShaderFilepath { get; set; } = null;
+        public string? LibraryShaderFilepath { get; set; } = null;
     }
 
     /// <summary>
@@ -51,6 +52,7 @@ namespace ShaderArchiver
         Compute,              // cs
         Mesh,                 // ms + ps
         MeshAmplification,    // as + ms + ps
+        Library,              // lib
         Unknown
     }
 
@@ -93,14 +95,15 @@ namespace ShaderArchiver
                 if (match.Success && match.Groups["suffix"].Success)
                 {
                     string suffix = match.Groups["suffix"].Value;
-                    if      (suffix.Equals("vs")) { shaderFiles.VertexShaderFilepath        = file; }
-                    else if (suffix.Equals("gs")) { shaderFiles.GeometryShaderFilepath      = file; }
-                    else if (suffix.Equals("ps")) { shaderFiles.PixelShaderFilepath         = file; }
-                    else if (suffix.Equals("cs")) { shaderFiles.ComputeShaderFilepath       = file; }
-                    else if (suffix.Equals("ds")) { shaderFiles.DomainShaderFilepath        = file; }
-                    else if (suffix.Equals("hs")) { shaderFiles.HullShaderFilepath          = file; }
-                    else if (suffix.Equals("as")) { shaderFiles.AmplificationShaderFilepath = file; }
-                    else if (suffix.Equals("ms")) { shaderFiles.MeshShaderFilepath          = file; }
+                    if      (suffix.Equals("vs"))  { shaderFiles.VertexShaderFilepath        = file; }
+                    else if (suffix.Equals("gs"))  { shaderFiles.GeometryShaderFilepath      = file; }
+                    else if (suffix.Equals("ps"))  { shaderFiles.PixelShaderFilepath         = file; }
+                    else if (suffix.Equals("cs"))  { shaderFiles.ComputeShaderFilepath       = file; }
+                    else if (suffix.Equals("ds"))  { shaderFiles.DomainShaderFilepath        = file; }
+                    else if (suffix.Equals("hs"))  { shaderFiles.HullShaderFilepath          = file; }
+                    else if (suffix.Equals("as"))  { shaderFiles.AmplificationShaderFilepath = file; }
+                    else if (suffix.Equals("ms"))  { shaderFiles.MeshShaderFilepath          = file; }
+                    else if (suffix.Equals("lib")) { shaderFiles.LibraryShaderFilepath       = file; }
                 }
             }
 
@@ -154,6 +157,11 @@ namespace ShaderArchiver
                     shaderType = ShaderType.Mesh;
                 }
             }
+            else if (shaderFiles.LibraryShaderFilepath is not null)
+            {
+                // lib
+                shaderType = ShaderType.Library;
+            }
             // Unknown ならここで終了
             if (shaderType == ShaderType.Unknown) { return 3; }
 
@@ -201,6 +209,10 @@ namespace ShaderArchiver
             // ms
             public uint MeshSize { get; set; } = 0;
             public uint MeshOffset { get; set; } = 0;
+
+            // lib
+            public uint LibrarySize { get; set; } = 0;
+            public uint LibraryOffset { get; set; } = 0;
 
         }
 
@@ -385,6 +397,18 @@ namespace ShaderArchiver
                                 WriteShader(writer, shaderFiles.AmplificationShaderFilepath!);
                                 WriteShader(writer, shaderFiles.MeshShaderFilepath!);
                                 WriteShader(writer, shaderFiles.PixelShaderFilepath!);
+                                break;
+
+                            case ShaderType.Library:
+                                // ヘッダー構築
+                                header.LibrarySize   = (uint)new FileInfo(shaderFiles.LibraryShaderFilepath!).Length;
+                                header.LibraryOffset = baseOffset;
+
+                                // ヘッダー出力
+                                WriteHeader(writer, header);
+
+                                // ファイル出力
+                                WriteShader(writer, shaderFiles.LibraryShaderFilepath!);
                                 break;
                         }
                     }

@@ -54,6 +54,8 @@ namespace ShaderConverter
             public string? AmplificationShader { get; set; } = null;
             //! メッシュシェーダー
             public string? MeshShader { get; set; } = null;
+            //! ライブラリシェーダー
+            public string? LibraryShader { get; set; } = null;
         }
 
         //! 設定
@@ -377,6 +379,26 @@ namespace ShaderConverter
                             try
                             {
                                 errorFilepaths.Add(target.MeshShader);
+                            }
+                            finally
+                            {
+                                locker.ExitWriteLock();
+                            }
+                        }
+                    }
+                    if (target.LibraryShader is not null)
+                    {
+                        // ライブラリシェーダー（レイトレーシング）
+                        string inputPath   = $"{workingPath}\\{target.LibraryShader}";
+                        string outputPath  = $"{workingPath}\\{target.Name}.lib.cso";
+                        string profileName = $"lib_{fileData.Setting.Profile}";
+                        if (Compile_(process, target.Name, inputPath, outputPath, profileName, new List<string> { "BEL_LIBRARY_SHADER=1" }) != 0)
+                        {
+                            is_success = false;
+                            locker.EnterWriteLock();
+                            try
+                            {
+                                errorFilepaths.Add(target.LibraryShader);
                             }
                             finally
                             {
