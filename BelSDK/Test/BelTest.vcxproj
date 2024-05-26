@@ -84,7 +84,9 @@
       <AdditionalDependencies>bel.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>mklink /j $(TargetDir)Content $(SolutionDir)..\Content</Command>
+      <Command>if not exist "$(TargetDir)Content" (
+  mklink /j $(TargetDir)Content $(SolutionDir)..\Content
+)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -109,7 +111,9 @@
       <AdditionalDependencies>bel.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>mklink /j $(TargetDir)Content $(SolutionDir)..\Content</Command>
+      <Command>if not exist "$(TargetDir)Content" (
+  mklink /j $(TargetDir)Content $(SolutionDir)..\Content
+)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

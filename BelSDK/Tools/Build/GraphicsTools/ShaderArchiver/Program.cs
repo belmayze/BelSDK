@@ -238,11 +238,14 @@ namespace ShaderArchiver
                         char[] magic = { 'B', 'S', 'H', 'A' };
                         writer.Write(magic);
 
+                        // バージョン
+                        writer.Write((char)0);
+
                         // シェーダー種別
                         writer.Write((char)type);
 
                         // パディング
-                        writer.Write(new char[] { '\0', '\0', '\0' });
+                        writer.Write(new char[] { '\0', '\0' });
                     }
 
                     // シェーダー実装

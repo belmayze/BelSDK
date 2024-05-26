@@ -55,8 +55,9 @@ private:
     struct FileHeader
     {
         uint8_t magic[4];
+        uint8_t version;
         uint8_t shader_type;
-        uint8_t padding[3];
+        uint8_t padding[2];
 
         uint32_t vertex_size;
         uint32_t vertex_offset;
