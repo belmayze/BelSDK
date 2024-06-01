@@ -18,6 +18,7 @@ void Application::initialize()
     mResShaderArchive = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderArchive>("Shader/Sample.bshar");
 
     // パイプライン生成
+    mPipeline.initialize(bel::gfx::Pipeline::InitializeArg(), mResShaderArchive);
 }
 //-----------------------------------------------------------------------------
 // callback
@@ -27,9 +28,9 @@ void Application::onCalc()
 
 }
 //-----------------------------------------------------------------------------
-void Application::onMakeCommand(bel::gfx::CommandContext& command_context) const
+void Application::onMakeCommand(bel::gfx::CommandContext& command) const
 {
-
+    mPipeline.setPipeline(command);
 }
 //-----------------------------------------------------------------------------
 }

@@ -22,9 +22,9 @@ public:
 
     /*!
      * 描画コマンドを生成するタイミングで呼ばれます
-     * @param[in] command_context コマンドコンテキスト
+     * @param[in] command コマンド
      */
-    virtual void onMakeCommand(gfx::CommandContext& command_context) const = 0;
+    virtual void onMakeCommand(gfx::CommandContext& command) const = 0;
 };
 //-----------------------------------------------------------------------------
 }

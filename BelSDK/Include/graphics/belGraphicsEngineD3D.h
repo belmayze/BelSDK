@@ -67,6 +67,10 @@ public:
     //! デバイス取得
     ID3D12Device6& getDevice() { BEL_ASSERT(mpDevice.Get()); return *mpDevice.Get(); }
 
+    //! 共有のルート証明取得
+    ID3D12RootSignature& getCommonGraphicsRootSignature() { BEL_ASSERT(mpGraphicsRootSignature.Get()); return *mpGraphicsRootSignature.Get(); }
+    ID3D12RootSignature& getCommonComputeRootSignature()  { BEL_ASSERT(mpComputeRootSignature.Get());  return *mpComputeRootSignature.Get();  }
+
     //-------------------------------------------------------------------------
 public:
     //! アプリケーションクラスから取得できる関数
