@@ -16,6 +16,8 @@ void Application::initialize()
 {
     // リソース読み込み
     mResShaderArchive = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderArchive>("Shader/Sample.bshar");
+
+    // パイプライン生成
 }
 //-----------------------------------------------------------------------------
 // callback

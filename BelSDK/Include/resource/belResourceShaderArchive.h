@@ -47,7 +47,109 @@ public:
     //-------------------------------------------------------------------------
 public:
     //! シェーダー種別
-    
+    ShaderType getShaderType() const { return static_cast<ShaderType>(getHeader_().shader_type); }
+
+    //! 頂点シェーダー取得
+    std::pair<size_t, const void*> getVertexBinary() const
+    {
+        BEL_ASSERT(
+            getShaderType() == ShaderType::VertexPixel ||
+            getShaderType() == ShaderType::VertexGeometryPixel ||
+            getShaderType() == ShaderType::Tessellation ||
+            getShaderType() == ShaderType::TessellationGeometry
+        );
+        BEL_ASSERT(getHeader_().vertex_size != 0 && getHeader_().vertex_offset != 0);
+        return { static_cast<size_t>(getHeader_().vertex_size), getShaderBinary_(getHeader_().vertex_offset) };
+    }
+
+    //! ジオメトリシェーダー取得
+    std::pair<size_t, const void*> getGeometryBinary() const
+    {
+        BEL_ASSERT(
+            getShaderType() == ShaderType::VertexGeometryPixel ||
+            getShaderType() == ShaderType::TessellationGeometry
+        );
+        BEL_ASSERT(getHeader_().geometry_size != 0 && getHeader_().geometry_offset != 0);
+        return { static_cast<size_t>(getHeader_().geometry_size), getShaderBinary_(getHeader_().geometry_offset) };
+    }
+
+    //! ピクセルシェーダー取得
+    std::pair<size_t, const void*> getPixelBinary() const
+    {
+        BEL_ASSERT(
+            getShaderType() == ShaderType::VertexPixel ||
+            getShaderType() == ShaderType::VertexGeometryPixel ||
+            getShaderType() == ShaderType::Tessellation ||
+            getShaderType() == ShaderType::TessellationGeometry ||
+            getShaderType() == ShaderType::Mesh ||
+            getShaderType() == ShaderType::MeshAmplification
+        );
+        BEL_ASSERT(getHeader_().pixel_size != 0 && getHeader_().pixel_offset != 0);
+        return { static_cast<size_t>(getHeader_().pixel_size), getShaderBinary_(getHeader_().pixel_offset) };
+    }
+
+    //! ハルシェーダー取得
+    std::pair<size_t, const void*> getHullBinary() const
+    {
+        BEL_ASSERT(
+            getShaderType() == ShaderType::Tessellation ||
+            getShaderType() == ShaderType::TessellationGeometry
+        );
+        BEL_ASSERT(getHeader_().hull_size != 0 && getHeader_().hull_offset != 0);
+        return { static_cast<size_t>(getHeader_().hull_size), getShaderBinary_(getHeader_().hull_offset) };
+    }
+
+    //! ドメインシェーダー取得
+    std::pair<size_t, const void*> getDomainBinary() const
+    {
+        BEL_ASSERT(
+            getShaderType() == ShaderType::Tessellation ||
+            getShaderType() == ShaderType::TessellationGeometry
+        );
+        BEL_ASSERT(getHeader_().domain_size != 0 && getHeader_().domain_offset != 0);
+        return { static_cast<size_t>(getHeader_().domain_size), getShaderBinary_(getHeader_().domain_offset) };
+    }
+
+    //! コンピュートシェーダー取得
+    std::pair<size_t, const void*> getComputeBinary() const
+    {
+        BEL_ASSERT(
+            getShaderType() == ShaderType::Compute
+        );
+        BEL_ASSERT(getHeader_().compute_size != 0 && getHeader_().compute_offset != 0);
+        return { static_cast<size_t>(getHeader_().compute_size), getShaderBinary_(getHeader_().compute_offset) };
+    }
+
+    //! 増幅シェーダー取得
+    std::pair<size_t, const void*> getAmplificationBinary() const
+    {
+        BEL_ASSERT(
+            getShaderType() == ShaderType::MeshAmplification
+        );
+        BEL_ASSERT(getHeader_().amplification_size != 0 && getHeader_().amplification_offset != 0);
+        return { static_cast<size_t>(getHeader_().amplification_size), getShaderBinary_(getHeader_().amplification_offset) };
+    }
+
+    //! メッシュシェーダー取得
+    std::pair<size_t, const void*> getMeshBinary() const
+    {
+        BEL_ASSERT(
+            getShaderType() == ShaderType::Mesh ||
+            getShaderType() == ShaderType::MeshAmplification
+        );
+        BEL_ASSERT(getHeader_().mesh_size != 0 && getHeader_().mesh_offset != 0);
+        return { static_cast<size_t>(getHeader_().mesh_size), getShaderBinary_(getHeader_().mesh_offset) };
+    }
+
+    //! ライブラリシェーダー取得
+    std::pair<size_t, const void*> getLibraryBinary() const
+    {
+        BEL_ASSERT(
+            getShaderType() == ShaderType::Library
+        );
+        BEL_ASSERT(getHeader_().library_size != 0 && getHeader_().library_offset != 0);
+        return { static_cast<size_t>(getHeader_().library_size), getShaderBinary_(getHeader_().library_offset) };
+    }
 
     //-------------------------------------------------------------------------
 private:
@@ -90,6 +192,18 @@ private:
     //-------------------------------------------------------------------------
 private:
     const FileHeader* mpFileHeader = nullptr;
+
+    //-------------------------------------------------------------------------
+private:
+    //! ヘッダー取得関数
+    const FileHeader& getHeader_() const { BEL_ASSERT(mpFileHeader != nullptr); return *mpFileHeader; }
+
+    //! シェーダーの先頭ポインター取得
+    const void* getShaderBinary_(uint32_t offset) const
+    {
+        const void* ptr = getBuffer();
+        return reinterpret_cast<const uint8_t*>(ptr) + offset;
+    }
 
     //-------------------------------------------------------------------------
 private:
