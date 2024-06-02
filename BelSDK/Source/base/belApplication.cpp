@@ -12,6 +12,8 @@
 #include "base/belIApplicationCallback.h"
 #include "base/belApplicationWindow.h"
 #include "graphics/common/belGraphicsCommandList.h"
+#include "graphics/common/belGraphicsRenderTarget.h"
+#include "graphics/common/belGraphicsTexture.h"
 #include "graphics/belGraphicsEngine.h"
 #include "thread/belThread.h"
 
@@ -84,13 +86,66 @@ int Application::enterLoop()
             accessor.getMainCommandList().begin();
             {
                 // コマンドコンテキスト生成
-                gfx::CommandContext context(accessor.getMainCommandList());
+                gfx::CommandContext command(accessor.getMainCommandList());
 
                 // 初回コマンド生成
-                GraphicsEngine::GetInstance().makeInitialCommand(context);
+                GraphicsEngine::GetInstance().makeInitialCommand(command);
+
+                // デフォルトレンダーターゲットを取得
+                gfx::RenderTarget& default_render_target = GraphicsEngine::GetInstance().getDefaultRenderTarget();
+
+                // PRESENT -> RENDER_TARGET
+                {
+                    D3D12_RESOURCE_BARRIER desc = {};
+                    desc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+                    desc.Transition.pResource   = &default_render_target.getTexture().getResource();
+                    desc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+                    desc.Transition.StateAfter  = D3D12_RESOURCE_STATE_RENDER_TARGET;
+                    command.getCommandList().ResourceBarrier(1, &desc);
+                }
+
+                // クリアする
+                default_render_target.clear(command, Color::cGray());
+
+                // レンダーバッファー設定
+                {
+                    D3D12_CPU_DESCRIPTOR_HANDLE handle[1];
+                    handle[0] = default_render_target.getDescriptorHandle();
+                    command.getCommandList().OMSetRenderTargets(1, handle, FALSE, nullptr);
+                }
+                // ビューポート
+                {
+                    const gfx::Texture& texture = default_render_target.getTexture();
+
+                    D3D12_VIEWPORT vp;
+                    vp.TopLeftX = 0;
+                    vp.TopLeftY = 0;
+                    vp.Width    = static_cast<float>(texture.getWidth());
+                    vp.Height   = static_cast<float>(texture.getHeight());
+                    vp.MinDepth = 0;
+                    vp.MaxDepth = 1;
+                    command.getCommandList().RSSetViewports(1, &vp);
+
+                    D3D12_RECT rect = {};
+                    rect.left   = 0;
+                    rect.top    = 0;
+                    rect.right  = texture.getWidth();
+                    rect.bottom = texture.getHeight();
+                    command.getCommandList().RSSetScissorRects(1, &rect);
+                }
 
                 // コールバック
-                if (mpCallback) { mpCallback->onMakeCommand(context); }
+                if (mpCallback) { mpCallback->onMakeCommand(command); }
+
+                // RENDER_TARGET -> PRESENT
+                {
+                    D3D12_RESOURCE_BARRIER desc = {};
+                    desc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+                    desc.Transition.pResource   = &default_render_target.getTexture().getResource();
+                    desc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+                    desc.Transition.StateAfter  = D3D12_RESOURCE_STATE_PRESENT;
+                    command.getCommandList().ResourceBarrier(1, &desc);
+                }
             }
             accessor.getMainCommandList().end();
         }

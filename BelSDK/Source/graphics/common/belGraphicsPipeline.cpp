@@ -50,7 +50,7 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderArchive& sh
 
             // 出力フォーマット
             desc.NumRenderTargets = 1;
-            desc.RTVFormats[0] = DXGI_FORMAT_R11G11B10_FLOAT;
+            desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
             //desc.DSVFormat     = DXGI_FORMAT_D32_FLOAT;
 
             // サンプル

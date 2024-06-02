@@ -269,40 +269,11 @@ void GraphicsEngineD3D::executeCommand()
     mpMainCommandQueue->getCommandQueue().Signal(mpFence.Get(), 1);
 }
 //-----------------------------------------------------------------------------
-void GraphicsEngineD3D::makeInitialCommand(gfx::CommandContext& command_context) const
+void GraphicsEngineD3D::makeInitialCommand(gfx::CommandContext& command) const
 {
     // 処理前にコマンドに積む必要のあるものをここで積む
-    command_context.getCommandList().SetGraphicsRootSignature(mpGraphicsRootSignature.Get());
-    command_context.getCommandList().SetComputeRootSignature(mpComputeRootSignature.Get());
-
-    // @TODO
-    // 仮でクリア処理
-    uint32_t buffer_index = mpSwapChain->GetCurrentBackBufferIndex();
-
-    // PRESENT -> RENDER_TARGET
-    {
-        D3D12_RESOURCE_BARRIER desc = {};
-        desc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-        desc.Transition.pResource   = &mSwapChainTextures[buffer_index].getResource();
-        desc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-        desc.Transition.StateAfter  = D3D12_RESOURCE_STATE_RENDER_TARGET;
-        command_context.getCommandList().ResourceBarrier(1, &desc);
-    }
-
-    // clear
-    mSwapChainRenderTargets[buffer_index].clear(
-        command_context, Color::cGray()
-    );
-
-    // RENDER_TARGET -> PRESENT
-    {
-        D3D12_RESOURCE_BARRIER desc = {};
-        desc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-        desc.Transition.pResource   = &mSwapChainTextures[buffer_index].getResource();
-        desc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-        desc.Transition.StateAfter  = D3D12_RESOURCE_STATE_PRESENT;
-        command_context.getCommandList().ResourceBarrier(1, &desc);
-    }
+    command.getCommandList().SetGraphicsRootSignature(mpGraphicsRootSignature.Get());
+    command.getCommandList().SetComputeRootSignature(mpComputeRootSignature.Get());
 }
 //-----------------------------------------------------------------------------
 void GraphicsEngineD3D::waitCommandQueue()
@@ -323,6 +294,14 @@ void GraphicsEngineD3D::present()
 void GraphicsEngineD3D::finalize()
 {
     mSwapChainTextures.reset();
+}
+//-----------------------------------------------------------------------------
+// getter
+//-----------------------------------------------------------------------------
+gfx::RenderTarget& GraphicsEngineD3D::getDefaultRenderTarget() const
+{
+    uint32_t buffer_index = mpSwapChain->GetCurrentBackBufferIndex();
+    return mSwapChainRenderTargets[buffer_index];
 }
 //-----------------------------------------------------------------------------
 // Accessor

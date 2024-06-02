@@ -43,9 +43,9 @@ public:
 
     /*!
      * コマンド生成前に必要なコマンドを積みます
-     * @param[in] command_context コマンドコンテキスト
+     * @param[in] command コマンド
      */
-    virtual void makeInitialCommand(gfx::CommandContext& command_context) const override;
+    virtual void makeInitialCommand(gfx::CommandContext& command) const override;
 
     /*!
      * メインキューのコマンド実行完了を待機する
@@ -70,6 +70,9 @@ public:
     //! 共有のルート証明取得
     ID3D12RootSignature& getCommonGraphicsRootSignature() { BEL_ASSERT(mpGraphicsRootSignature.Get()); return *mpGraphicsRootSignature.Get(); }
     ID3D12RootSignature& getCommonComputeRootSignature()  { BEL_ASSERT(mpComputeRootSignature.Get());  return *mpComputeRootSignature.Get();  }
+
+    //! デフォルトレンダーターゲット取得
+    gfx::RenderTarget& getDefaultRenderTarget() const;
 
     //-------------------------------------------------------------------------
 public:

@@ -56,7 +56,7 @@ struct PS_OUT
 PS_OUT main(PS_INPUT input)
 {
     PS_OUT output;
-    output.color0 = float4(1.f, 0.f, 0.f, 1.f);
+    output.color0 = float4(1.f, 1.f, 1.f, 1.f);
     return output;
 }
 

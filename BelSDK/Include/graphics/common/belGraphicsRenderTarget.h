@@ -32,6 +32,9 @@ public:
     //! テクスチャーを取得
     const Texture& getTexture() const { BEL_ASSERT(mpTexture != nullptr); return *mpTexture; }
 
+    //! デスクリプターハンドル
+    D3D12_CPU_DESCRIPTOR_HANDLE getDescriptorHandle() const { return mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart(); }
+
     //-------------------------------------------------------------------------
     // command
     //-------------------------------------------------------------------------

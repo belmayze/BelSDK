@@ -27,9 +27,9 @@ public:
 
     /*!
      * コマンド生成前に必要なコマンドを積みます
-     * @param[in] command_context コマンドコンテキスト
+     * @param[in] command コマンド
      */
-    virtual void makeInitialCommand(gfx::CommandContext& command_context) const = 0;
+    virtual void makeInitialCommand(gfx::CommandContext& command) const = 0;
 
     /*!
      * メインキューのコマンド実行完了を待機する
