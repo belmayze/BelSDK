@@ -33,11 +33,12 @@ struct VS_INPUT
 //! main
 PS_INPUT main(VS_INPUT input)
 {
-    float3 position_view = mul(float4(input.position, 1.f), cViewMatrix);
+    //float3 position_view = mul(float4(input.position, 1.f), cViewMatrix);
 
     // èoóÕ
     PS_INPUT output;
-    output.position = mul(float4(position_view, 1.f), cProjectionMatrix);
+    output.position = float4(input.position, 1.f);
+    //output.position = mul(float4(position_view, 1.f), cProjectionMatrix);
     return output;
 }
 

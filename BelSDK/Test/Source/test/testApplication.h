@@ -8,6 +8,7 @@
 #pragma once
 // bel
 #include "base/belIApplicationCallback.h"
+#include "graphics/common/belGraphicsMesh.h"
 #include "graphics/common/belGraphicsPipeline.h"
 #include "resource/belResourceShaderArchive.h"
 
@@ -40,6 +41,7 @@ public:
 private:
     bel::res::ShaderArchive mResShaderArchive;
     bel::gfx::Pipeline      mPipeline;
+    bel::gfx::Mesh          mMesh;
 };
 //-----------------------------------------------------------------------------
 }

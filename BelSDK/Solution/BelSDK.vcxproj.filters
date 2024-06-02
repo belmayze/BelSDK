@@ -204,6 +204,9 @@
     <ClInclude Include="..\Include\graphics\belGraphicsDefine.h">
       <Filter>ヘッダー ファイル\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\graphics\common\belGraphicsMesh.h">
+      <Filter>ヘッダー ファイル\graphics\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -276,6 +279,9 @@
       <Filter>ソース ファイル\resource</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\graphics\common\belGraphicsPipeline.cpp">
+      <Filter>ソース ファイル\graphics\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\graphics\common\belGraphicsMesh.cpp">
       <Filter>ソース ファイル\graphics\common</Filter>
     </ClCompile>
   </ItemGroup>

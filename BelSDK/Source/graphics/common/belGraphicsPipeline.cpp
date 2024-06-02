@@ -41,8 +41,8 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderArchive& sh
             desc.BlendState.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
             // デプス
-            desc.DepthStencilState.DepthEnable    = true;
-            desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+            desc.DepthStencilState.DepthEnable    = false;
+            desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
             desc.DepthStencilState.DepthFunc      = D3D12_COMPARISON_FUNC_LESS;
 
             // トポロジー
@@ -51,7 +51,7 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderArchive& sh
             // 出力フォーマット
             desc.NumRenderTargets = 1;
             desc.RTVFormats[0] = DXGI_FORMAT_R11G11B10_FLOAT;
-            desc.DSVFormat     = DXGI_FORMAT_D32_FLOAT;
+            //desc.DSVFormat     = DXGI_FORMAT_D32_FLOAT;
 
             // サンプル
             desc.SampleMask       = std::numeric_limits<uint32_t>::max();
