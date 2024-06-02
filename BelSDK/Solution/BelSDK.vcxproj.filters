@@ -201,6 +201,9 @@
     <ClInclude Include="..\Include\graphics\common\belGraphicsPipeline.h">
       <Filter>ヘッダー ファイル\graphics\common</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\graphics\belGraphicsDefine.h">
+      <Filter>ヘッダー ファイル\graphics</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">

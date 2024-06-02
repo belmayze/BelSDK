@@ -22,6 +22,7 @@
     <ClInclude Include="..\Include\container\belVector.h" />
     <ClInclude Include="..\Include\debug\belConsole.h" />
     <ClInclude Include="..\Include\debug\performance\belPerfTime.h" />
+    <ClInclude Include="..\Include\graphics\belGraphicsDefine.h" />
     <ClInclude Include="..\Include\graphics\belGraphicsEngine.h" />
     <ClInclude Include="..\Include\graphics\belGraphicsEngineD3D.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsCommandContext.h" />

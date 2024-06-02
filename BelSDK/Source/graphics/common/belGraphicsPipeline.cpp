@@ -26,8 +26,6 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderArchive& sh
         case res::ShaderArchive::ShaderType::VertexGeometryPixel:
         case res::ShaderArchive::ShaderType::Tessellation:
         case res::ShaderArchive::ShaderType::TessellationGeometry:
-        case res::ShaderArchive::ShaderType::Mesh:
-        case res::ShaderArchive::ShaderType::MeshAmplification:
         {
             D3D12_GRAPHICS_PIPELINE_STATE_DESC desc = {};
             desc.pRootSignature = &GraphicsEngine::GetInstance().getCommonGraphicsRootSignature();
@@ -118,11 +116,6 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderArchive& sh
                     desc.DS.pShaderBytecode = ds_bin;
                 }
             }
-            else
-            {
-                // MS
-                return false;
-            }
 
             // パイプライン生成
             if (FAILED(GraphicsEngine::GetInstance().getDevice().CreateGraphicsPipelineState(&desc, IID_PPV_ARGS(&p_pipeline))))
@@ -131,6 +124,13 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderArchive& sh
             }
 
             break;
+        }
+
+        // メッシュシェーダー
+        case res::ShaderArchive::ShaderType::Mesh:
+        case res::ShaderArchive::ShaderType::MeshAmplification:
+        {
+            return false;
         }
 
         // コンピュート系
@@ -159,7 +159,6 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderArchive& sh
         case res::ShaderArchive::ShaderType::Library:
         {
             return false;
-            break;
         }
     }
 
