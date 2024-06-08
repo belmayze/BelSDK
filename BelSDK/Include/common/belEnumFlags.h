@@ -62,6 +62,22 @@ public:
     //! 任意の位置のビットが1になっているかを判定する
     constexpr bool test(T e) const { return mBits.test(static_cast<BaseT>(e)); }
 
+    //! 任意のすべてのビットが1になっているかを判定する
+    template <class... Flags>
+    constexpr bool testAll(T head, Flags... tail) const
+    {
+        static_assert(std::conjunction_v<std::is_same<T, Flags>...>, "フラグの型を指定してください");
+        return test(head) && testAll(tail...);
+    }
+
+    //! 任意のいずれかのビットが1になっているかを判定する
+    template <class... Flags>
+    constexpr bool testAny(T head, Flags... tail) const
+    {
+        static_assert(std::conjunction_v<std::is_same<T, Flags>...>, "フラグの型を指定してください");
+        return test(head) || testAny(tail...);
+    }
+
     //! 全てのビットが1になっているかを判定する
     constexpr bool all() const { return mBits.all(); }
 
@@ -92,10 +108,14 @@ private:
         uint64_t v = 0;
         for (auto&& flag : flags)
         {
-            v |= 1 << static_cast<uint64_t>(flag);
+            v |= static_cast<uint64_t>(1 << static_cast<BaseT>(flag));
         }
         return v;
     }
+
+    //! 可変長テンプレートの引数0の時の関数
+    constexpr bool testAll() const { return true; }
+    constexpr bool testAny() const { return false; }
 };
 //-----------------------------------------------------------------------------
 }

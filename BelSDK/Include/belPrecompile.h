@@ -41,6 +41,10 @@
 #include "util/belUtilEnum.h"
 #include "debug/performance/belPerfTime.h"
 #include "debug/belConsole.h"
+// bel/*define
+#include "graphics/belGraphicsDefine.h"
+// bel/common
+#include "common/belEnumFlags.h"
 // bel/math
 #include "math/belMath.h"
 // bel/container
