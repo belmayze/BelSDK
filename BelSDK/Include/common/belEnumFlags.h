@@ -1,5 +1,5 @@
 ﻿/*!
- * @file   belEnumFlag.h
+ * @file   belEnumFlags.h
  * @brief  
  * @author belmayze
  * 
@@ -14,7 +14,7 @@ namespace bel {
 // 列挙フラグ
 //-----------------------------------------------------------------------------
 template <typename T>
-class EnumFlag
+class EnumFlags
 {
     // enum のみ許可
     static_assert(std::is_enum_v<T>, "列挙型のみ指定可能です");
@@ -25,31 +25,31 @@ class EnumFlag
     //-------------------------------------------------------------------------
 public:
     //! コンストラクター
-    constexpr EnumFlag() {}
+    constexpr EnumFlags() {}
 
     //! 指定したフラグを立てるコンストラクター
-    constexpr EnumFlag(std::initializer_list<T> flags) : mBits(to_bitset(flags)) {}
+    constexpr EnumFlags(std::initializer_list<T> flags) : mBits(to_bitset(flags)) {}
 
     //-------------------------------------------------------------------------
     // setter
     //-------------------------------------------------------------------------
 public:
     //! 任意の位置のビットを設定する
-    constexpr EnumFlag& set(T e, bool v = true)
+    constexpr EnumFlags& set(T e, bool v = true)
     {
         mBits.set(static_cast<BaseT>(e), v);
         return *this;
     }
 
     //! 任意の位置のビットを0にする
-    constexpr EnumFlag& reset(T e)
+    constexpr EnumFlags& reset(T e)
     {
         set(e, false);
         return *this;
     }
 
     //! すべてのビットを0にする
-    constexpr EnumFlag& reset()
+    constexpr EnumFlags& reset()
     {
         mBits.reset();
         return *this;
