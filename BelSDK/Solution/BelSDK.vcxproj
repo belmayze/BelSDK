@@ -18,6 +18,7 @@
     <ClInclude Include="..\Include\belDefine.h" />
     <ClInclude Include="..\Include\belMain.h" />
     <ClInclude Include="..\Include\belPrecompile.h" />
+    <ClInclude Include="..\Include\common\belEnumFlags.h" />
     <ClInclude Include="..\Include\container\belDeque.h" />
     <ClInclude Include="..\Include\container\belVector.h" />
     <ClInclude Include="..\Include\debug\belConsole.h" />
@@ -29,8 +30,10 @@
     <ClInclude Include="..\Include\graphics\common\belGraphicsCommandList.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsCommandQueue.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsCommandType.h" />
+    <ClInclude Include="..\Include\graphics\common\belGraphicsDepthStencil.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsMesh.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsPipeline.h" />
+    <ClInclude Include="..\Include\graphics\common\belGraphicsRenderBuffer.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsRenderTarget.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsTexture.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsTextureType.h" />
@@ -66,8 +69,10 @@
     <ClCompile Include="..\Source\graphics\common\belGraphicsCommandContext.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsCommandList.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsCommandQueue.cpp" />
+    <ClCompile Include="..\Source\graphics\common\belGraphicsDepthStencil.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsMesh.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsPipeline.cpp" />
+    <ClCompile Include="..\Source\graphics\common\belGraphicsRenderBuffer.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsRenderTarget.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsTexture.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureDescriptorHandle.cpp" />
@@ -131,7 +136,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>$(ProjectDir)..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -158,7 +163,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
-      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <AdditionalIncludeDirectories>$(ProjectDir)..\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

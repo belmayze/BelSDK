@@ -79,6 +79,12 @@
     <Filter Include="ソース ファイル\resource">
       <UniqueIdentifier>{4ace3e66-8ec3-4ebe-b528-c3817d3c3613}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\common">
+      <UniqueIdentifier>{d45a3c40-2cf5-4f86-bd61-86da456f3455}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\common">
+      <UniqueIdentifier>{0f0d7b0d-fc4a-4993-b30b-f7086f4cb157}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\belMain.h">
@@ -207,6 +213,15 @@
     <ClInclude Include="..\Include\graphics\common\belGraphicsMesh.h">
       <Filter>ヘッダー ファイル\graphics\common</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\graphics\common\belGraphicsDepthStencil.h">
+      <Filter>ヘッダー ファイル\graphics\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\graphics\common\belGraphicsRenderBuffer.h">
+      <Filter>ヘッダー ファイル\graphics\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\common\belEnumFlags.h">
+      <Filter>ヘッダー ファイル\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -282,6 +297,12 @@
       <Filter>ソース ファイル\graphics\common</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\graphics\common\belGraphicsMesh.cpp">
+      <Filter>ソース ファイル\graphics\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\graphics\common\belGraphicsDepthStencil.cpp">
+      <Filter>ソース ファイル\graphics\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\graphics\common\belGraphicsRenderBuffer.cpp">
       <Filter>ソース ファイル\graphics\common</Filter>
     </ClCompile>
   </ItemGroup>
