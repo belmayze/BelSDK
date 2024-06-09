@@ -43,6 +43,20 @@ public:
      */
     void clearDepthStencil() { mpDepthStencil = nullptr; }
 
+    /*!
+     * バッファー解像度を設定する
+     */
+    void setResolution(uint32_t width, uint32_t height) { mWidth = width; mHeight = height; }
+
+    //-------------------------------------------------------------------------
+    // getter
+    //-------------------------------------------------------------------------
+public:
+    //! 横幅
+    uint32_t getWidth() const { return mWidth; }
+    //! 高さ
+    uint32_t getHeight() const { return mHeight; }
+
     //-------------------------------------------------------------------------
     // command
     //-------------------------------------------------------------------------
@@ -67,6 +81,8 @@ public:
 private:
     std::array<const RenderTarget*, cMaxRenderTargets> mpRenderTargets = { nullptr };
     const DepthStencil*                                mpDepthStencil = nullptr;
+    uint32_t mWidth  = 0;
+    uint32_t mHeight = 0;
 };
 //-----------------------------------------------------------------------------
 }

@@ -247,6 +247,7 @@ bool GraphicsEngineD3D::initialize()
 
             // レンダーターゲットからレンダーバッファーを作る
             mSwapChainRenderBuffers[i_buffer].setRenderTarget(0, mSwapChainRenderTargets[i_buffer]);
+            mSwapChainRenderBuffers[i_buffer].setResolution(desc.Width, desc.Height);
         }
     }
 
