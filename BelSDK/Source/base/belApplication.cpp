@@ -15,6 +15,7 @@
 #include "graphics/common/belGraphicsRenderBuffer.h"
 #include "graphics/common/belGraphicsRenderTarget.h"
 #include "graphics/common/belGraphicsTexture.h"
+#include "graphics/common/belGraphicsViewport.h"
 #include "graphics/belGraphicsEngine.h"
 #include "thread/belThread.h"
 
@@ -113,25 +114,7 @@ int Application::enterLoop()
                 default_render_buffer.bind(command);
 
                 // ビューポート
-                {
-                    const gfx::Texture& texture = default_render_target.getTexture();
-
-                    D3D12_VIEWPORT vp;
-                    vp.TopLeftX = 0;
-                    vp.TopLeftY = 0;
-                    vp.Width    = static_cast<float>(texture.getWidth());
-                    vp.Height   = static_cast<float>(texture.getHeight());
-                    vp.MinDepth = 0;
-                    vp.MaxDepth = 1;
-                    command.getCommandList().RSSetViewports(1, &vp);
-
-                    D3D12_RECT rect = {};
-                    rect.left   = 0;
-                    rect.top    = 0;
-                    rect.right  = texture.getWidth();
-                    rect.bottom = texture.getHeight();
-                    command.getCommandList().RSSetScissorRects(1, &rect);
-                }
+                gfx::Viewport(default_render_buffer).setCommand(command);
 
                 // コールバック
                 if (mpCallback) { mpCallback->onMakeCommand(command); }

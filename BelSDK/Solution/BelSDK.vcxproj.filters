@@ -222,6 +222,9 @@
     <ClInclude Include="..\Include\common\belEnumFlags.h">
       <Filter>ヘッダー ファイル\common</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\graphics\common\belGraphicsViewport.h">
+      <Filter>ヘッダー ファイル\graphics\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -303,6 +306,9 @@
       <Filter>ソース ファイル\graphics\common</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\graphics\common\belGraphicsRenderBuffer.cpp">
+      <Filter>ソース ファイル\graphics\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\graphics\common\belGraphicsViewport.cpp">
       <Filter>ソース ファイル\graphics\common</Filter>
     </ClCompile>
   </ItemGroup>

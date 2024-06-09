@@ -37,6 +37,7 @@
     <ClInclude Include="..\Include\graphics\common\belGraphicsRenderTarget.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsTexture.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsTextureType.h" />
+    <ClInclude Include="..\Include\graphics\common\belGraphicsViewport.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsTextureDescriptorHandle.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsTextureDescriptorRegistry.h" />
     <ClInclude Include="..\Include\math\belColor.h" />
@@ -75,6 +76,7 @@
     <ClCompile Include="..\Source\graphics\common\belGraphicsRenderBuffer.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsRenderTarget.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsTexture.cpp" />
+    <ClCompile Include="..\Source\graphics\common\belGraphicsViewport.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureDescriptorHandle.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureDescriptorRegistry.cpp" />
     <ClCompile Include="..\Source\math\belColor.cpp" />
