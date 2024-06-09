@@ -50,20 +50,39 @@ bool Texture::initialize(const InitializeArg& arg)
         return false;
     }
 
-    return initializeFromGPUMemory(arg, std::move(p_resource));
+    return initializeFromGPUMemory(arg, std::move(p_resource), ResourceState::cGenericRead);
 }
 //-----------------------------------------------------------------------------
-bool Texture::initializeFromGPUMemory(const InitializeArg& arg, Microsoft::WRL::ComPtr<ID3D12Resource>&& p_resource)
+bool Texture::initializeFromGPUMemory(const InitializeArg& arg, Microsoft::WRL::ComPtr<ID3D12Resource>&& p_resource, ResourceState state)
 {
     // GPU メモリーなので記録するだけ
-    mWidth     = arg.mWidth;
-    mHeight    = arg.mHeight;
-    mNumMip    = arg.mNumMip;
-    mFormat    = arg.mFormat;
-    mDimension = arg.mDimension;
-    mpResource = std::move(p_resource);
+    mWidth         = arg.mWidth;
+    mHeight        = arg.mHeight;
+    mNumMip        = arg.mNumMip;
+    mFormat        = arg.mFormat;
+    mDimension     = arg.mDimension;
+    mResourceState = state;
+    mpResource     = std::move(p_resource);
 
     return true;
+}
+//-----------------------------------------------------------------------------
+// command
+//-----------------------------------------------------------------------------
+void Texture::barrierTransition(CommandContext& command, ResourceState next_state) const
+{
+    // ステートが異なる場合のみバリアを張る
+    if (mResourceState != next_state)
+    {
+        D3D12_RESOURCE_BARRIER desc = {};
+        desc.Type                   = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+        desc.Transition.pResource   = mpResource.Get();
+        desc.Transition.StateBefore = to_native(mResourceState);
+        desc.Transition.StateAfter  = to_native(next_state);
+        command.getCommandList().ResourceBarrier(1, &desc);
+
+        mResourceState = next_state;
+    }
 }
 //-----------------------------------------------------------------------------
 }

@@ -98,14 +98,7 @@ int Application::enterLoop()
                 gfx::RenderBuffer& default_render_buffer = GraphicsEngine::GetInstance().getDefaultRenderBuffer();
 
                 // PRESENT -> RENDER_TARGET
-                {
-                    D3D12_RESOURCE_BARRIER desc = {};
-                    desc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-                    desc.Transition.pResource   = &default_render_target.getTexture().getResource();
-                    desc.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-                    desc.Transition.StateAfter  = D3D12_RESOURCE_STATE_RENDER_TARGET;
-                    command.getCommandList().ResourceBarrier(1, &desc);
-                }
+                default_render_target.getTexture().barrierTransition(command, gfx::ResourceState::cRenderTarget);
 
                 // クリアする
                 default_render_buffer.clear(command, Color::cGray(), 1.f, 0, gfx::EClearType::cColor);
@@ -120,14 +113,7 @@ int Application::enterLoop()
                 if (mpCallback) { mpCallback->onMakeCommand(command); }
 
                 // RENDER_TARGET -> PRESENT
-                {
-                    D3D12_RESOURCE_BARRIER desc = {};
-                    desc.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-                    desc.Transition.pResource   = &default_render_target.getTexture().getResource();
-                    desc.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-                    desc.Transition.StateAfter  = D3D12_RESOURCE_STATE_PRESENT;
-                    command.getCommandList().ResourceBarrier(1, &desc);
-                }
+                default_render_target.getTexture().barrierTransition(command, gfx::ResourceState::cPresent);
             }
             accessor.getMainCommandList().end();
         }

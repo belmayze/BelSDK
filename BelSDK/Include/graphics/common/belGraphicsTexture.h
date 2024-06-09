@@ -43,8 +43,9 @@ public:
      * テクスチャーを GPU メモリーで初期化します
      * @param[in] arg        初期化引数
      * @param[in] p_resource GPUリソース
+     * @param[in] state      リソースステート
      */
-    bool initializeFromGPUMemory(const InitializeArg& arg, Microsoft::WRL::ComPtr<ID3D12Resource>&& p_resource);
+    bool initializeFromGPUMemory(const InitializeArg& arg, Microsoft::WRL::ComPtr<ID3D12Resource>&& p_resource, ResourceState state);
 
     //-------------------------------------------------------------------------
     // getter
@@ -68,15 +69,27 @@ public:
     ID3D12Resource& getResource() const { BEL_ASSERT(mpResource.Get() != nullptr); return *mpResource.Get(); }
 
     //-------------------------------------------------------------------------
+    // command
+    //-------------------------------------------------------------------------
+public:
+    /*!
+     * リソースステートの変更を行います
+     * @param[in] command    コマンド
+     * @param[in] next_state 次のステート状態
+     */
+    void barrierTransition(CommandContext& command, ResourceState next_state) const;
+
+    //-------------------------------------------------------------------------
 private:
     Microsoft::WRL::ComPtr<ID3D12Resource> mpResource;
 
-    uint32_t         mWidth     = 1;
-    uint32_t         mHeight    = 1;
-    uint32_t         mDepth     = 1;
-    uint32_t         mNumMip    = 1;
-    TextureFormat    mFormat    = TextureFormat::cR8G8B8A8_uNorm;
-    TextureDimension mDimension = TextureDimension::c2D;
+    uint32_t              mWidth         = 1;
+    uint32_t              mHeight        = 1;
+    uint32_t              mDepth         = 1;
+    uint32_t              mNumMip        = 1;
+    TextureFormat         mFormat        = TextureFormat::cR8G8B8A8_uNorm;
+    TextureDimension      mDimension     = TextureDimension::c2D;
+    mutable ResourceState mResourceState = ResourceState::cGenericRead;
 };
 //-----------------------------------------------------------------------------
 }

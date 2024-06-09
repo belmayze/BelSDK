@@ -121,4 +121,31 @@ constexpr D3D12_DSV_DIMENSION to_native_dsv(TextureDimension dimension)
 }
 
 //-----------------------------------------------------------------------------
+// リソースステート
+//-----------------------------------------------------------------------------
+enum class ResourceState
+{
+    cRenderTarget,
+    cDepthWrite,
+    cGenericRead,
+    cPresent,
+    cNum
+};
+
+// cast
+constexpr D3D12_RESOURCE_STATES to_native(ResourceState state)
+{
+    switch (state)
+    {
+    case bel::gfx::ResourceState::cRenderTarget: return D3D12_RESOURCE_STATE_RENDER_TARGET;
+    case bel::gfx::ResourceState::cDepthWrite:   return D3D12_RESOURCE_STATE_DEPTH_WRITE;
+    case bel::gfx::ResourceState::cGenericRead:  return D3D12_RESOURCE_STATE_GENERIC_READ;
+    case bel::gfx::ResourceState::cPresent:      return D3D12_RESOURCE_STATE_PRESENT;
+    }
+
+    BEL_ASSERT(0);
+    return D3D12_RESOURCE_STATE_GENERIC_READ;
+}
+
+//-----------------------------------------------------------------------------
 }

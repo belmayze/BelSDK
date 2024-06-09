@@ -239,7 +239,8 @@ bool GraphicsEngineD3D::initialize()
             init_arg.mDimension = gfx::TextureDimension::c2D;
             mSwapChainTextures[i_buffer].initializeFromGPUMemory(
                 init_arg,
-                std::move(p_resource)
+                std::move(p_resource),
+                gfx::ResourceState::cPresent
             );
 
             // テクスチャーからレンダーターゲットを作る
