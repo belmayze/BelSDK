@@ -6,8 +6,8 @@ Belmayze SDK
 
 ## 動作環境
 * Microsoft Windows 11
-* VisualStudio 2022 (C++20)
-* DirectX 12
+* VisualStudio 2022 (C++23)
+* DirectX 12 (12.1)
 
 ## 実行方法
 ### SDK テスト
