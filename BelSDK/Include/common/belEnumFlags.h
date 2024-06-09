@@ -27,6 +27,9 @@ public:
     //! コンストラクター
     constexpr EnumFlags() {}
 
+    //! 単一のフラグを立てるコンストラクター
+    constexpr EnumFlags(T e) : mBits(to_bitset({e})) {}
+
     //! 指定したフラグを立てるコンストラクター
     constexpr EnumFlags(std::initializer_list<T> flags) : mBits(to_bitset(flags)) {}
 
@@ -108,7 +111,7 @@ private:
         uint64_t v = 0;
         for (auto&& flag : flags)
         {
-            v |= static_cast<uint64_t>(1 << static_cast<BaseT>(flag));
+            v |= static_cast<uint64_t>(1) << static_cast<BaseT>(flag);
         }
         return v;
     }
