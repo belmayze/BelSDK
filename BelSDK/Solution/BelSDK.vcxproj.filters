@@ -225,6 +225,9 @@
     <ClInclude Include="..\Include\graphics\common\belGraphicsViewport.h">
       <Filter>ヘッダー ファイル\graphics\common</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\graphics\common\belGraphicsTextureFormatInfo.h">
+      <Filter>ヘッダー ファイル\graphics\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">

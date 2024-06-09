@@ -36,6 +36,7 @@
     <ClInclude Include="..\Include\graphics\common\belGraphicsRenderBuffer.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsRenderTarget.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsTexture.h" />
+    <ClInclude Include="..\Include\graphics\common\belGraphicsTextureFormatInfo.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsTextureType.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsViewport.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsTextureDescriptorHandle.h" />
