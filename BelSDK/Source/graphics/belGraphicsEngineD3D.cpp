@@ -10,6 +10,7 @@
 #include "graphics/common/belGraphicsCommandContext.h"
 #include "graphics/common/belGraphicsCommandList.h"
 #include "graphics/common/belGraphicsCommandQueue.h"
+#include "graphics/common/belGraphicsRenderBuffer.h"
 #include "graphics/common/belGraphicsRenderTarget.h"
 #include "graphics/common/belGraphicsTexture.h"
 #include "graphics/internal/belGraphicsTextureDescriptorRegistry.h"
@@ -220,6 +221,7 @@ bool GraphicsEngineD3D::initialize()
         // スワップチェーンからテクスチャーを取得する
         mSwapChainTextures = std::make_unique<gfx::Texture[]>(cNumBuffer);
         mSwapChainRenderTargets = std::make_unique<gfx::RenderTarget[]>(cNumBuffer);
+        mSwapChainRenderBuffers = std::make_unique<gfx::RenderBuffer[]>(cNumBuffer);
         for (uint32_t i_buffer = 0; i_buffer < cNumBuffer; ++i_buffer)
         {
             // リソースを取得してテクスチャーを生成
@@ -242,6 +244,9 @@ bool GraphicsEngineD3D::initialize()
 
             // テクスチャーからレンダーターゲットを作る
             mSwapChainRenderTargets[i_buffer].initialize(mSwapChainTextures[i_buffer]);
+
+            // レンダーターゲットからレンダーバッファーを作る
+            mSwapChainRenderBuffers[i_buffer].setRenderTarget(0, mSwapChainRenderTargets[i_buffer]);
         }
     }
 
@@ -302,6 +307,12 @@ gfx::RenderTarget& GraphicsEngineD3D::getDefaultRenderTarget() const
 {
     uint32_t buffer_index = mpSwapChain->GetCurrentBackBufferIndex();
     return mSwapChainRenderTargets[buffer_index];
+}
+//-----------------------------------------------------------------------------
+gfx::RenderBuffer& GraphicsEngineD3D::getDefaultRenderBuffer() const
+{
+    uint32_t buffer_index = mpSwapChain->GetCurrentBackBufferIndex();
+    return mSwapChainRenderBuffers[buffer_index];
 }
 //-----------------------------------------------------------------------------
 // Accessor

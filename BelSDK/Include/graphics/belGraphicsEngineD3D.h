@@ -14,6 +14,7 @@
 namespace bel::gfx { class CommandList; }
 namespace bel::gfx { class CommandQueue; }
 namespace bel::gfx { class RenderTarget; }
+namespace bel::gfx { class RenderBuffer; }
 namespace bel::gfx { class Texture; }
 namespace bel { class Application; }
 
@@ -74,6 +75,9 @@ public:
     //! デフォルトレンダーターゲット取得
     gfx::RenderTarget& getDefaultRenderTarget() const;
 
+    //! デフォルトレンダーバッファー取得
+    gfx::RenderBuffer& getDefaultRenderBuffer() const;
+
     //-------------------------------------------------------------------------
 public:
     //! アプリケーションクラスから取得できる関数
@@ -130,6 +134,7 @@ private:
     std::unique_ptr<gfx::CommandList>           mpMainCommandList;
     std::unique_ptr<gfx::Texture[]>             mSwapChainTextures;
     std::unique_ptr<gfx::RenderTarget[]>        mSwapChainRenderTargets;
+    std::unique_ptr<gfx::RenderBuffer[]>        mSwapChainRenderBuffers;
     HANDLE                                      mWaitFenceHandle = HANDLE();
 
     bool mIsSupportedHDR = false;

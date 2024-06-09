@@ -12,6 +12,7 @@
 #include "base/belIApplicationCallback.h"
 #include "base/belApplicationWindow.h"
 #include "graphics/common/belGraphicsCommandList.h"
+#include "graphics/common/belGraphicsRenderBuffer.h"
 #include "graphics/common/belGraphicsRenderTarget.h"
 #include "graphics/common/belGraphicsTexture.h"
 #include "graphics/belGraphicsEngine.h"
@@ -91,8 +92,9 @@ int Application::enterLoop()
                 // 初回コマンド生成
                 GraphicsEngine::GetInstance().makeInitialCommand(command);
 
-                // デフォルトレンダーターゲットを取得
+                // デフォルトレンダーターゲットとレンダーバッファーを取得
                 gfx::RenderTarget& default_render_target = GraphicsEngine::GetInstance().getDefaultRenderTarget();
+                gfx::RenderBuffer& default_render_buffer = GraphicsEngine::GetInstance().getDefaultRenderBuffer();
 
                 // PRESENT -> RENDER_TARGET
                 {
@@ -105,14 +107,11 @@ int Application::enterLoop()
                 }
 
                 // クリアする
-                default_render_target.clear(command, Color::cGray());
+                default_render_buffer.clear(command, Color::cGray(), 1.f, 0, gfx::EClearType::cColor);
 
-                // レンダーバッファー設定
-                {
-                    D3D12_CPU_DESCRIPTOR_HANDLE handle[1];
-                    handle[0] = default_render_target.getDescriptorHandle();
-                    command.getCommandList().OMSetRenderTargets(1, handle, FALSE, nullptr);
-                }
+                // レンダーバッファーセット
+                default_render_buffer.bind(command);
+
                 // ビューポート
                 {
                     const gfx::Texture& texture = default_render_target.getTexture();

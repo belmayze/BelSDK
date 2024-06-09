@@ -17,9 +17,42 @@ namespace bel::gfx {
 class RenderBuffer
 {
     //-------------------------------------------------------------------------
+    // setter
+    //-------------------------------------------------------------------------
+public:
+    /*!
+     * レンダーターゲットを設定する
+     * @param[in] index  インデックス
+     * @param[in] target ターゲット
+     */
+    void setRenderTarget(uint32_t index, const RenderTarget& target) { mpRenderTargets[index] = &target; }
+
+    /*!
+     * デプスステンシルを設定する
+     * @param[in] depth_stencil デプスステンシル
+     */
+    void setDepthStencil(const DepthStencil& depth_stencil) { mpDepthStencil = &depth_stencil; }
+
+    /*!
+     * レンダーターゲットをクリアします
+     */
+    void clearRenderTargets() { mpRenderTargets.fill(nullptr); }
+
+    /*!
+     * デプスステンシルをクリアします
+     */
+    void clearDepthStencil() { mpDepthStencil = nullptr; }
+
+    //-------------------------------------------------------------------------
     // command
     //-------------------------------------------------------------------------
 public:
+    /*!
+     * 使えるようにターゲットをバインドします
+     * @param[in] command コマンド
+     */
+    void bind(CommandContext& command) const;
+
     /*!
      * 任意の色でクリアします
      * @param[in] command     コマンド
@@ -32,8 +65,8 @@ public:
 
     //-------------------------------------------------------------------------
 private:
-    std::array<RenderTarget*, cMaxRenderTargets> mpRenderTargets = { nullptr };
-    DepthStencil*                                mpDepthStencil = nullptr;
+    std::array<const RenderTarget*, cMaxRenderTargets> mpRenderTargets = { nullptr };
+    const DepthStencil*                                mpDepthStencil = nullptr;
 };
 //-----------------------------------------------------------------------------
 }
