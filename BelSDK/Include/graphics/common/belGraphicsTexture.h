@@ -34,11 +34,17 @@ public:
     //-------------------------------------------------------------------------
 public:
     /*!
+     * テクスチャー初期化
+     * @param[in] arg 初期化引数
+     */
+    bool initialize(const InitializeArg& arg);
+
+    /*!
      * テクスチャーを GPU メモリーで初期化します
      * @param[in] arg        初期化引数
      * @param[in] p_resource GPUリソース
      */
-    void initializeFromGPUMemory(const InitializeArg& arg, Microsoft::WRL::ComPtr<ID3D12Resource>&& p_resource);
+    bool initializeFromGPUMemory(const InitializeArg& arg, Microsoft::WRL::ComPtr<ID3D12Resource>&& p_resource);
 
     //-------------------------------------------------------------------------
     // getter
