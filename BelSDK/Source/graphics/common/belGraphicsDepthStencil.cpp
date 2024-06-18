@@ -23,7 +23,7 @@ bool DepthStencil::initialize(const Texture& texture)
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> p_descriptor_heap;
     {
         D3D12_DESCRIPTOR_HEAP_DESC desc = {};
-        desc.Type           = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+        desc.Type           = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
         desc.NumDescriptors = 1;
         if (FAILED(GraphicsEngine::GetInstance().getDevice().CreateDescriptorHeap(&desc, IID_PPV_ARGS(&p_descriptor_heap))))
         {

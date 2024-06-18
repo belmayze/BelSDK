@@ -6,6 +6,8 @@
  * Copyright (c) belmayze. All rights reserved.
  */
 #pragma once
+// bel
+#include "graphics/common/belGraphicsTextureType.h"
 
 namespace bel::res { class ShaderResource; }
 
@@ -20,7 +22,9 @@ public:
     //! 初期化引数
     struct InitializeArg
     {
-
+        uint32_t                                     num_render_target = 0;
+        std::array<TextureFormat, cMaxRenderTargets> render_target_formats = {};
+        TextureFormat                                depth_stencil_format = TextureFormat::cUnknown;
     };
 
     //-------------------------------------------------------------------------

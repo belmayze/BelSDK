@@ -8,8 +8,12 @@
 #pragma once
 // bel
 #include "base/belIApplicationCallback.h"
+#include "graphics/common/belGraphicsDepthStencil.h"
 #include "graphics/common/belGraphicsMesh.h"
 #include "graphics/common/belGraphicsPipeline.h"
+#include "graphics/common/belGraphicsRenderBuffer.h"
+#include "graphics/common/belGraphicsRenderTarget.h"
+#include "graphics/common/belGraphicsTexture.h"
 #include "resource/belResourceShaderResource.h"
 
 namespace app::test {
@@ -42,6 +46,12 @@ private:
     bel::res::ShaderResource mResShaderResource;
     bel::gfx::Pipeline       mPipeline;
     bel::gfx::Mesh           mMesh;
+
+    bel::gfx::Texture      mColorTexture;
+    bel::gfx::Texture      mDepthTexture;
+    bel::gfx::RenderTarget mRenderTarget;
+    bel::gfx::DepthStencil mDepthStencil;
+    bel::gfx::RenderBuffer mRenderBuffer;
 };
 //-----------------------------------------------------------------------------
 }

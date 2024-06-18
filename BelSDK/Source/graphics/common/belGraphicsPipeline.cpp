@@ -49,9 +49,13 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
             desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
             // 出力フォーマット
-            desc.NumRenderTargets = 1;
-            desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
-            //desc.DSVFormat     = DXGI_FORMAT_D32_FLOAT;
+            BEL_ASSERT(arg.num_render_target < cMaxRenderTargets);
+            desc.NumRenderTargets = arg.num_render_target;
+            for (uint32_t i = 0; i < arg.num_render_target; ++i)
+            {
+                desc.RTVFormats[i] = to_native(arg.render_target_formats[i]);
+            }
+            if (arg.depth_stencil_format != TextureFormat::cUnknown) { desc.DSVFormat = to_native(arg.depth_stencil_format); }
 
             // サンプル
             desc.SampleMask       = std::numeric_limits<uint32_t>::max();

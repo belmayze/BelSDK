@@ -13,6 +13,7 @@ namespace bel::gfx {
 //-----------------------------------------------------------------------------
 enum class TextureFormat
 {
+    cUnknown,
     cR8G8B8A8_uNorm,    //!< RGBA 32ビット符号なし正規化整数
     cR8G8B8A8_sRGB,     //!< RGBA 32ビット符号なし正規化整数（sRGB）
     cR10G10B10A2_uNorm, //!< RGBA 32ビット符号なし正規化整数
