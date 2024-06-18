@@ -198,9 +198,6 @@
     <ClInclude Include="..\Include\base\belIApplicationCallback.h">
       <Filter>ヘッダー ファイル\base</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\resource\belResourceShaderArchive.h">
-      <Filter>ヘッダー ファイル\resource</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\resource\belResourceFactory.h">
       <Filter>ヘッダー ファイル\resource</Filter>
     </ClInclude>
@@ -227,6 +224,9 @@
     </ClInclude>
     <ClInclude Include="..\Include\graphics\common\belGraphicsTextureFormatInfo.h">
       <Filter>ヘッダー ファイル\graphics\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\resource\belResourceShaderResource.h">
+      <Filter>ヘッダー ファイル\resource</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -296,9 +296,6 @@
     <ClCompile Include="..\Source\resource\belResource.cpp">
       <Filter>ソース ファイル\resource</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\resource\belResourceShaderArchive.cpp">
-      <Filter>ソース ファイル\resource</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\graphics\common\belGraphicsPipeline.cpp">
       <Filter>ソース ファイル\graphics\common</Filter>
     </ClCompile>
@@ -313,6 +310,9 @@
     </ClCompile>
     <ClCompile Include="..\Source\graphics\common\belGraphicsViewport.cpp">
       <Filter>ソース ファイル\graphics\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\resource\belResourceShaderResource.cpp">
+      <Filter>ソース ファイル\resource</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

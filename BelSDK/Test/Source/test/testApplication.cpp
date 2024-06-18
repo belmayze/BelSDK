@@ -15,10 +15,10 @@ namespace app::test {
 void Application::initialize()
 {
     // リソース読み込み
-    mResShaderArchive = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderArchive>("Shader/Sample.bshar");
+    mResShaderResource = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderResource>("Shader/Sample.bshar");
 
     // パイプライン生成
-    mPipeline.initialize(bel::gfx::Pipeline::InitializeArg(), mResShaderArchive);
+    mPipeline.initialize(bel::gfx::Pipeline::InitializeArg(), mResShaderResource);
 
     // メッシュ生成
     {

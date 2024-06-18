@@ -1,12 +1,12 @@
 ﻿/*!
- * @file   belResourceShaderArchive.cpp
+ * @file   belResourceShaderResource.cpp
  * @brief
  * @author belmayze
  *
  * Copyright (c) belmayze. All rights reserved.
  */
 // bel
-#include "resource/belResourceShaderArchive.h"
+#include "resource/belResourceShaderResource.h"
 
 namespace bel::res {
 //-----------------------------------------------------------------------------
@@ -16,31 +16,31 @@ namespace bel::res {
 //-----------------------------------------------------------------------------
 // factory
 //-----------------------------------------------------------------------------
-ShaderArchive ShaderArchiveFactory::Create(Resource&& resource)
+ShaderResource ShaderResourceFactory::Create(Resource&& resource)
 {
     BEL_ASSERT(resource.isValid());
 
     // ヘッダー取得
-    const ShaderArchive::FileHeader* p_header = reinterpret_cast<const ShaderArchive::FileHeader*>(resource.getBuffer());
+    const ShaderResource::FileHeader* p_header = reinterpret_cast<const ShaderResource::FileHeader*>(resource.getBuffer());
     if (strcmp(reinterpret_cast<const char*>(p_header->magic), "BSHA") != 0)
     {
         // ファイル破損
-        return ShaderArchive();
+        return ShaderResource();
     }
 
     // ヘッダーを登録してシェーダーアーカイブを構築
-    return ShaderArchive(std::move(resource), *p_header);
+    return ShaderResource(std::move(resource), *p_header);
 }
 //-----------------------------------------------------------------------------
 template <>
-ShaderArchive Loader::loadSyncAs<ShaderArchive>(const std::string& filepath)
+ShaderResource Loader::loadSyncAs<ShaderResource>(const std::string& filepath)
 {
     // ファイル読み込み
     Resource resource = loadSync(filepath);
-    if (!resource) { return ShaderArchive(); }
+    if (!resource) { return ShaderResource(); }
 
     // 構築
-    return ShaderArchiveFactory::Create(std::move(resource));
+    return ShaderResourceFactory::Create(std::move(resource));
 }
 
 } // bel::res::

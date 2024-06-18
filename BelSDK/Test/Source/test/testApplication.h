@@ -10,7 +10,7 @@
 #include "base/belIApplicationCallback.h"
 #include "graphics/common/belGraphicsMesh.h"
 #include "graphics/common/belGraphicsPipeline.h"
-#include "resource/belResourceShaderArchive.h"
+#include "resource/belResourceShaderResource.h"
 
 namespace app::test {
 //-----------------------------------------------------------------------------
@@ -39,9 +39,9 @@ public:
     virtual void onMakeCommand(bel::gfx::CommandContext& command) const override;
 
 private:
-    bel::res::ShaderArchive mResShaderArchive;
-    bel::gfx::Pipeline      mPipeline;
-    bel::gfx::Mesh          mMesh;
+    bel::res::ShaderResource mResShaderResource;
+    bel::gfx::Pipeline       mPipeline;
+    bel::gfx::Mesh           mMesh;
 };
 //-----------------------------------------------------------------------------
 }

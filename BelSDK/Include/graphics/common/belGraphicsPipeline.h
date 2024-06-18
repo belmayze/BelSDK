@@ -7,7 +7,7 @@
  */
 #pragma once
 
-namespace bel::res { class ShaderArchive; }
+namespace bel::res { class ShaderResource; }
 
 namespace bel::gfx {
 //-----------------------------------------------------------------------------
@@ -32,7 +32,7 @@ public:
      * @param[in] arg    初期化引数
      * @param[in] shader シェーダーリソース
      */
-    bool initialize(const InitializeArg& arg, const res::ShaderArchive& shader);
+    bool initialize(const InitializeArg& arg, const res::ShaderResource& shader);
 
     //-------------------------------------------------------------------------
     // command

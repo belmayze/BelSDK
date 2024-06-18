@@ -8,24 +8,24 @@
 // bel
 #include "graphics/common/belGraphicsPipeline.h"
 #include "graphics/belGraphicsEngine.h"
-#include "resource/belResourceShaderArchive.h"
+#include "resource/belResourceShaderResource.h"
 
 namespace bel::gfx {
 //-----------------------------------------------------------------------------
 // initialize
 //-----------------------------------------------------------------------------
-bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderArchive& shader)
+bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& shader)
 {
     Microsoft::WRL::ComPtr<ID3D12PipelineState> p_pipeline;
-    res::ShaderArchive::ShaderType type = shader.getShaderType();
+    res::ShaderResource::ShaderType type = shader.getShaderType();
 
     switch (type)
     {
         // プリミティブ系
-        case res::ShaderArchive::ShaderType::VertexPixel:
-        case res::ShaderArchive::ShaderType::VertexGeometryPixel:
-        case res::ShaderArchive::ShaderType::Tessellation:
-        case res::ShaderArchive::ShaderType::TessellationGeometry:
+        case res::ShaderResource::ShaderType::VertexPixel:
+        case res::ShaderResource::ShaderType::VertexGeometryPixel:
+        case res::ShaderResource::ShaderType::Tessellation:
+        case res::ShaderResource::ShaderType::TessellationGeometry:
         {
             D3D12_GRAPHICS_PIPELINE_STATE_DESC desc = {};
             desc.pRootSignature = &GraphicsEngine::GetInstance().getCommonGraphicsRootSignature();
@@ -59,8 +59,8 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderArchive& sh
 
             // 頂点シェーダーを使う場合は頂点レイアウトを作る (仮)
             std::array<D3D12_INPUT_ELEMENT_DESC, 2> input_elements;
-            if (type == res::ShaderArchive::ShaderType::VertexPixel || type == res::ShaderArchive::ShaderType::VertexGeometryPixel ||
-                type == res::ShaderArchive::ShaderType::Tessellation || type == res::ShaderArchive::ShaderType::TessellationGeometry)
+            if (type == res::ShaderResource::ShaderType::VertexPixel || type == res::ShaderResource::ShaderType::VertexGeometryPixel ||
+                type == res::ShaderResource::ShaderType::Tessellation || type == res::ShaderResource::ShaderType::TessellationGeometry)
             {
                 input_elements[0].AlignedByteOffset    = 0;
                 input_elements[0].Format               = DXGI_FORMAT_R32G32B32_FLOAT;
@@ -83,8 +83,8 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderArchive& sh
             }
 
             // シェーダーコード
-            if (type == res::ShaderArchive::ShaderType::VertexPixel || type == res::ShaderArchive::ShaderType::VertexGeometryPixel ||
-                type == res::ShaderArchive::ShaderType::Tessellation || type == res::ShaderArchive::ShaderType::TessellationGeometry)
+            if (type == res::ShaderResource::ShaderType::VertexPixel || type == res::ShaderResource::ShaderType::VertexGeometryPixel ||
+                type == res::ShaderResource::ShaderType::Tessellation || type == res::ShaderResource::ShaderType::TessellationGeometry)
             {
                 // VS
                 auto [vs_size, vs_bin] = shader.getVertexBinary();
@@ -97,7 +97,7 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderArchive& sh
                 desc.PS.pShaderBytecode = ps_bin;
 
                 // GS
-                if (type == res::ShaderArchive::ShaderType::VertexGeometryPixel || type == res::ShaderArchive::ShaderType::TessellationGeometry)
+                if (type == res::ShaderResource::ShaderType::VertexGeometryPixel || type == res::ShaderResource::ShaderType::TessellationGeometry)
                 {
                     auto [gs_size, gs_bin] = shader.getGeometryBinary();
                     desc.GS.BytecodeLength  = gs_size;
@@ -105,7 +105,7 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderArchive& sh
                 }
 
                 // HS / DS
-                if (type == res::ShaderArchive::ShaderType::Tessellation || type == res::ShaderArchive::ShaderType::TessellationGeometry)
+                if (type == res::ShaderResource::ShaderType::Tessellation || type == res::ShaderResource::ShaderType::TessellationGeometry)
                 {
                     auto [hs_size, hs_bin] = shader.getHullBinary();
                     desc.HS.BytecodeLength  = hs_size;
@@ -127,14 +127,14 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderArchive& sh
         }
 
         // メッシュシェーダー
-        case res::ShaderArchive::ShaderType::Mesh:
-        case res::ShaderArchive::ShaderType::MeshAmplification:
+        case res::ShaderResource::ShaderType::Mesh:
+        case res::ShaderResource::ShaderType::MeshAmplification:
         {
             return false;
         }
 
         // コンピュート系
-        case res::ShaderArchive::ShaderType::Compute:
+        case res::ShaderResource::ShaderType::Compute:
         {
             D3D12_COMPUTE_PIPELINE_STATE_DESC desc = {};
             desc.pRootSignature = &GraphicsEngine::GetInstance().getCommonComputeRootSignature();
@@ -156,7 +156,7 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderArchive& sh
         }
 
         // レイトレーシング系
-        case res::ShaderArchive::ShaderType::Library:
+        case res::ShaderResource::ShaderType::Library:
         {
             return false;
         }

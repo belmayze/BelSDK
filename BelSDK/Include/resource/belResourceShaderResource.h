@@ -1,5 +1,5 @@
 ﻿/*!
- * @file   belResourceShaderArchive.h
+ * @file   belResourceShaderResource.h
  * @brief  
  * @author belmayze
  * 
@@ -12,12 +12,12 @@
 
 namespace bel::res {
 
-class ShaderArchiveFactory;
+class ShaderResourceFactory;
 
 //-----------------------------------------------------------------------------
-class ShaderArchive : public Resource
+class ShaderResource : public Resource
 {
-    friend ShaderArchiveFactory;
+    friend ShaderResourceFactory;
 
     //-------------------------------------------------------------------------
 public:
@@ -40,7 +40,7 @@ public:
     //-------------------------------------------------------------------------
 public:
     //! 無効状態で初期化
-    ShaderArchive() {}
+    ShaderResource() {}
 
     //-------------------------------------------------------------------------
     // getter
@@ -208,7 +208,7 @@ private:
     //-------------------------------------------------------------------------
 private:
     //! リソース初期化
-    ShaderArchive(Resource&& resource, const FileHeader& header)
+    ShaderResource(Resource&& resource, const FileHeader& header)
         : Resource(std::move(resource))
         , mpFileHeader(&header) {}
 };
@@ -216,17 +216,17 @@ private:
 //-----------------------------------------------------------------------------
 // factory
 //-----------------------------------------------------------------------------
-class ShaderArchiveFactory
+class ShaderResourceFactory
 {
     //-------------------------------------------------------------------------
 public:
-    static ShaderArchive Create(Resource&& resource);
+    static ShaderResource Create(Resource&& resource);
 };
 
 //-----------------------------------------------------------------------------
 // loadSyncAs 特殊化
 template <>
-ShaderArchive Loader::loadSyncAs<ShaderArchive>(const std::string& filepath);
+ShaderResource Loader::loadSyncAs<ShaderResource>(const std::string& filepath);
 
 //-----------------------------------------------------------------------------
 } // bel::res::
