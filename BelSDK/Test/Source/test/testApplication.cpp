@@ -15,18 +15,26 @@ namespace app::test {
 //-----------------------------------------------------------------------------
 void Application::initialize()
 {
-    // リソース読み込み
-    mResShaderResource = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderResource>("Shader/Sample.bshar");
-
     // パイプライン生成
     {
+        mResShaderResource = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderResource>("Shader/Sample.bsh");
+
         bel::gfx::Pipeline::InitializeArg init_arg;
-        init_arg.num_render_target = 1;
+        init_arg.num_render_target        = 1;
         init_arg.render_target_formats[0] = bel::gfx::TextureFormat::cR8G8B8A8_sRGB;
         //init_arg.render_target_formats[0] = bel::gfx::TextureFormat::cR11G11B10_Float;
         //init_arg.depth_stencil_format     = bel::gfx::TextureFormat::cD32_Float;
 
         mPipeline.initialize(init_arg, mResShaderResource);
+    }
+    {
+        mResToneMappingShaderResource = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderResource>("Shader/ToneMapping.bsh");
+
+        bel::gfx::Pipeline::InitializeArg init_arg;
+        init_arg.num_render_target        = 1;
+        init_arg.render_target_formats[0] = bel::gfx::TextureFormat::cR8G8B8A8_sRGB;
+
+        mToneMappingPipeline.initialize(init_arg, mResToneMappingShaderResource);
     }
 
     // メッシュ生成
@@ -46,6 +54,12 @@ void Application::initialize()
         init_arg.mIndexBufferSize  = sizeof(uint16_t) * indices.size();
         init_arg.mVertexStride     = sizeof(float) * (3 + 3);
         mMesh.initialize(init_arg);
+    }
+    // スクリーン用メッシュ生成
+    {
+        bel::gfx::Mesh::InitializeArg init_arg;
+        init_arg.mIndexBufferSize = sizeof(uint16_t) * 3;
+        mScreenMesh.initialize(init_arg);
     }
 
     // 出力バッファー生成
@@ -90,8 +104,10 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
     //mDepthTexture.barrierTransition(command, bel::gfx::ResourceState::cDepthWrite);
     //mRenderBuffer.bind(command);
 
-    mPipeline.setPipeline(command);
-    mMesh.drawIndexedInstanced(command);
+    //mPipeline.setPipeline(command);
+    //mMesh.drawIndexedInstanced(command);
+    mToneMappingPipeline.setPipeline(command);
+    mScreenMesh.drawIndexedInstanced(command);
 }
 //-----------------------------------------------------------------------------
 }

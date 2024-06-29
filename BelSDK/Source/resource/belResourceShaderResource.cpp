@@ -22,7 +22,7 @@ ShaderResource ShaderResourceFactory::Create(Resource&& resource)
 
     // ヘッダー取得
     const ShaderResource::FileHeader* p_header = reinterpret_cast<const ShaderResource::FileHeader*>(resource.getBuffer());
-    if (strcmp(reinterpret_cast<const char*>(p_header->magic), "BSHR") != 0)
+    if (strcmp(reinterpret_cast<const char*>(p_header->magic), "BSH_") != 0)
     {
         // ファイル破損
         return ShaderResource();

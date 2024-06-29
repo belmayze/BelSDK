@@ -44,8 +44,11 @@ public:
 
 private:
     bel::res::ShaderResource mResShaderResource;
+    bel::res::ShaderResource mResToneMappingShaderResource;
     bel::gfx::Pipeline       mPipeline;
+    bel::gfx::Pipeline       mToneMappingPipeline;
     bel::gfx::Mesh           mMesh;
+    bel::gfx::Mesh           mScreenMesh;
 
     bel::gfx::Texture      mColorTexture;
     bel::gfx::Texture      mDepthTexture;

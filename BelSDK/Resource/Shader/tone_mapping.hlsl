@@ -22,7 +22,7 @@ PS_INPUT main(uint vertex_id : SV_VertexId)
 {
     // èoóÕ
     PS_INPUT output;
-    float2 texcoord = float2((vertex_id << 1) & 2, vertex_id & 2);
+    float2 texcoord = float2(vertex_id & 2, (vertex_id << 1) & 2);
     output.texcoord = texcoord;
     output.position = float4(texcoord.x * 2.0 - 1.0, -texcoord.y * 2.0 + 1.0, 0.0, 1.0);
     return output;
@@ -39,7 +39,7 @@ SamplerState      gSampler : register(s0);
 //! main
 float4 main(PS_INPUT input) : SV_TARGET
 {
-    return gTexture.Sample(gSampler, input.texcoord);
+    return float4(1.0, 1.0, 0.0, 1.0); //gTexture.Sample(gSampler, input.texcoord);
 }
 
 #endif // BEL_***_SHADER

@@ -235,7 +235,7 @@ namespace ShaderArchiver
                     // ヘッダー書き出し
                     {
                         // マジック
-                        char[] magic = { 'B', 'S', 'H', 'R' };
+                        char[] magic = { 'B', 'S', 'H', '_' };
                         writer.Write(magic);
 
                         // バージョン

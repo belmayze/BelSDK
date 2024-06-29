@@ -19,6 +19,7 @@ bool Mesh::initialize(const InitializeArg& arg)
     Microsoft::WRL::ComPtr<ID3D12Resource> p_vertex_buffer, p_index_buffer;
 
     // 頂点バッファー
+    if (arg.mpVertexBuffer)
     {
         D3D12_HEAP_PROPERTIES props = {};
         props.Type             = D3D12_HEAP_TYPE_UPLOAD;
@@ -50,6 +51,7 @@ bool Mesh::initialize(const InitializeArg& arg)
     }
 
     // インデックスバッファー
+    if (arg.mpIndexBuffer)
     {
         D3D12_HEAP_PROPERTIES props = {};
         props.Type             = D3D12_HEAP_TYPE_UPLOAD;
@@ -89,13 +91,19 @@ bool Mesh::initialize(const InitializeArg& arg)
     size_t index_size = (arg.mIndexBufferFormat == DXGI_FORMAT_R16_UINT) ? sizeof(uint16_t) : sizeof(uint32_t);
 
     // ビューの作成
-    mVertexBufferView.BufferLocation = mpVertexResource->GetGPUVirtualAddress();
-    mVertexBufferView.SizeInBytes    = static_cast<uint32_t>(arg.mVertexBufferSize);
-    mVertexBufferView.StrideInBytes  = static_cast<uint32_t>(arg.mVertexStride);
+    if (mpVertexResource)
+    {
+        mVertexBufferView.BufferLocation = mpVertexResource->GetGPUVirtualAddress();
+        mVertexBufferView.SizeInBytes    = static_cast<uint32_t>(arg.mVertexBufferSize);
+        mVertexBufferView.StrideInBytes  = static_cast<uint32_t>(arg.mVertexStride);
+    }
 
-    mIndexBufferView.BufferLocation = mpIndexResource->GetGPUVirtualAddress();
-    mIndexBufferView.SizeInBytes    = static_cast<uint32_t>(arg.mIndexBufferSize);
-    mIndexBufferView.Format         = arg.mIndexBufferFormat;
+    if (mpIndexResource)
+    {
+        mIndexBufferView.BufferLocation = mpIndexResource->GetGPUVirtualAddress();
+        mIndexBufferView.SizeInBytes    = static_cast<uint32_t>(arg.mIndexBufferSize);
+        mIndexBufferView.Format         = arg.mIndexBufferFormat;
+    }
 
     mIndexCount        = static_cast<uint32_t>(arg.mIndexBufferSize / index_size);
     mPrimitiveTopology = arg.mPrimitiveTopology;
@@ -111,11 +119,20 @@ void Mesh::drawIndexedInstanced(CommandContext& command, uint32_t num_instance) 
     command.getCommandList().IASetPrimitiveTopology(mPrimitiveTopology);
 
     // バッファー設定
-    command.getCommandList().IASetVertexBuffers(0, 1, &mVertexBufferView);
-    command.getCommandList().IASetIndexBuffer(&mIndexBufferView);
+    if (mpVertexResource) { command.getCommandList().IASetVertexBuffers(0, 1, &mVertexBufferView); }
+    if (mpIndexResource)  { command.getCommandList().IASetIndexBuffer(&mIndexBufferView);          }
 
     // 描画
-    command.getCommandList().DrawIndexedInstanced(mIndexCount, num_instance, 0, 0, 0);
+    if (mpIndexResource)
+    {
+        // インデックスバッファーを用いた描画
+        command.getCommandList().DrawIndexedInstanced(mIndexCount, num_instance, 0, 0, 0);
+    }
+    else
+    {
+        // インデックスバッファーを用いない描画
+        command.getCommandList().DrawInstanced(mIndexCount, num_instance, 0, 0);
+    }
 }
 //-----------------------------------------------------------------------------
 }
