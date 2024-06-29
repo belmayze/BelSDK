@@ -10,6 +10,11 @@
             "Name": "Sample",
             "VertexShader": "sample.hlsl",
             "PixelShader": "sample.hlsl"
+        },
+        {
+            "Name": "ToneMapping",
+            "VertexShader": "tone_mapping.hlsl",
+            "PixelShader": "tone_mapping.hlsl"
         }
     ]
 }
