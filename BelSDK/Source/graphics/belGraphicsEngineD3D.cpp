@@ -359,7 +359,7 @@ bool GraphicsEngineD3D::createRootSignature_()
     {
         ranges[to_underlying(RangeType::cSRV)].RangeType          = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
         ranges[to_underlying(RangeType::cSRV)].NumDescriptors     = cMaxDescriptorSRV;
-        ranges[to_underlying(RangeType::cSRV)].BaseShaderRegister = cMaxDescriptorCBV;
+        ranges[to_underlying(RangeType::cSRV)].BaseShaderRegister = 0;
         ranges[to_underlying(RangeType::cSRV)].RegisterSpace      = 0;
         ranges[to_underlying(RangeType::cSRV)].Flags              = D3D12_DESCRIPTOR_RANGE_FLAG_NONE;
         ranges[to_underlying(RangeType::cSRV)].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
@@ -368,14 +368,13 @@ bool GraphicsEngineD3D::createRootSignature_()
     {
         ranges[to_underlying(RangeType::cUAV)].RangeType          = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
         ranges[to_underlying(RangeType::cUAV)].NumDescriptors     = cMaxDescriptorUAV;
-        ranges[to_underlying(RangeType::cUAV)].BaseShaderRegister = cMaxDescriptorCBV + cMaxDescriptorSRV;
+        ranges[to_underlying(RangeType::cUAV)].BaseShaderRegister = 0;
         ranges[to_underlying(RangeType::cUAV)].RegisterSpace      = 0;
         ranges[to_underlying(RangeType::cUAV)].Flags              = D3D12_DESCRIPTOR_RANGE_FLAG_NONE;
         ranges[to_underlying(RangeType::cUAV)].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
     }
     // Sampler
     {
-        // Sampler のデスクリプターヒープは別々なので、レンジは最初から開始される
         ranges[to_underlying(RangeType::cSampler)].RangeType          = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;
         ranges[to_underlying(RangeType::cSampler)].NumDescriptors     = cMaxDescriptorSampler;
         ranges[to_underlying(RangeType::cSampler)].BaseShaderRegister = 0;
