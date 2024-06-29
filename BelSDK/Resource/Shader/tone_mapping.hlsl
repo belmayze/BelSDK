@@ -17,20 +17,14 @@ struct PS_INPUT
 //-----------------------------------------------------------------------------
 // VERTEX SHADER
 //-----------------------------------------------------------------------------
-//! Input
-struct VS_INPUT
-{
-    float3 position : POSITION;
-    float2 texcoord : TEXCOORD;
-};
-
 //! main
-PS_INPUT main(VS_INPUT input)
+PS_INPUT main(uint vertex_id : SV_VertexId)
 {
     // èoóÕ
     PS_INPUT output;
-    output.position = float4(input.position, 1.f);
-    output.texcoord = input.texcoord;
+    float2 texcoord = float2((vertex_id << 1) & 2, vertex_id & 2);
+    output.texcoord = texcoord;
+    output.position = float4(texcoord.x * 2.0 - 1.0, -texcoord.y * 2.0 + 1.0, 0.0, 1.0);
     return output;
 }
 
@@ -39,8 +33,8 @@ PS_INPUT main(VS_INPUT input)
 // PIXEL SHADER
 //-----------------------------------------------------------------------------
 //! Texture
-Texture2D    gTexture : register(t0);
-SamplerState gSampler : register(s0);
+Texture2D<float4> gTexture : register(t0);
+SamplerState      gSampler : register(s0);
 
 //! main
 float4 main(PS_INPUT input) : SV_TARGET
