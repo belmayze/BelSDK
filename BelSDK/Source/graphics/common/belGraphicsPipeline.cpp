@@ -27,11 +27,11 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
 
     // SRV
     {
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].NumDescriptors = arg.num_srv;
+        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].RangeType          = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].NumDescriptors     = arg.num_srv;
         ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].BaseShaderRegister = 0;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].RegisterSpace = 0;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].Flags = D3D12_DESCRIPTOR_RANGE_FLAG_NONE;
+        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].RegisterSpace      = 0;
+        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].Flags              = D3D12_DESCRIPTOR_RANGE_FLAG_NONE;
         ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
     }
 
@@ -39,10 +39,10 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
     // ただし CBV_SRV_UAV と Sampler のデスクリプターヒープは別々になる
     std::array<D3D12_ROOT_PARAMETER1, D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER + 1> params = {};
     {
-        params[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+        params[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].ParameterType    = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
         params[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
         params[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].DescriptorTable.NumDescriptorRanges = 1;
-        params[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].DescriptorTable.pDescriptorRanges = &ranges[0];
+        params[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].DescriptorTable.pDescriptorRanges   = &ranges[0];
     }
 
     switch (mShaderType)
@@ -300,6 +300,21 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
     mpDescriptorHeap = std::move(p_descriptor_heap);
 
     return true;
+}
+//-----------------------------------------------------------------------------
+// shader
+//-----------------------------------------------------------------------------
+void Pipeline::activateTexture(uint32_t index, const Texture& texture) const
+{
+    D3D12_CPU_DESCRIPTOR_HANDLE src = TextureDescriptorRegistry::GetInstance().getDescriptorHandle(texture.getDescriptorHandle());
+    D3D12_CPU_DESCRIPTOR_HANDLE dst = mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+    dst.ptr += GraphicsEngine::GetInstance().getDevice().GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * index;
+
+    GraphicsEngine::GetInstance().getDevice().CopyDescriptors(
+        1, &dst, nullptr,
+        1, &src, nullptr,
+        D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV
+    );
 }
 //-----------------------------------------------------------------------------
 // command

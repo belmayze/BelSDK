@@ -10,6 +10,8 @@
 #include "graphics/common/belGraphicsTextureType.h"
 #include "resource/belResourceShaderResource.h"
 
+namespace bel::gfx { class Texture; }
+
 namespace bel::gfx {
 //-----------------------------------------------------------------------------
 // パイプライン
@@ -38,6 +40,17 @@ public:
      * @param[in] shader シェーダーリソース
      */
     bool initialize(const InitializeArg& arg, const res::ShaderResource& shader);
+
+    //-------------------------------------------------------------------------
+    // shader
+    //-------------------------------------------------------------------------
+public:
+    /*!
+     * テクスチャーを使用可能にする
+     * @param[in] index   レジスター番号
+     * @param[in] texture テクスチャー
+     */
+    void activateTexture(uint32_t index, const Texture& texture) const;
 
     //-------------------------------------------------------------------------
     // command
