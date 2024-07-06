@@ -8,8 +8,7 @@
 #pragma once
 // bel
 #include "graphics/common/belGraphicsTextureType.h"
-
-namespace bel::res { class ShaderResource; }
+#include "resource/belResourceShaderResource.h"
 
 namespace bel::gfx {
 //-----------------------------------------------------------------------------
@@ -25,6 +24,8 @@ public:
         uint32_t                                     num_render_target = 0;
         std::array<TextureFormat, cMaxRenderTargets> render_target_formats = {};
         TextureFormat                                depth_stencil_format = TextureFormat::cUnknown;
+
+        uint32_t num_srv = 0;
     };
 
     //-------------------------------------------------------------------------
@@ -50,8 +51,10 @@ public:
 
     //-------------------------------------------------------------------------
 private:
+    Microsoft::WRL::ComPtr<ID3D12RootSignature>  mpRootSignature;
     Microsoft::WRL::ComPtr<ID3D12PipelineState>  mpPipeline;
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mpDescriptorHeap;
+    res::ShaderResource::ShaderType              mShaderType = res::ShaderResource::ShaderType::VertexPixel;
 };
 //-----------------------------------------------------------------------------
 }

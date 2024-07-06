@@ -22,6 +22,7 @@ class ShaderResource : public Resource
     //-------------------------------------------------------------------------
 public:
     //! シェーダータイプ
+    //! @todo: この列挙は他でも使うのでクラスの外に出したい
     enum class ShaderType
     {
         VertexPixel,          // vs + ps

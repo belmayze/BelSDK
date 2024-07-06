@@ -279,8 +279,8 @@ void GraphicsEngineD3D::executeCommand()
 void GraphicsEngineD3D::makeInitialCommand(gfx::CommandContext& command) const
 {
     // 処理前にコマンドに積む必要のあるものをここで積む
-    command.getCommandList().SetGraphicsRootSignature(mpGraphicsRootSignature.Get());
-    command.getCommandList().SetComputeRootSignature(mpComputeRootSignature.Get());
+    //command.getCommandList().SetGraphicsRootSignature(mpGraphicsRootSignature.Get());
+    //command.getCommandList().SetComputeRootSignature(mpComputeRootSignature.Get());
 }
 //-----------------------------------------------------------------------------
 void GraphicsEngineD3D::waitCommandQueue()

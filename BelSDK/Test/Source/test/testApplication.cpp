@@ -33,6 +33,7 @@ void Application::initialize()
         bel::gfx::Pipeline::InitializeArg init_arg;
         init_arg.num_render_target        = 1;
         init_arg.render_target_formats[0] = bel::gfx::TextureFormat::cR8G8B8A8_sRGB;
+        init_arg.num_srv                  = 1;
 
         mToneMappingPipeline.initialize(init_arg, mResToneMappingShaderResource);
     }
