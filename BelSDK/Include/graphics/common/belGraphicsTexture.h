@@ -68,6 +68,9 @@ public:
     //! リソース取得
     ID3D12Resource& getResource() const { BEL_ASSERT(mpResource.Get() != nullptr); return *mpResource.Get(); }
 
+    //! デスクリプターハンドルを取得
+    const TextureDescriptorHandle& getDescriptorHandle() const { return mDescriptorHandle; }
+
     //-------------------------------------------------------------------------
     // command
     //-------------------------------------------------------------------------
@@ -90,6 +93,8 @@ private:
     TextureFormat         mFormat        = TextureFormat::cR8G8B8A8_uNorm;
     TextureDimension      mDimension     = TextureDimension::c2D;
     mutable ResourceState mResourceState = ResourceState::cGenericRead;
+
+    TextureDescriptorHandle mDescriptorHandle;
 };
 //-----------------------------------------------------------------------------
 }

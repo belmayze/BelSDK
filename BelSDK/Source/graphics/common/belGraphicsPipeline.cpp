@@ -7,6 +7,8 @@
  */
 // bel
 #include "graphics/common/belGraphicsPipeline.h"
+#include "graphics/common/belGraphicsTexture.h"
+#include "graphics/internal/belGraphicsTextureDescriptorRegistry.h"
 #include "graphics/belGraphicsEngine.h"
 #include "resource/belResourceShaderResource.h"
 
@@ -166,8 +168,23 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
         }
     }
 
+    // デスクリプターヒープ
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> p_descriptor_heap;
+    {
+        D3D12_DESCRIPTOR_HEAP_DESC desc = {};
+        desc.NumDescriptors = 1;
+        desc.Flags          = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+        desc.Type           = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+
+        if (FAILED(GraphicsEngine::GetInstance().getDevice().CreateDescriptorHeap(&desc, IID_PPV_ARGS(&p_descriptor_heap))))
+        {
+            return false;
+        }
+    }
+
     //
-    mpPipeline = std::move(p_pipeline);
+    mpPipeline       = std::move(p_pipeline);
+    mpDescriptorHeap = std::move(p_descriptor_heap);
 
     return true;
 }
@@ -177,6 +194,9 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
 void Pipeline::setPipeline(CommandContext& command) const
 {
     command.getCommandList().SetPipelineState(mpPipeline.Get());
+    ID3D12DescriptorHeap* p_heaps[] = { mpDescriptorHeap.Get() };
+    //command.getCommandList().SetDescriptorHeaps(1, p_heaps);
+    //command.getCommandList().SetGraphicsRootDescriptorTable(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, mpDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
 }
 //-----------------------------------------------------------------------------
 }

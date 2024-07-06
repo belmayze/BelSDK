@@ -21,7 +21,7 @@ bool TextureDescriptorRegistry::allocate(uint32_t num)
         D3D12_DESCRIPTOR_HEAP_DESC desc = {};
         desc.Type           = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
         desc.NumDescriptors = num;
-        desc.Flags          = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+        desc.Flags          = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
         if (FAILED(GraphicsEngine::GetInstance().getDevice().CreateDescriptorHeap(&desc, IID_PPV_ARGS(&mpDescriptorHeap))))
         {
             return false;
@@ -54,6 +54,45 @@ TextureDescriptorHandle TextureDescriptorRegistry::registerTexture(const Texture
     desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     desc.Format                  = to_native(texture.getFormat());
     desc.ViewDimension           = to_native_srv(texture.getDimension());
+    switch (desc.ViewDimension)
+    {
+    case D3D12_SRV_DIMENSION_TEXTURE1D:
+        desc.Texture1D.MipLevels = texture.getNumMip();
+        break;
+
+    case D3D12_SRV_DIMENSION_TEXTURE1DARRAY:
+        desc.Texture1DArray.MipLevels = texture.getNumMip();
+        desc.Texture1DArray.ArraySize = texture.getDepth();
+        break;
+
+    case D3D12_SRV_DIMENSION_TEXTURE2D:
+        desc.Texture2D.MipLevels = texture.getNumMip();
+        break;
+
+    case D3D12_SRV_DIMENSION_TEXTURE2DARRAY:
+        desc.Texture2DArray.MipLevels = texture.getNumMip();
+        desc.Texture2DArray.ArraySize = texture.getDepth();
+        break;
+
+    case D3D12_SRV_DIMENSION_TEXTURE3D:
+        desc.Texture3D.MipLevels = texture.getNumMip();
+        break;
+
+    case D3D12_SRV_DIMENSION_TEXTURECUBE:
+        desc.TextureCube.MipLevels = texture.getNumMip();
+        break;
+
+    case D3D12_SRV_DIMENSION_TEXTURECUBEARRAY:
+        desc.TextureCubeArray.MipLevels = texture.getNumMip();
+        desc.TextureCubeArray.NumCubes = texture.getDepth() / 6;
+        break;
+    }
+
+    // デプスの SRV は作れないので代替えで生成する
+    if (desc.Format == DXGI_FORMAT_D16_UNORM)                 { desc.Format = DXGI_FORMAT_R16_UNORM; }
+    else if (desc.Format == DXGI_FORMAT_D24_UNORM_S8_UINT)    { desc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS; }
+    else if (desc.Format == DXGI_FORMAT_D32_FLOAT)            { desc.Format = DXGI_FORMAT_R32_FLOAT; }
+    else if (desc.Format == DXGI_FORMAT_D32_FLOAT_S8X24_UINT) { desc.Format = DXGI_FORMAT_R32_FLOAT_X8X24_TYPELESS; }
 
     // SRV 作成
     D3D12_CPU_DESCRIPTOR_HANDLE descriptor_handle = mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart();

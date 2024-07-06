@@ -27,6 +27,17 @@ class GraphicsEngineD3D : public IGraphicsEngine,
 {
     //-------------------------------------------------------------------------
 public:
+    //! CBV の最大数
+    static constexpr uint32_t cMaxDescriptorCBV = 16;
+    //! SRV の最大数
+    static constexpr uint32_t cMaxDescriptorSRV = 48;
+    //! UAV の最大数
+    static constexpr uint32_t cMaxDescriptorUAV = 16;
+    //! Sampler の最大数
+    static constexpr uint32_t cMaxDescriptorSampler = 16;
+
+    //-------------------------------------------------------------------------
+public:
     //! コンストラクター
     GraphicsEngineD3D();
 
@@ -103,14 +114,6 @@ private:
     static constexpr uint32_t cNumBuffer = 3;
     //! テクスチャーハンドルの最大数
     static constexpr uint32_t cMaxTextureHandle = 1024;
-    //! CBV の最大数
-    static constexpr uint32_t cMaxDescriptorCBV = 16;
-    //! SRV の最大数
-    static constexpr uint32_t cMaxDescriptorSRV = 48;
-    //! UAV の最大数
-    static constexpr uint32_t cMaxDescriptorUAV = 16;
-    //! Sampler の最大数
-    static constexpr uint32_t cMaxDescriptorSampler = 16;
 
     //-------------------------------------------------------------------------
 private:

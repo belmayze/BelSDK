@@ -21,7 +21,8 @@ void Application::initialize()
 
         bel::gfx::Pipeline::InitializeArg init_arg;
         init_arg.num_render_target        = 1;
-        init_arg.render_target_formats[0] = bel::gfx::TextureFormat::cR11G11B10_Float;
+        //init_arg.render_target_formats[0] = bel::gfx::TextureFormat::cR11G11B10_Float;
+        init_arg.render_target_formats[0] = bel::gfx::TextureFormat::cR8G8B8A8_sRGB;
         init_arg.depth_stencil_format     = bel::gfx::TextureFormat::cD32_Float;
 
         mPipeline.initialize(init_arg, mResShaderResource);
@@ -98,6 +99,7 @@ void Application::onCalc()
 //-----------------------------------------------------------------------------
 void Application::onMakeCommand(bel::gfx::CommandContext& command) const
 {
+#   if 0
     // レンダーバッファー切り替え
     mColorTexture.barrierTransition(command, bel::gfx::ResourceState::cRenderTarget);
     mDepthTexture.barrierTransition(command, bel::gfx::ResourceState::cDepthWrite);
@@ -114,6 +116,12 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
     bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().bind(command);
     mToneMappingPipeline.setPipeline(command);
     mScreenMesh.drawIndexedInstanced(command);
+#   else
+    // 三角形描画
+    bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().bind(command);
+    mPipeline.setPipeline(command);
+    mMesh.drawIndexedInstanced(command);
+#   endif
 }
 //-----------------------------------------------------------------------------
 }
