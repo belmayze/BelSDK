@@ -37,10 +37,10 @@ constexpr Vector3& Vector3::operator *= (float rhs)
 //-----------------------------------------------------------------------------
 constexpr Vector3& Vector3::operator /= (float rhs)
 {
-    float f_inv = 1.f / rhs;
-    mX *= f_inv;
-    mY *= f_inv;
-    mZ *= f_inv;
+    float rcp = 1.f / rhs;
+    mX *= rcp;
+    mY *= rcp;
+    mZ *= rcp;
     return *this;
 }
 //-----------------------------------------------------------------------------
@@ -87,11 +87,11 @@ constexpr Vector3 Vector3::operator * (float rhs) const
 //-----------------------------------------------------------------------------
 constexpr Vector3 Vector3::operator / (float rhs) const
 {
-    float f_inv = 1.f / rhs;
+    float rcp = 1.f / rhs;
     return Vector3(
-        mX * f_inv,
-        mY * f_inv,
-        mZ * f_inv
+        mX * rcp,
+        mY * rcp,
+        mZ * rcp
     );
 }
 //-----------------------------------------------------------------------------

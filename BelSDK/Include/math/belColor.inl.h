@@ -21,10 +21,10 @@ constexpr Color& Color::operator *= (float rhs)
 //-----------------------------------------------------------------------------
 constexpr Color& Color::operator /= (float rhs)
 {
-    float f_inv = 1.f / rhs;
-    mR *= f_inv;
-    mG *= f_inv;
-    mB *= f_inv;
+    float rcp = 1.f / rhs;
+    mR *= rcp;
+    mG *= rcp;
+    mB *= rcp;
     return *this;
 }
 //-----------------------------------------------------------------------------
@@ -42,11 +42,11 @@ constexpr Color Color::operator * (float rhs) const
 //-----------------------------------------------------------------------------
 constexpr Color Color::operator / (float rhs) const
 {
-    float f_inv = 1.f / rhs;
+    float rcp = 1.f / rhs;
     return Color(
-        mR * f_inv,
-        mG * f_inv,
-        mB * f_inv,
+        mR * rcp,
+        mG * rcp,
+        mB * rcp,
         mA
     );
 }
@@ -62,6 +62,39 @@ constexpr bool Color::operator != (const Color& rhs) const
 {
     return mR != rhs.mR || mG != rhs.mG || mB != rhs.mB || mA != rhs.mA;
 }
+//-----------------------------------------------------------------------------
+// convert
+//-----------------------------------------------------------------------------
+Color Color::convertToSRGBGamut() const
+{
+    Color color;
+
+    if (mR <= 0.0031308f) { color.mR = mR * 12.92f; }
+    else                  { color.mR = 1.055f * std::pow(mR, 1.f / 2.4f) - 0.055f; }
+    if (mG <= 0.0031308f) { color.mG = mG * 12.92f; }
+    else                  { color.mG = 1.055f * std::pow(mG, 1.f / 2.4f) - 0.055f; }
+    if (mB <= 0.0031308f) { color.mB = mB * 12.92f; }
+    else                  { color.mB = 1.055f * std::pow(mB, 1.f / 2.4f) - 0.055f; }
+    color.mA = mA;
+
+    return color;
+}
+//-----------------------------------------------------------------------------
+Color Color::convertToLinearGamut() const
+{
+    Color color;
+
+    if (mR <= 0.04045f) { color.mR = mR / 12.92f; }
+    else                { color.mR = std::pow((mR + 0.055f) / 1.055f, 2.4f); }
+    if (mG <= 0.04045f) { color.mG = mG / 12.92f; }
+    else                { color.mG = std::pow((mG + 0.055f) / 1.055f, 2.4f); }
+    if (mB <= 0.04045f) { color.mB = mB / 12.92f; }
+    else                { color.mB = std::pow((mB + 0.055f) / 1.055f, 2.4f); }
+    color.mA = mA;
+
+    return color;
+}
+
 //-----------------------------------------------------------------------------
 } // bel::
 

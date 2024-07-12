@@ -46,7 +46,7 @@ PS_INPUT main(VS_INPUT input)
     colors[0] = float4(1.0, 0.1, 0.1, 1.0);
     colors[1] = float4(0.1, 1.0, 0.1, 1.0);
     colors[2] = float4(0.1, 0.1, 1.0, 1.0);
-    output.color = colors[input.vertex_id];
+    output.color = colors[input.vertex_id % 3];
 
     return output;
 }

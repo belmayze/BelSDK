@@ -112,6 +112,13 @@ public:
     inline constexpr bool operator != (const Color& rhs) const;
 
     //-------------------------------------------------------------------------
+    // convert
+    //-------------------------------------------------------------------------
+public:
+    inline Color convertToSRGBGamut() const; // constexpr は C++26 から
+    inline Color convertToLinearGamut() const; // constexpr は C++26 から
+
+    //-------------------------------------------------------------------------
 private:
     float mR = 0.f;
     float mG = 0.f;

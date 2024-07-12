@@ -116,7 +116,7 @@ void Application::onCalc()
         if (sFrameCount < 1.f)
         {
             // R -> G
-            float range = sFrameCount;
+            float range = bel::Math::EaseInOutSine(sFrameCount);
             color.r() = 1.f - range;
             color.g() = range;
             color.b() = 0.f;
@@ -124,7 +124,7 @@ void Application::onCalc()
         else if (sFrameCount < 2.f)
         {
             // G -> B
-            float range = sFrameCount - 1.f;
+            float range = bel::Math::EaseInOutSine(sFrameCount - 1.f);
             color.r() = 0.f;
             color.g() = 1.f - range;
             color.b() = range;
@@ -132,11 +132,14 @@ void Application::onCalc()
         else if (sFrameCount < 3.f)
         {
             // B -> R
-            float range = sFrameCount - 2.f;
+            float range = bel::Math::EaseInOutSine(sFrameCount - 2.f);
             color.r() = range;
             color.g() = 0.f;
             color.b() = 1.f - range;
         }
+
+        // sRGB -> linear
+        color = color.convertToLinearGamut();
 
         mToneMappingCB.swapBuffer();
         mToneMappingCB.copyStruct(color);

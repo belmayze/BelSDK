@@ -34,9 +34,9 @@ constexpr Vector2& Vector2::operator *= (float rhs)
 //-----------------------------------------------------------------------------
 constexpr Vector2& Vector2::operator /= (float rhs)
 {
-    float f_inv = 1.f / rhs;
-    mX *= f_inv;
-    mY *= f_inv;
+    float rcp = 1.f / rhs;
+    mX *= rcp;
+    mY *= rcp;
     return *this;
 }
 //-----------------------------------------------------------------------------
@@ -80,10 +80,10 @@ constexpr Vector2 Vector2::operator * (float rhs) const
 //-----------------------------------------------------------------------------
 constexpr Vector2 Vector2::operator / (float rhs) const
 {
-    float f_inv = 1.f / rhs;
+    float rcp = 1.f / rhs;
     return Vector2(
-        mX * f_inv,
-        mY * f_inv
+        mX * rcp,
+        mY * rcp
     );
 }
 //-----------------------------------------------------------------------------
