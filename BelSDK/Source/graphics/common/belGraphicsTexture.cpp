@@ -64,7 +64,7 @@ bool Texture::initializeFromGPUMemory(const InitializeArg& arg, Microsoft::WRL::
     mResourceState = state;
     mpResource     = std::move(p_resource);
 
-    // レジスターに登録
+    // デスクリプターに登録
     mDescriptorHandle = GlobalDescriptorRegistry::GetInstance().registerTexture(*this);
 
     return true;

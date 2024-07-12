@@ -6,6 +6,7 @@
  * Copyright (c) belmayze. All rights reserved.
  */
 // bel
+#include "graphics/common/belGraphicsConstantBuffer.h"
 #include "graphics/common/belGraphicsTexture.h"
 #include "graphics/internal/belGraphicsGlobalDescriptorRegistry.h"
 #include "graphics/belGraphicsEngine.h"
@@ -98,6 +99,32 @@ GlobalDescriptorHandle GlobalDescriptorRegistry::registerTexture(const Texture& 
     D3D12_CPU_DESCRIPTOR_HANDLE descriptor_handle = mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
     descriptor_handle.ptr += GraphicsEngine::GetInstance().getDevice().GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * index;
     GraphicsEngine::GetInstance().getDevice().CreateShaderResourceView(&texture.getResource(), &desc, descriptor_handle);
+
+    GlobalDescriptorHandle handle;
+    GlobalDescriptorHandle::Accessor(handle).setId(index);
+    return handle;
+}
+//-----------------------------------------------------------------------------
+GlobalDescriptorHandle GlobalDescriptorRegistry::registerConstantBuffer(D3D12_GPU_VIRTUAL_ADDRESS location, size_t size)
+{
+    // フリーリストから取得
+    uint32_t index = 0;
+    {
+        std::lock_guard lock(mFreeListMutex);
+        if (mFreeIndices.empty()) { return GlobalDescriptorHandle(); }
+        index = mFreeIndices.back();
+        mFreeIndices.pop_back();
+    }
+
+    //
+    D3D12_CONSTANT_BUFFER_VIEW_DESC desc = {};
+    desc.BufferLocation = location;
+    desc.SizeInBytes    = static_cast<UINT>(size);
+
+    // CBV 作成
+    D3D12_CPU_DESCRIPTOR_HANDLE descriptor_handle = mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+    descriptor_handle.ptr += GraphicsEngine::GetInstance().getDevice().GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * index;
+    GraphicsEngine::GetInstance().getDevice().CreateConstantBufferView(&desc, descriptor_handle);
 
     GlobalDescriptorHandle handle;
     GlobalDescriptorHandle::Accessor(handle).setId(index);

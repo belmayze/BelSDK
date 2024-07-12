@@ -7,6 +7,7 @@
  */
 // bel
 #include "graphics/common/belGraphicsConstantBuffer.h"
+#include "graphics/internal/belGraphicsGlobalDescriptorRegistry.h"
 #include "graphics/belGraphicsEngine.h"
 
 namespace bel::gfx {
@@ -15,15 +16,18 @@ namespace bel::gfx {
 //-----------------------------------------------------------------------------
 bool ConstantBuffer::initialize(const InitializeArg& arg)
 {
-    // バッファーを生成
-    auto p_resources = std::make_unique<Microsoft::WRL::ComPtr<ID3D12Resource>[]>(arg.mNumBuffer);
-    auto buffer_ptrs = std::make_unique<uint8_t* []>(arg.mNumBuffer);
-
+    // 保持
+    mNumBuffer = arg.mNumBuffer;
     // バッファーサイズ計算
     mBufferSize = Math::Roundup(arg.mBufferSize, static_cast<size_t>(D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT));
 
+    // バッファーを生成
+    auto p_resources        = std::make_unique<Microsoft::WRL::ComPtr<ID3D12Resource>[]>(mNumBuffer);
+    auto buffer_ptrs        = std::make_unique<uint8_t* []>(mNumBuffer);
+    auto descriptor_handles = std::make_unique<GlobalDescriptorHandle[]>(mNumBuffer);
+
     // 定数バッファーを作成
-    for (uint32_t i_buffer = 0; i_buffer < arg.mNumBuffer; ++i_buffer)
+    for (uint32_t i_buffer = 0; i_buffer < mNumBuffer; ++i_buffer)
     {
         D3D12_HEAP_PROPERTIES props = {};
         props.Type             = D3D12_HEAP_TYPE_UPLOAD;
@@ -32,7 +36,7 @@ bool ConstantBuffer::initialize(const InitializeArg& arg)
 
         D3D12_RESOURCE_DESC desc = {};
         desc.Dimension        = D3D12_RESOURCE_DIMENSION_BUFFER;
-        desc.Width            = static_cast<uint64_t>(mBufferSize);
+        desc.Width            = static_cast<UINT64>(mBufferSize);
         desc.Height           = 1;
         desc.DepthOrArraySize = 1;
         desc.MipLevels        = 1;
@@ -54,11 +58,17 @@ bool ConstantBuffer::initialize(const InitializeArg& arg)
         {
             return false;
         }
+
+        // デスクリプターに登録
+        descriptor_handles[i_buffer] = GlobalDescriptorRegistry::GetInstance().registerConstantBuffer(
+            p_resources[i_buffer]->GetGPUVirtualAddress(), mBufferSize
+        );
     }
 
     // バッファー保持
     mpResources = std::move(p_resources);
     mBufferPtrs = std::move(buffer_ptrs);
+    mDescriptorHandles = std::move(descriptor_handles);
 
     return true;
 }

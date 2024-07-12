@@ -10,6 +10,7 @@
 #include "graphics/internal/belGraphicsGlobalDescriptorHandle.h"
 #include "memory/belSingleton.h"
 
+namespace bel::gfx { class ConstantBuffer; }
 namespace bel::gfx { class Texture; }
 
 namespace bel::gfx {
@@ -33,6 +34,13 @@ public:
      * @param[in] texture 登録するテクスチャー
      */
     GlobalDescriptorHandle registerTexture(const Texture& texture);
+
+    /*!
+     * 定数バッファーを登録する
+     * @param[in] location GPU仮想アドレス
+     * @param[in] size     バッファーサイズ
+     */
+    GlobalDescriptorHandle registerConstantBuffer(D3D12_GPU_VIRTUAL_ADDRESS location, size_t size);
 
     /*!
      * デスクリプターハンドルを取得する

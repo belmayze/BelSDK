@@ -6,6 +6,8 @@
  * Copyright (c) belmayze. All rights reserved.
  */
 #pragma once
+// bel
+#include "graphics/internal/belGraphicsGlobalDescriptorHandle.h"
 
 namespace bel::gfx {
 //-----------------------------------------------------------------------------
@@ -42,12 +44,21 @@ public:
     void swapBuffer();
 
     //-------------------------------------------------------------------------
+    // getter
+    //-------------------------------------------------------------------------
+public:
+     //! デスクリプターハンドルを取得
+    const GlobalDescriptorHandle& getCurrentDescriptorHandle() const { return mDescriptorHandles[mBufferIndex]; }
+
+    //-------------------------------------------------------------------------
 private:
     std::unique_ptr<Microsoft::WRL::ComPtr<ID3D12Resource>[]> mpResources;
     std::unique_ptr<uint8_t* []> mBufferPtrs;
     size_t                       mBufferSize = 0;
     uint32_t                     mNumBuffer   = 1;
     uint32_t                     mBufferIndex = 0;
+
+    std::unique_ptr<GlobalDescriptorHandle[]> mDescriptorHandles;
 };
 //-----------------------------------------------------------------------------
 }
