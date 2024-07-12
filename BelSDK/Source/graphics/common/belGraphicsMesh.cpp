@@ -120,19 +120,22 @@ void Mesh::drawIndexedInstanced(CommandContext& command, uint32_t num_instance) 
 
     // バッファー設定
     if (mpVertexResource) { command.getCommandList().IASetVertexBuffers(0, 1, &mVertexBufferView); }
-    if (mpIndexResource)  { command.getCommandList().IASetIndexBuffer(&mIndexBufferView);          }
+    command.getCommandList().IASetIndexBuffer(&mIndexBufferView);
 
     // 描画
-    if (mpIndexResource)
-    {
-        // インデックスバッファーを用いた描画
-        command.getCommandList().DrawIndexedInstanced(mIndexCount, num_instance, 0, 0, 0);
-    }
-    else
-    {
-        // インデックスバッファーを用いない描画
-        command.getCommandList().DrawInstanced(mIndexCount, num_instance, 0, 0);
-    }
+    command.getCommandList().DrawIndexedInstanced(mIndexCount, num_instance, 0, 0, 0);
+}
+//-----------------------------------------------------------------------------
+void Mesh::drawInstanced(CommandContext& command, uint32_t num_instance) const
+{
+    // 描画設定
+    command.getCommandList().IASetPrimitiveTopology(mPrimitiveTopology);
+
+    // バッファー設定
+    if (mpVertexResource) { command.getCommandList().IASetVertexBuffers(0, 1, &mVertexBufferView); }
+
+    // 描画
+    command.getCommandList().DrawInstanced(mIndexCount, num_instance, 0, 0);
 }
 //-----------------------------------------------------------------------------
 }

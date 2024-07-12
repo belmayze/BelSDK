@@ -42,11 +42,18 @@ public:
     //-------------------------------------------------------------------------
 public:
     /*!
-     * 描画
+     * インデックスバッファーを使った描画
      * @param[in] command      コマンド
      * @param[in] num_instance 描画インスタンス数
      */
     void drawIndexedInstanced(CommandContext& command, uint32_t num_instance = 1) const;
+
+    /*!
+     * インデックスバッファーを使用しない描画
+     * @param[in] command      コマンド
+     * @param[in] num_instance 描画インスタンス数
+     */
+    void drawInstanced(CommandContext& command, uint32_t num_instance = 1) const;
 
     //-------------------------------------------------------------------------
 private:

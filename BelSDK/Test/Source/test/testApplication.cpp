@@ -115,7 +115,7 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
     bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().bind(command);
     mToneMappingPipeline.activateTexture(0, mColorTexture);
     mToneMappingPipeline.setPipeline(command);
-    mScreenMesh.drawIndexedInstanced(command);
+    mScreenMesh.drawInstanced(command);
 }
 //-----------------------------------------------------------------------------
 }
