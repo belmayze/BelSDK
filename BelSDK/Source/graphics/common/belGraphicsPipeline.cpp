@@ -6,6 +6,7 @@
  * Copyright (c) belmayze. All rights reserved.
  */
 // bel
+#include "graphics/common/belGraphicsConstantBuffer.h"
 #include "graphics/common/belGraphicsPipeline.h"
 #include "graphics/common/belGraphicsTexture.h"
 #include "graphics/internal/belGraphicsGlobalDescriptorRegistry.h"
@@ -24,15 +25,31 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
 
     // ルートシグネチャの設定
     std::array<D3D12_DESCRIPTOR_RANGE1, D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER + 1> ranges = {};
+    uint32_t num_ranges = 0;
 
     // SRV
+    if (arg.mNumTexture > 0)
     {
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].RangeType          = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].NumDescriptors     = arg.num_srv;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].BaseShaderRegister = 0;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].RegisterSpace      = 0;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].Flags              = D3D12_DESCRIPTOR_RANGE_FLAG_NONE;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+        ranges[num_ranges].RangeType          = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+        ranges[num_ranges].NumDescriptors     = arg.mNumTexture;
+        ranges[num_ranges].BaseShaderRegister = 0;
+        ranges[num_ranges].RegisterSpace      = 0;
+        ranges[num_ranges].Flags              = D3D12_DESCRIPTOR_RANGE_FLAG_NONE;
+        ranges[num_ranges].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+        ++num_ranges;
+    }
+    // CBV
+    if (arg.mNumConstantBuffer > 0)
+    {
+        ranges[num_ranges].RangeType          = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+        ranges[num_ranges].NumDescriptors     = arg.mNumConstantBuffer;
+        ranges[num_ranges].BaseShaderRegister = 0;
+        ranges[num_ranges].RegisterSpace      = 0;
+        ranges[num_ranges].Flags              = D3D12_DESCRIPTOR_RANGE_FLAG_NONE;
+        ranges[num_ranges].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+        ++num_ranges;
+
+        mConstantBufferOffset = arg.mNumTexture;
     }
 
     // デスクリプターヒープは必ず CopyDescriptors() を使う前提のシステムなので単一のヒープのみ使用する
@@ -41,7 +58,7 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
     {
         params[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].ParameterType    = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
         params[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-        params[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].DescriptorTable.NumDescriptorRanges = 1;
+        params[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].DescriptorTable.NumDescriptorRanges = num_ranges;
         params[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].DescriptorTable.pDescriptorRanges   = &ranges[0];
     }
 
@@ -57,7 +74,7 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
             {
                 D3D12_VERSIONED_ROOT_SIGNATURE_DESC desc = {};
                 desc.Version                = D3D_ROOT_SIGNATURE_VERSION_1_1;
-                desc.Desc_1_1.NumParameters = arg.num_srv > 0 ? 1 : 0;
+                desc.Desc_1_1.NumParameters = num_ranges > 0 ? 1 : 0;
                 desc.Desc_1_1.pParameters   = params.data();
                 desc.Desc_1_1.Flags         = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
 
@@ -114,13 +131,13 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
                 desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
                 // 出力フォーマット
-                BEL_ASSERT(arg.num_render_target < cMaxRenderTargets);
-                desc.NumRenderTargets = arg.num_render_target;
-                for (uint32_t i = 0; i < arg.num_render_target; ++i)
+                BEL_ASSERT(arg.mNumRenderTarget < cMaxRenderTargets);
+                desc.NumRenderTargets = arg.mNumRenderTarget;
+                for (uint32_t i = 0; i < arg.mNumRenderTarget; ++i)
                 {
-                    desc.RTVFormats[i] = to_native(arg.render_target_formats[i]);
+                    desc.RTVFormats[i] = to_native(arg.mRenderTargetFormats[i]);
                 }
-                if (arg.depth_stencil_format != TextureFormat::cUnknown) { desc.DSVFormat = to_native(arg.depth_stencil_format); }
+                if (arg.mDepthStencilFormat != TextureFormat::cUnknown) { desc.DSVFormat = to_native(arg.mDepthStencilFormat); }
 
                 // サンプル
                 desc.SampleMask       = std::numeric_limits<uint32_t>::max();
@@ -210,7 +227,7 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
             {
                 D3D12_VERSIONED_ROOT_SIGNATURE_DESC desc = {};
                 desc.Version                = D3D_ROOT_SIGNATURE_VERSION_1_1;
-                desc.Desc_1_1.NumParameters = arg.num_srv > 0 ? 1 : 0;
+                desc.Desc_1_1.NumParameters = num_ranges > 0 ? 1 : 0;
                 desc.Desc_1_1.pParameters   = params.data();
                 desc.Desc_1_1.Flags         =
                     D3D12_ROOT_SIGNATURE_FLAG_DENY_VERTEX_SHADER_ROOT_ACCESS |
@@ -281,10 +298,10 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
 
     // デスクリプターヒープ
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> p_descriptor_heap;
-    if (arg.num_srv > 0)
+    if (num_ranges > 0)
     {
         D3D12_DESCRIPTOR_HEAP_DESC desc = {};
-        desc.NumDescriptors = 1;
+        desc.NumDescriptors = arg.mNumTexture + arg.mNumConstantBuffer;
         desc.Flags          = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
         desc.Type           = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 
@@ -309,6 +326,19 @@ void Pipeline::activateTexture(uint32_t index, const Texture& texture) const
     D3D12_CPU_DESCRIPTOR_HANDLE src = GlobalDescriptorRegistry::GetInstance().getDescriptorHandle(texture.getDescriptorHandle());
     D3D12_CPU_DESCRIPTOR_HANDLE dst = mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
     dst.ptr += GraphicsEngine::GetInstance().getDevice().GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * index;
+
+    GraphicsEngine::GetInstance().getDevice().CopyDescriptors(
+        1, &dst, nullptr,
+        1, &src, nullptr,
+        D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV
+    );
+}
+//-----------------------------------------------------------------------------
+void Pipeline::activateConstantBuffer(uint32_t index, const ConstantBuffer& buffer) const
+{
+    D3D12_CPU_DESCRIPTOR_HANDLE src = GlobalDescriptorRegistry::GetInstance().getDescriptorHandle(buffer.getCurrentDescriptorHandle());
+    D3D12_CPU_DESCRIPTOR_HANDLE dst = mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+    dst.ptr += GraphicsEngine::GetInstance().getDevice().GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * (mConstantBufferOffset + index);
 
     GraphicsEngine::GetInstance().getDevice().CopyDescriptors(
         1, &dst, nullptr,

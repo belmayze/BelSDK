@@ -10,6 +10,7 @@
 #include "graphics/common/belGraphicsTextureType.h"
 #include "resource/belResourceShaderResource.h"
 
+namespace bel::gfx { class ConstantBuffer; }
 namespace bel::gfx { class Texture; }
 
 namespace bel::gfx {
@@ -23,11 +24,12 @@ public:
     //! 初期化引数
     struct InitializeArg
     {
-        uint32_t                                     num_render_target = 0;
-        std::array<TextureFormat, cMaxRenderTargets> render_target_formats = {};
-        TextureFormat                                depth_stencil_format = TextureFormat::cUnknown;
+        uint32_t                                     mNumRenderTarget = 0;
+        std::array<TextureFormat, cMaxRenderTargets> mRenderTargetFormats = {};
+        TextureFormat                                mDepthStencilFormat = TextureFormat::cUnknown;
 
-        uint32_t num_srv = 0;
+        uint32_t mNumTexture        = 0;
+        uint32_t mNumConstantBuffer = 0;
     };
 
     //-------------------------------------------------------------------------
@@ -52,6 +54,13 @@ public:
      */
     void activateTexture(uint32_t index, const Texture& texture) const;
 
+    /*!
+     * 定数バッファーを使用可能にする
+     * @param[in] index  レジスター番号
+     * @param[in] buffer 定数バッファー
+     */
+    void activateConstantBuffer(uint32_t index, const ConstantBuffer& buffer) const;
+
     //-------------------------------------------------------------------------
     // command
     //-------------------------------------------------------------------------
@@ -68,6 +77,8 @@ private:
     Microsoft::WRL::ComPtr<ID3D12PipelineState>  mpPipeline;
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mpDescriptorHeap;
     res::ShaderResource::ShaderType              mShaderType = res::ShaderResource::ShaderType::VertexPixel;
+
+    uint32_t mConstantBufferOffset = 0;
 };
 //-----------------------------------------------------------------------------
 }

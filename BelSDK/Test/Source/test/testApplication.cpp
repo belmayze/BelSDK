@@ -20,9 +20,9 @@ void Application::initialize()
         mResShaderResource = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderResource>("Shader/Sample.bsh");
 
         bel::gfx::Pipeline::InitializeArg init_arg;
-        init_arg.num_render_target        = 1;
-        init_arg.render_target_formats[0] = bel::gfx::TextureFormat::cR11G11B10_Float;
-        init_arg.depth_stencil_format     = bel::gfx::TextureFormat::cD32_Float;
+        init_arg.mNumRenderTarget        = 1;
+        init_arg.mRenderTargetFormats[0] = bel::gfx::TextureFormat::cR11G11B10_Float;
+        init_arg.mDepthStencilFormat     = bel::gfx::TextureFormat::cD32_Float;
 
         mPipeline.initialize(init_arg, mResShaderResource);
     }
@@ -30,9 +30,9 @@ void Application::initialize()
         mResToneMappingShaderResource = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderResource>("Shader/ToneMapping.bsh");
 
         bel::gfx::Pipeline::InitializeArg init_arg;
-        init_arg.num_render_target        = 1;
-        init_arg.render_target_formats[0] = bel::gfx::TextureFormat::cR8G8B8A8_sRGB;
-        init_arg.num_srv                  = 1;
+        init_arg.mNumRenderTarget        = 1;
+        init_arg.mRenderTargetFormats[0] = bel::gfx::TextureFormat::cR8G8B8A8_sRGB;
+        init_arg.mNumTexture             = 1;
 
         mToneMappingPipeline.initialize(init_arg, mResToneMappingShaderResource);
     }
