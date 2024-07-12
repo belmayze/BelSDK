@@ -70,7 +70,7 @@ void Application::initialize()
         init_arg.mBufferSize = sizeof(bel::Color);
         mToneMappingCB.initialize(init_arg);
 
-        bel::Color color = bel::Color::cYellow();
+        bel::Color color = bel::Color::cRed();
         mToneMappingCB.copyStruct(color);
     }
 
