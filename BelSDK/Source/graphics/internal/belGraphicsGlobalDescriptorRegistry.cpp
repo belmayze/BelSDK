@@ -1,5 +1,5 @@
 ﻿/*!
- * @file   belGraphicsTextureDescriptorRegistry.cpp
+ * @file   belGraphicsGlobalDescriptorRegistry.cpp
  * @brief
  * @author belmayze
  *
@@ -7,14 +7,14 @@
  */
 // bel
 #include "graphics/common/belGraphicsTexture.h"
-#include "graphics/internal/belGraphicsTextureDescriptorRegistry.h"
+#include "graphics/internal/belGraphicsGlobalDescriptorRegistry.h"
 #include "graphics/belGraphicsEngine.h"
 
 namespace bel::gfx {
 //-----------------------------------------------------------------------------
 // memory
 //-----------------------------------------------------------------------------
-bool TextureDescriptorRegistry::allocate(uint32_t num)
+bool GlobalDescriptorRegistry::allocate(uint32_t num)
 {
     // グローバルで大きなテクスチャー用デスクリプターヒープを作る
     {
@@ -38,13 +38,13 @@ bool TextureDescriptorRegistry::allocate(uint32_t num)
     return true;
 }
 //-----------------------------------------------------------------------------
-TextureDescriptorHandle TextureDescriptorRegistry::registerTexture(const Texture& texture)
+GlobalDescriptorHandle GlobalDescriptorRegistry::registerTexture(const Texture& texture)
 {
     // フリーリストから取得
     uint32_t index = 0;
     {
         std::lock_guard lock(mFreeListMutex);
-        if (mFreeIndices.empty()) { return TextureDescriptorHandle(); }
+        if (mFreeIndices.empty()) { return GlobalDescriptorHandle(); }
         index = mFreeIndices.back();
         mFreeIndices.pop_back();
     }
@@ -99,12 +99,12 @@ TextureDescriptorHandle TextureDescriptorRegistry::registerTexture(const Texture
     descriptor_handle.ptr += GraphicsEngine::GetInstance().getDevice().GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * index;
     GraphicsEngine::GetInstance().getDevice().CreateShaderResourceView(&texture.getResource(), &desc, descriptor_handle);
 
-    TextureDescriptorHandle handle;
-    TextureDescriptorHandle::Accessor(handle).setId(index);
+    GlobalDescriptorHandle handle;
+    GlobalDescriptorHandle::Accessor(handle).setId(index);
     return handle;
 }
 //-----------------------------------------------------------------------------
-D3D12_CPU_DESCRIPTOR_HANDLE TextureDescriptorRegistry::getDescriptorHandle(const TextureDescriptorHandle& handle)
+D3D12_CPU_DESCRIPTOR_HANDLE GlobalDescriptorRegistry::getDescriptorHandle(const GlobalDescriptorHandle& handle)
 {
     if (!handle.hasValue())
     {
@@ -120,9 +120,9 @@ D3D12_CPU_DESCRIPTOR_HANDLE TextureDescriptorRegistry::getDescriptorHandle(const
 //-----------------------------------------------------------------------------
 // EraseAccessor
 //-----------------------------------------------------------------------------
-void TextureDescriptorRegistry::EraseAccessor::Erase(uint32_t id)
+void GlobalDescriptorRegistry::EraseAccessor::Erase(uint32_t id)
 {
-    TextureDescriptorRegistry& instance = TextureDescriptorRegistry::GetInstance();
+    GlobalDescriptorRegistry& instance = GlobalDescriptorRegistry::GetInstance();
 
     // フリーリストに登録
     {

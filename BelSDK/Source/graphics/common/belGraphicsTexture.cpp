@@ -8,7 +8,7 @@
 // bel
 #include "graphics/common/belGraphicsTexture.h"
 #include "graphics/common/belGraphicsTextureFormatInfo.h"
-#include "graphics/internal/belGraphicsTextureDescriptorRegistry.h"
+#include "graphics/internal/belGraphicsGlobalDescriptorRegistry.h"
 #include "graphics/belGraphicsEngine.h"
 
 namespace bel::gfx {
@@ -65,7 +65,7 @@ bool Texture::initializeFromGPUMemory(const InitializeArg& arg, Microsoft::WRL::
     mpResource     = std::move(p_resource);
 
     // レジスターに登録
-    mDescriptorHandle = TextureDescriptorRegistry::GetInstance().registerTexture(*this);
+    mDescriptorHandle = GlobalDescriptorRegistry::GetInstance().registerTexture(*this);
 
     return true;
 }

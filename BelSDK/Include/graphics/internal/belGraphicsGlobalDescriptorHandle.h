@@ -1,5 +1,5 @@
 ﻿/*!
- * @file   belGraphicsTextureDescriptorHandle.h
+ * @file   belGraphicsGlobalDescriptorHandle.h
  * @brief  
  * @author belmayze
  * 
@@ -7,25 +7,25 @@
  */
 #pragma once
 
-namespace bel::gfx { class TextureDescriptorRegistry; }
+namespace bel::gfx { class GlobalDescriptorRegistry; }
 
 namespace bel::gfx {
 //-----------------------------------------------------------------------------
 // テクスチャーハンドル
 //-----------------------------------------------------------------------------
-class TextureDescriptorHandle
+class GlobalDescriptorHandle
 {
     //-------------------------------------------------------------------------
 public:
     //! デフォルトコンストラクター
-    TextureDescriptorHandle() = default;
-    ~TextureDescriptorHandle();
+    GlobalDescriptorHandle() = default;
+    ~GlobalDescriptorHandle();
     //! コピー禁止
-    TextureDescriptorHandle(const TextureDescriptorHandle&) = delete;
-    TextureDescriptorHandle& operator=(const TextureDescriptorHandle&) = delete;
+    GlobalDescriptorHandle(const GlobalDescriptorHandle&) = delete;
+    GlobalDescriptorHandle& operator=(const GlobalDescriptorHandle&) = delete;
     //! move
-    TextureDescriptorHandle(TextureDescriptorHandle&& handle) noexcept;
-    TextureDescriptorHandle& operator=(TextureDescriptorHandle&& rhs) noexcept;
+    GlobalDescriptorHandle(GlobalDescriptorHandle&& handle) noexcept;
+    GlobalDescriptorHandle& operator=(GlobalDescriptorHandle&& rhs) noexcept;
 
     //-------------------------------------------------------------------------
 public:
@@ -40,10 +40,10 @@ public:
     //! ハンドルの操作ができるのは管理クラスのみ
     class Accessor
     {
-        friend TextureDescriptorRegistry;
+        friend GlobalDescriptorRegistry;
     private:
-        TextureDescriptorHandle& mInstance;
-        Accessor(TextureDescriptorHandle& instance) : mInstance(instance) {}
+        GlobalDescriptorHandle& mInstance;
+        Accessor(GlobalDescriptorHandle& instance) : mInstance(instance) {}
     private:
         void setId(uint32_t id) { mInstance.mId = id; }
         void reset() { mInstance.mId.reset(); }

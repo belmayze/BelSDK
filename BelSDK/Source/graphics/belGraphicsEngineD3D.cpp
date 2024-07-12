@@ -13,7 +13,7 @@
 #include "graphics/common/belGraphicsRenderBuffer.h"
 #include "graphics/common/belGraphicsRenderTarget.h"
 #include "graphics/common/belGraphicsTexture.h"
-#include "graphics/internal/belGraphicsTextureDescriptorRegistry.h"
+#include "graphics/internal/belGraphicsGlobalDescriptorRegistry.h"
 #include "graphics/belGraphicsEngineD3D.h"
 
 namespace bel {
@@ -22,7 +22,7 @@ namespace bel {
 GraphicsEngineD3D::GraphicsEngineD3D()
 {
     // グラフィックスのシングルトンはここで生成する
-    gfx::TextureDescriptorRegistry::GetInstance();
+    gfx::GlobalDescriptorRegistry::GetInstance();
 }
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -138,10 +138,10 @@ bool GraphicsEngineD3D::initialize()
         }
     }
 
-    // グローバルなテクスチャーデスクリプターを作る
-    if (!gfx::TextureDescriptorRegistry::GetInstance().allocate(cMaxTextureHandle))
+    // グローバルなデスクリプターを作る
+    if (!gfx::GlobalDescriptorRegistry::GetInstance().allocate(cMaxTextureHandle))
     {
-        BEL_PRINT("テクスチャー用デスクリプターヒープの作成に失敗しました\n");
+        BEL_PRINT("グローバルデスクリプターヒープの作成に失敗しました\n");
         return false;
     }
 

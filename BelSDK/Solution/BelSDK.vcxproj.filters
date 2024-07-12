@@ -132,12 +132,6 @@
     <ClInclude Include="..\Include\container\belVector.h">
       <Filter>ヘッダー ファイル\container</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\graphics\internal\belGraphicsTextureDescriptorHandle.h">
-      <Filter>ヘッダー ファイル\graphics\internal</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Include\graphics\internal\belGraphicsTextureDescriptorRegistry.h">
-      <Filter>ヘッダー ファイル\graphics\internal</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\graphics\common\belGraphicsTexture.h">
       <Filter>ヘッダー ファイル\graphics\common</Filter>
     </ClInclude>
@@ -231,6 +225,12 @@
     <ClInclude Include="..\Include\graphics\common\belGraphicsConstantBuffer.h">
       <Filter>ヘッダー ファイル\graphics\common</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\graphics\internal\belGraphicsGlobalDescriptorHandle.h">
+      <Filter>ヘッダー ファイル\graphics\internal</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\graphics\internal\belGraphicsGlobalDescriptorRegistry.h">
+      <Filter>ヘッダー ファイル\graphics\internal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -262,12 +262,6 @@
     </ClCompile>
     <ClCompile Include="..\Source\graphics\belGraphicsEngine.cpp">
       <Filter>ソース ファイル\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureDescriptorHandle.cpp">
-      <Filter>ソース ファイル\graphics\internal</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureDescriptorRegistry.cpp">
-      <Filter>ソース ファイル\graphics\internal</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\graphics\common\belGraphicsTexture.cpp">
       <Filter>ソース ファイル\graphics\common</Filter>
@@ -319,6 +313,12 @@
     </ClCompile>
     <ClCompile Include="..\Source\graphics\common\belGraphicsConstantBuffer.cpp">
       <Filter>ソース ファイル\graphics\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\graphics\internal\belGraphicsGlobalDescriptorHandle.cpp">
+      <Filter>ソース ファイル\graphics\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\graphics\internal\belGraphicsGlobalDescriptorRegistry.cpp">
+      <Filter>ソース ファイル\graphics\internal</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

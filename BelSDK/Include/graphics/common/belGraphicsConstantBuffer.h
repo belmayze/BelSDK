@@ -33,6 +33,15 @@ public:
     bool initialize(const InitializeArg& arg);
 
     //-------------------------------------------------------------------------
+    // memory
+    //-------------------------------------------------------------------------
+public:
+    /*!
+     * バッファー切り替え
+     */
+    void swapBuffer();
+
+    //-------------------------------------------------------------------------
 private:
     std::unique_ptr<Microsoft::WRL::ComPtr<ID3D12Resource>[]> mpResources;
     std::unique_ptr<uint8_t* []> mBufferPtrs;

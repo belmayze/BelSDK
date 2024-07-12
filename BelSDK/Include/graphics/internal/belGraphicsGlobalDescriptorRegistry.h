@@ -1,5 +1,5 @@
 ﻿/*!
- * @file   belGraphicsTextureDescriptorRegistry.h
+ * @file   belGraphicsGlobalDescriptorRegistry.h
  * @brief  
  * @author belmayze
  * 
@@ -7,16 +7,16 @@
  */
 #pragma once
 // bel
-#include "graphics/internal/belGraphicsTextureDescriptorHandle.h"
+#include "graphics/internal/belGraphicsGlobalDescriptorHandle.h"
 #include "memory/belSingleton.h"
 
 namespace bel::gfx { class Texture; }
 
 namespace bel::gfx {
 //-----------------------------------------------------------------------------
-// テクスチャー登録
+// グローバルなデスクリプター登録
 //-----------------------------------------------------------------------------
-class TextureDescriptorRegistry : public Singleton<TextureDescriptorRegistry>
+class GlobalDescriptorRegistry : public Singleton<GlobalDescriptorRegistry>
 {
     //-------------------------------------------------------------------------
     // memory
@@ -32,13 +32,13 @@ public:
      * テクスチャーを登録する
      * @param[in] texture 登録するテクスチャー
      */
-    TextureDescriptorHandle registerTexture(const Texture& texture);
+    GlobalDescriptorHandle registerTexture(const Texture& texture);
 
     /*!
      * デスクリプターハンドルを取得する
      * @param[in] handle ハンドル
      */
-    D3D12_CPU_DESCRIPTOR_HANDLE getDescriptorHandle(const TextureDescriptorHandle& handle);
+    D3D12_CPU_DESCRIPTOR_HANDLE getDescriptorHandle(const GlobalDescriptorHandle& handle);
 
     //-------------------------------------------------------------------------
     // eraser
@@ -47,7 +47,7 @@ public:
     //! 削除できるのはハンドルから
     class EraseAccessor
     {
-        friend TextureDescriptorHandle;
+        friend GlobalDescriptorHandle;
     private:
         static void Erase(uint32_t id);
     };

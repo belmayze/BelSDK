@@ -1,21 +1,21 @@
 ﻿/*!
- * @file   belGraphicsTextureDescriptorHandle.cpp
+ * @file   belGraphicsGlobalDescriptorHandle.cpp
  * @brief
  * @author belmayze
  *
  * Copyright (c) belmayze. All rights reserved.
  */
 // bel
-#include "graphics/internal/belGraphicsTextureDescriptorHandle.h"
-#include "graphics/internal/belGraphicsTextureDescriptorRegistry.h"
+#include "graphics/internal/belGraphicsGlobalDescriptorHandle.h"
+#include "graphics/internal/belGraphicsGlobalDescriptorRegistry.h"
 
 namespace bel::gfx {
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-TextureDescriptorHandle::~TextureDescriptorHandle() { release(); }
+GlobalDescriptorHandle::~GlobalDescriptorHandle() { release(); }
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-TextureDescriptorHandle::TextureDescriptorHandle(TextureDescriptorHandle&& handle) noexcept
+GlobalDescriptorHandle::GlobalDescriptorHandle(GlobalDescriptorHandle&& handle) noexcept
 {
     release();
     if (handle.hasValue())
@@ -25,7 +25,7 @@ TextureDescriptorHandle::TextureDescriptorHandle(TextureDescriptorHandle&& handl
     }
 }
 //-----------------------------------------------------------------------------
-TextureDescriptorHandle& TextureDescriptorHandle::operator=(TextureDescriptorHandle&& rhs) noexcept
+GlobalDescriptorHandle& GlobalDescriptorHandle::operator=(GlobalDescriptorHandle&& rhs) noexcept
 {
     release();
     if (rhs.hasValue())
@@ -36,11 +36,11 @@ TextureDescriptorHandle& TextureDescriptorHandle::operator=(TextureDescriptorHan
     return *this;
 }
 //-----------------------------------------------------------------------------
-void TextureDescriptorHandle::release()
+void GlobalDescriptorHandle::release()
 {
     if (mId.has_value())
     {
-        TextureDescriptorRegistry::EraseAccessor::Erase(mId.value());
+        GlobalDescriptorRegistry::EraseAccessor::Erase(mId.value());
         mId.reset();
     }
 }

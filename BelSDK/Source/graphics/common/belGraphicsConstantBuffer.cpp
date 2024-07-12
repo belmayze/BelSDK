@@ -19,6 +19,9 @@ bool ConstantBuffer::initialize(const InitializeArg& arg)
     auto p_resources = std::make_unique<Microsoft::WRL::ComPtr<ID3D12Resource>[]>(arg.mNumBuffer);
     auto buffer_ptrs = std::make_unique<uint8_t* []>(arg.mNumBuffer);
 
+    // バッファーサイズ計算
+    mBufferSize = Math::Roundup(arg.mBufferSize, static_cast<size_t>(D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT));
+
     // 定数バッファーを作成
     for (uint32_t i_buffer = 0; i_buffer < arg.mNumBuffer; ++i_buffer)
     {
@@ -29,7 +32,7 @@ bool ConstantBuffer::initialize(const InitializeArg& arg)
 
         D3D12_RESOURCE_DESC desc = {};
         desc.Dimension        = D3D12_RESOURCE_DIMENSION_BUFFER;
-        desc.Width            = Math::Roundup(arg.mBufferSize, static_cast<size_t>(D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT));
+        desc.Width            = static_cast<uint64_t>(mBufferSize);
         desc.Height           = 1;
         desc.DepthOrArraySize = 1;
         desc.MipLevels        = 1;
@@ -58,6 +61,11 @@ bool ConstantBuffer::initialize(const InitializeArg& arg)
     mBufferPtrs = std::move(buffer_ptrs);
 
     return true;
+}
+//-----------------------------------------------------------------------------
+void ConstantBuffer::swapBuffer()
+{
+    if (++mBufferIndex >= mNumBuffer) { mBufferIndex = 0; }
 }
 //-----------------------------------------------------------------------------
 }

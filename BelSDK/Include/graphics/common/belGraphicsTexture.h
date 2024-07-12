@@ -8,7 +8,7 @@
 #pragma once
 // bel
 #include "graphics/common/belGraphicsTextureType.h"
-#include "graphics/internal/belGraphicsTextureDescriptorHandle.h"
+#include "graphics/internal/belGraphicsGlobalDescriptorHandle.h"
 
 namespace bel::gfx {
 //-----------------------------------------------------------------------------
@@ -69,7 +69,7 @@ public:
     ID3D12Resource& getResource() const { BEL_ASSERT(mpResource.Get() != nullptr); return *mpResource.Get(); }
 
     //! デスクリプターハンドルを取得
-    const TextureDescriptorHandle& getDescriptorHandle() const { return mDescriptorHandle; }
+    const GlobalDescriptorHandle& getDescriptorHandle() const { return mDescriptorHandle; }
 
     //-------------------------------------------------------------------------
     // command
@@ -94,7 +94,7 @@ private:
     TextureDimension      mDimension     = TextureDimension::c2D;
     mutable ResourceState mResourceState = ResourceState::cGenericRead;
 
-    TextureDescriptorHandle mDescriptorHandle;
+    GlobalDescriptorHandle mDescriptorHandle;
 };
 //-----------------------------------------------------------------------------
 }

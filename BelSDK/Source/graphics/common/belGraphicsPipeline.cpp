@@ -8,7 +8,7 @@
 // bel
 #include "graphics/common/belGraphicsPipeline.h"
 #include "graphics/common/belGraphicsTexture.h"
-#include "graphics/internal/belGraphicsTextureDescriptorRegistry.h"
+#include "graphics/internal/belGraphicsGlobalDescriptorRegistry.h"
 #include "graphics/belGraphicsEngine.h"
 #include "resource/belResourceShaderResource.h"
 
@@ -306,7 +306,7 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
 //-----------------------------------------------------------------------------
 void Pipeline::activateTexture(uint32_t index, const Texture& texture) const
 {
-    D3D12_CPU_DESCRIPTOR_HANDLE src = TextureDescriptorRegistry::GetInstance().getDescriptorHandle(texture.getDescriptorHandle());
+    D3D12_CPU_DESCRIPTOR_HANDLE src = GlobalDescriptorRegistry::GetInstance().getDescriptorHandle(texture.getDescriptorHandle());
     D3D12_CPU_DESCRIPTOR_HANDLE dst = mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
     dst.ptr += GraphicsEngine::GetInstance().getDevice().GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * index;
 
