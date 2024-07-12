@@ -33,6 +33,7 @@ void Application::initialize()
         init_arg.mNumRenderTarget        = 1;
         init_arg.mRenderTargetFormats[0] = bel::gfx::TextureFormat::cR8G8B8A8_sRGB;
         init_arg.mNumTexture             = 1;
+        init_arg.mNumConstantBuffer      = 1;
 
         mToneMappingPipeline.initialize(init_arg, mResToneMappingShaderResource);
     }
@@ -60,6 +61,17 @@ void Application::initialize()
         bel::gfx::Mesh::InitializeArg init_arg;
         init_arg.mIndexBufferSize = sizeof(uint16_t) * 3;
         mScreenMesh.initialize(init_arg);
+    }
+
+    // 定数バッファー
+    {
+        bel::gfx::ConstantBuffer::InitializeArg init_arg;
+        init_arg.mNumBuffer  = 2;
+        init_arg.mBufferSize = sizeof(bel::Color);
+        mToneMappingCB.initialize(init_arg);
+
+        bel::Color color = bel::Color::cYellow();
+        mToneMappingCB.copyStruct(color);
     }
 
     // 出力バッファー生成
@@ -94,7 +106,41 @@ void Application::initialize()
 //-----------------------------------------------------------------------------
 void Application::onCalc()
 {
+    // 定数バッファーのカラー更新
+    {
+        static float sFrameCount = 0.f;
+        sFrameCount += 0.01f;
+        if (sFrameCount >= 3.f) { sFrameCount = 0.f; }
 
+        bel::Color color = bel::Color::cWhite();
+        if (sFrameCount < 1.f)
+        {
+            // R -> G
+            float range = sFrameCount;
+            color.r() = 1.f - range;
+            color.g() = range;
+            color.b() = 0.f;
+        }
+        else if (sFrameCount < 2.f)
+        {
+            // G -> B
+            float range = sFrameCount - 1.f;
+            color.r() = 0.f;
+            color.g() = 1.f - range;
+            color.b() = range;
+        }
+        else if (sFrameCount < 3.f)
+        {
+            // B -> R
+            float range = sFrameCount - 2.f;
+            color.r() = range;
+            color.g() = 0.f;
+            color.b() = 1.f - range;
+        }
+
+        mToneMappingCB.swapBuffer();
+        mToneMappingCB.copyStruct(color);
+    }
 }
 //-----------------------------------------------------------------------------
 void Application::onMakeCommand(bel::gfx::CommandContext& command) const
@@ -114,6 +160,7 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
     // オフスクリーンレンダリングのテクスチャーを設定して描画
     bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().bind(command);
     mToneMappingPipeline.activateTexture(0, mColorTexture);
+    mToneMappingPipeline.activateConstantBuffer(0, mToneMappingCB);
     mToneMappingPipeline.setPipeline(command);
     mScreenMesh.drawInstanced(command);
 }

@@ -78,4 +78,14 @@ void ConstantBuffer::swapBuffer()
     if (++mBufferIndex >= mNumBuffer) { mBufferIndex = 0; }
 }
 //-----------------------------------------------------------------------------
+void ConstantBuffer::copyBuffer(void* ptr, size_t size, size_t offset)
+{
+    BEL_ASSERT(size + offset <= mBufferSize);
+    std::memcpy(
+        mBufferPtrs[mBufferIndex] + offset,
+        ptr,
+        size
+    );
+}
+//-----------------------------------------------------------------------------
 }

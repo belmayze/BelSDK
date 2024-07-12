@@ -8,6 +8,7 @@
 #pragma once
 // bel
 #include "base/belIApplicationCallback.h"
+#include "graphics/common/belGraphicsConstantBuffer.h"
 #include "graphics/common/belGraphicsDepthStencil.h"
 #include "graphics/common/belGraphicsMesh.h"
 #include "graphics/common/belGraphicsPipeline.h"
@@ -49,6 +50,8 @@ private:
     bel::gfx::Pipeline       mToneMappingPipeline;
     bel::gfx::Mesh           mMesh;
     bel::gfx::Mesh           mScreenMesh;
+
+    bel::gfx::ConstantBuffer mToneMappingCB;
 
     bel::gfx::Texture      mColorTexture;
     bel::gfx::Texture      mDepthTexture;

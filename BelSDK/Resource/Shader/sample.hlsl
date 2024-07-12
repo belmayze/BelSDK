@@ -10,6 +10,7 @@
 struct PS_INPUT
 {
     float4 position : SV_POSITION;
+    float4 color    : COLOR0;
 };
 
 //! constatnt buffer
@@ -26,8 +27,9 @@ cbuffer EnvironmentConstantBuffer : register(b0)
 //! Input
 struct VS_INPUT
 {
-   float3 position : POSITION;
-   float3 normal   : NORMAL0;
+   float3 position  : POSITION;
+   float3 normal    : NORMAL0;
+   uint   vertex_id : SV_VertexId;
 };
 
 //! main
@@ -35,10 +37,17 @@ PS_INPUT main(VS_INPUT input)
 {
     //float3 position_view = mul(float4(input.position, 1.f), cViewMatrix);
 
-    // èoóÕ
+    // vertex output
     PS_INPUT output;
     output.position = float4(input.position, 1.f);
     //output.position = mul(float4(position_view, 1.f), cProjectionMatrix);
+
+    float4 colors[3];
+    colors[0] = float4(1.0, 0.1, 0.1, 1.0);
+    colors[1] = float4(0.1, 1.0, 0.1, 1.0);
+    colors[2] = float4(0.1, 0.1, 1.0, 1.0);
+    output.color = colors[input.vertex_id];
+
     return output;
 }
 
@@ -56,7 +65,7 @@ struct PS_OUT
 PS_OUT main(PS_INPUT input)
 {
     PS_OUT output;
-    output.color0 = float4(1.f, 1.f, 1.f, 1.f);
+    output.color0 = float4(input.color);
     return output;
 }
 

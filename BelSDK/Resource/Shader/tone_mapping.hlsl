@@ -20,7 +20,7 @@ struct PS_INPUT
 //! main
 PS_INPUT main(uint vertex_id : SV_VertexId)
 {
-    // èoóÕ
+    // Vertex output
     PS_INPUT output;
     float2 texcoord = float2(vertex_id & 2, (vertex_id << 1) & 2);
     output.texcoord = texcoord;
@@ -36,10 +36,16 @@ PS_INPUT main(uint vertex_id : SV_VertexId)
 Texture2D<float4> gTexture : register(t0);
 SamplerState      gSampler : register(s0);
 
+//! Constant Buffer
+cbuffer Buffer0 : register(b0)
+{
+    float4 cColor;
+};
+
 //! main
 float4 main(PS_INPUT input) : SV_TARGET
 {
-    return gTexture.Sample(gSampler, input.texcoord);
+    return gTexture.Sample(gSampler, input.texcoord) * cColor;
 }
 
 #endif // BEL_***_SHADER
