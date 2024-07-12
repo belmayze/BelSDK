@@ -228,6 +228,9 @@
     <ClInclude Include="..\Include\resource\belResourceShaderResource.h">
       <Filter>ヘッダー ファイル\resource</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\graphics\common\belGraphicsConstantBuffer.h">
+      <Filter>ヘッダー ファイル\graphics\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -313,6 +316,9 @@
     </ClCompile>
     <ClCompile Include="..\Source\resource\belResourceShaderResource.cpp">
       <Filter>ソース ファイル\resource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\graphics\common\belGraphicsConstantBuffer.cpp">
+      <Filter>ソース ファイル\graphics\common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

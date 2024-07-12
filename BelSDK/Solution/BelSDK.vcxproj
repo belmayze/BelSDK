@@ -30,6 +30,7 @@
     <ClInclude Include="..\Include\graphics\common\belGraphicsCommandList.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsCommandQueue.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsCommandType.h" />
+    <ClInclude Include="..\Include\graphics\common\belGraphicsConstantBuffer.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsDepthStencil.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsMesh.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsPipeline.h" />
@@ -71,6 +72,7 @@
     <ClCompile Include="..\Source\graphics\common\belGraphicsCommandContext.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsCommandList.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsCommandQueue.cpp" />
+    <ClCompile Include="..\Source\graphics\common\belGraphicsConstantBuffer.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsDepthStencil.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsMesh.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsPipeline.cpp" />
