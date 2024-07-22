@@ -45,6 +45,8 @@
     <ClInclude Include="..\Include\math\belColor.h" />
     <ClInclude Include="..\Include\math\belColor.inl.h" />
     <ClInclude Include="..\Include\math\belMath.h" />
+    <ClInclude Include="..\Include\math\belMatrix34.h" />
+    <ClInclude Include="..\Include\math\belMatrix34.inl.h" />
     <ClInclude Include="..\Include\math\belVector2.h" />
     <ClInclude Include="..\Include\math\belVector2.inl.h" />
     <ClInclude Include="..\Include\math\belVector3.h" />

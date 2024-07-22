@@ -36,6 +36,10 @@ public:
     constexpr float&       y()       { return mY; }
     constexpr const float& y() const { return mY; }
 
+    //! at
+    constexpr float&       at(uint32_t index)       { return (&mX)[index]; }
+    constexpr const float& at(uint32_t index) const { return (&mX)[index]; }
+
     //-------------------------------------------------------------------------
     // cast
     //-------------------------------------------------------------------------

@@ -43,6 +43,10 @@ public:
     constexpr float&       z()       { return mZ; }
     constexpr const float& z() const { return mZ; }
 
+    //! at
+    constexpr float&       at(uint32_t index)       { return (&mX)[index]; }
+    constexpr const float& at(uint32_t index) const { return (&mX)[index]; }
+
     //-------------------------------------------------------------------------
     // cast
     //-------------------------------------------------------------------------

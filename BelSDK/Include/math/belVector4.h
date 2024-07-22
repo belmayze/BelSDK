@@ -49,6 +49,10 @@ public:
     constexpr float&       w()       { return mW; }
     constexpr const float& w() const { return mW; }
 
+    //! at
+    constexpr float&       at(uint32_t index)       { return (&mX)[index]; }
+    constexpr const float& at(uint32_t index) const { return (&mX)[index]; }
+
     //-------------------------------------------------------------------------
     // cast
     //-------------------------------------------------------------------------

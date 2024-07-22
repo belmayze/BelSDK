@@ -151,3 +151,4 @@ public:
 #include "math/belVector2.h"
 #include "math/belVector3.h"
 #include "math/belVector4.h"
+#include "math/belMatrix34.h"
