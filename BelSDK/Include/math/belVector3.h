@@ -44,8 +44,12 @@ public:
     constexpr const float& z() const { return mZ; }
 
     //! at
-    constexpr float&       at(uint32_t index)       { return (&mX)[index]; }
-    constexpr const float& at(uint32_t index) const { return (&mX)[index]; }
+    constexpr float&       at(uint32_t index)       { BEL_ASSERT(index < 3); return (&mX)[index]; }
+    constexpr const float& at(uint32_t index) const { BEL_ASSERT(index < 3); return (&mX)[index]; }
+
+    //!
+    constexpr float&       operator[](size_t i)       { BEL_ASSERT(i < 3); return at(static_cast<uint32_t>(i)); }
+    constexpr const float& operator[](size_t i) const { BEL_ASSERT(i < 3); return at(static_cast<uint32_t>(i)); }
 
     //-------------------------------------------------------------------------
     // cast
@@ -86,6 +90,33 @@ public:
 public:
     inline constexpr bool operator == (const Vector3& rhs) const;
     inline constexpr bool operator != (const Vector3& rhs) const;
+
+    //-------------------------------------------------------------------------
+    // setter
+    //-------------------------------------------------------------------------
+public:
+    //! 与えられたベクトルを正規化してセットする
+    //! @return 元のベクトルの長さを返す
+    inline float setNormalize(const Vector3& v);
+
+    //-------------------------------------------------------------------------
+    // functions
+    //-------------------------------------------------------------------------
+public:
+    //! 大きさ
+    inline float length() const;
+
+    //! 大きさの２乗
+    inline constexpr float lengthSq() const;
+
+    //! 内積
+    inline constexpr float dot(const Vector3& v) const;
+
+    //! 外積
+    inline constexpr Vector3 cross(const Vector3& v) const;
+
+    //! 正規化
+    inline Vector3 normalize() const;
 
     //-------------------------------------------------------------------------
 private:

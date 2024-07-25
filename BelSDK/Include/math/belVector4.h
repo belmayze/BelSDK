@@ -50,8 +50,12 @@ public:
     constexpr const float& w() const { return mW; }
 
     //! at
-    constexpr float&       at(uint32_t index)       { return (&mX)[index]; }
-    constexpr const float& at(uint32_t index) const { return (&mX)[index]; }
+    constexpr float&       at(uint32_t index)       { BEL_ASSERT(index < 4); return (&mX)[index]; }
+    constexpr const float& at(uint32_t index) const { BEL_ASSERT(index < 4); return (&mX)[index]; }
+
+    //!
+    constexpr float&       operator[](size_t i)       { BEL_ASSERT(i < 4); return at(static_cast<uint32_t>(i)); }
+    constexpr const float& operator[](size_t i) const { BEL_ASSERT(i < 4); return at(static_cast<uint32_t>(i)); }
 
     //-------------------------------------------------------------------------
     // cast

@@ -44,9 +44,11 @@
     <ClInclude Include="..\Include\graphics\internal\belGraphicsGlobalDescriptorRegistry.h" />
     <ClInclude Include="..\Include\math\belColor.h" />
     <ClInclude Include="..\Include\math\belColor.inl.h" />
+    <ClInclude Include="..\Include\math\belDegree.h" />
     <ClInclude Include="..\Include\math\belMath.h" />
     <ClInclude Include="..\Include\math\belMatrix34.h" />
     <ClInclude Include="..\Include\math\belMatrix34.inl.h" />
+    <ClInclude Include="..\Include\math\belRadian.h" />
     <ClInclude Include="..\Include\math\belVector2.h" />
     <ClInclude Include="..\Include\math\belVector2.inl.h" />
     <ClInclude Include="..\Include\math\belVector3.h" />
@@ -85,6 +87,8 @@
     <ClCompile Include="..\Source\graphics\internal\belGraphicsGlobalDescriptorHandle.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsGlobalDescriptorRegistry.cpp" />
     <ClCompile Include="..\Source\math\belColor.cpp" />
+    <ClCompile Include="..\Source\math\belDegree.cpp" />
+    <ClCompile Include="..\Source\math\belRadian.cpp" />
     <ClCompile Include="..\Source\math\belVector3.cpp" />
     <ClCompile Include="..\Source\math\belVector4.cpp" />
     <ClCompile Include="..\Source\resource\belResource.cpp" />

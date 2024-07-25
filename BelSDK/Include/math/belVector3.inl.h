@@ -107,6 +107,54 @@ constexpr bool Vector3::operator != (const Vector3& rhs) const
     return mX != rhs.mX || mY != rhs.mY || mZ != rhs.mZ;
 }
 //-----------------------------------------------------------------------------
+// setter
+//-----------------------------------------------------------------------------
+float Vector3::setNormalize(const Vector3& v)
+{
+    float length = v.length();
+    float rcp = 1.f / length;
+    mX = v.mX * rcp;
+    mY = v.mY * rcp;
+    mZ = v.mZ * rcp;
+    return length;
+}
+//-----------------------------------------------------------------------------
+// functions
+//-----------------------------------------------------------------------------
+float Vector3::length() const
+{
+    return std::sqrt(lengthSq());
+}
+//-----------------------------------------------------------------------------
+constexpr float Vector3::lengthSq() const
+{
+    return mX * mX + mY * mY + mZ * mZ;
+}
+//-----------------------------------------------------------------------------
+constexpr float Vector3::dot(const Vector3& v) const
+{
+    return mX * v.mX + mY * v.mY + mZ * v.mZ;
+}
+//-----------------------------------------------------------------------------
+constexpr Vector3 Vector3::cross(const Vector3& v) const
+{
+    Vector3 result;
+    result.mX = mY * v.mZ - mZ * v.mY;
+    result.mY = mZ * v.mX - mX * v.mZ;
+    result.mZ = mX * v.mY - mY * v.mX;
+    return result;
+}
+//-----------------------------------------------------------------------------
+Vector3 Vector3::normalize() const
+{
+    Vector3 result;
+    float rcp = 1.f / length();
+    result.mX = mX * rcp;
+    result.mY = mY * rcp;
+    result.mZ = mZ * rcp;
+    return result;
+}
+//-----------------------------------------------------------------------------
 } // bel::
 
 //-----------------------------------------------------------------------------

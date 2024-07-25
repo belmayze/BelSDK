@@ -147,6 +147,9 @@ public:
 }
 
 // math includes
+#include "math/belDegree.h"
+#include "math/belRadian.h"
+
 #include "math/belColor.h"
 #include "math/belVector2.h"
 #include "math/belVector3.h"
