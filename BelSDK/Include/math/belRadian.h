@@ -30,6 +30,47 @@ public:
     constexpr float getValue() const { return mRadian; }
 
     //-------------------------------------------------------------------------
+    // operator
+    //-------------------------------------------------------------------------
+public:
+    inline constexpr Radian& operator *= (float rhs)
+    {
+        mRadian *= rhs;
+        return *this;
+    }
+    inline constexpr Radian& operator /= (float rhs)
+    {
+        mRadian /= rhs;
+        return *this;
+    }
+
+    inline constexpr Radian& operator += (const Radian& rhs)
+    {
+        mRadian += rhs.mRadian;
+        return *this;
+    }
+    inline constexpr Radian& operator -= (const Radian& rhs)
+    {
+        mRadian -= rhs.mRadian;
+        return *this;
+    }
+
+    inline constexpr Radian operator * (float rhs) const
+    {
+        return Radian(mRadian * rhs);
+    }
+    inline constexpr Radian operator / (float rhs) const
+    {
+        return Radian(mRadian / rhs);
+    }
+
+    //-------------------------------------------------------------------------
+    // cast
+    //-------------------------------------------------------------------------
+public:
+    constexpr operator const float& () const { return mRadian; }
+
+    //-------------------------------------------------------------------------
 private:
     float mRadian = 0.f;
 };

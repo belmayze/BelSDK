@@ -48,6 +48,8 @@
     <ClInclude Include="..\Include\math\belMath.h" />
     <ClInclude Include="..\Include\math\belMatrix34.h" />
     <ClInclude Include="..\Include\math\belMatrix34.inl.h" />
+    <ClInclude Include="..\Include\math\belMatrix44.h" />
+    <ClInclude Include="..\Include\math\belMatrix44.inl.h" />
     <ClInclude Include="..\Include\math\belRadian.h" />
     <ClInclude Include="..\Include\math\belVector2.h" />
     <ClInclude Include="..\Include\math\belVector2.inl.h" />
