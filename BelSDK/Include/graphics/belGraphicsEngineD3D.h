@@ -134,10 +134,12 @@ private:
     Microsoft::WRL::ComPtr<ID3D12RootSignature> mpGraphicsRootSignature;
     Microsoft::WRL::ComPtr<ID3D12RootSignature> mpComputeRootSignature;
     std::unique_ptr<gfx::CommandQueue>          mpMainCommandQueue;
-    std::unique_ptr<gfx::CommandList>           mpMainCommandList;
+    std::unique_ptr<gfx::CommandList[]>         mpMainCommandLists;
     std::unique_ptr<gfx::Texture[]>             mSwapChainTextures;
     std::unique_ptr<gfx::RenderTarget[]>        mSwapChainRenderTargets;
     std::unique_ptr<gfx::RenderBuffer[]>        mSwapChainRenderBuffers;
+    uint32_t                                    mSwapChainBufferIndex = 0;
+    uint32_t                                    mCommandBufferIndex   = 0;
     HANDLE                                      mWaitFenceHandle = HANDLE();
 
     bool mIsSupportedHDR = false;

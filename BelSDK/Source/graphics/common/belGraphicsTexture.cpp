@@ -36,6 +36,22 @@ bool Texture::initialize(const InitializeArg& arg)
     desc.SampleDesc.Count = 1;
     desc.Flags            = TextureFormatInfo::isDepthFormat(arg.mFormat) ? D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL
                                                                           : D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+    
+    // クリアカラーの最適化
+    D3D12_CLEAR_VALUE clear_value;
+    clear_value.Format = desc.Format;
+    if (TextureFormatInfo::isDepthFormat(arg.mFormat))
+    {
+        clear_value.DepthStencil.Depth   = 1.f;
+        clear_value.DepthStencil.Stencil = 0;
+    }
+    else
+    {
+        clear_value.Color[0] = 0.f;
+        clear_value.Color[1] = 0.f;
+        clear_value.Color[2] = 0.f;
+        clear_value.Color[3] = 1.f;
+    }
 
     // リソース生成
     Microsoft::WRL::ComPtr<ID3D12Resource> p_resource;
@@ -43,7 +59,7 @@ bool Texture::initialize(const InitializeArg& arg)
         GraphicsEngine::GetInstance().getDevice().CreateCommittedResource(
             &props, D3D12_HEAP_FLAG_NONE, &desc,
             D3D12_RESOURCE_STATE_GENERIC_READ,
-            nullptr, IID_PPV_ARGS(&p_resource)
+            &clear_value, IID_PPV_ARGS(&p_resource)
         )
     ))
     {

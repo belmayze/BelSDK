@@ -16,8 +16,8 @@ struct PS_INPUT
 //! constatnt buffer
 cbuffer EnvironmentConstantBuffer : register(b0)
 {
-    float4x3 cViewMatrix;
-    matrix   cProjectionMatrix;
+    float4x3 cWorldMatrix;
+    matrix   cViewProjectionMatrix;
 };
 
 #if BEL_VERTEX_SHADER
@@ -35,12 +35,11 @@ struct VS_INPUT
 //! main
 PS_INPUT main(VS_INPUT input)
 {
-    //float3 position_view = mul(float4(input.position, 1.f), cViewMatrix);
+    float3 position_world = mul(float4(input.position, 1.f), cWorldMatrix);
 
     // vertex output
     PS_INPUT output;
-    output.position = float4(input.position, 1.f);
-    //output.position = mul(float4(position_view, 1.f), cProjectionMatrix);
+    output.position = mul(float4(position_world, 1.f), cViewProjectionMatrix);
 
     float4 colors[3];
     colors[0] = float4(1.0, 0.1, 0.1, 1.0);

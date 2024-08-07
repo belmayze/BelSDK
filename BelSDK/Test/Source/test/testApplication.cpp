@@ -23,6 +23,7 @@ void Application::initialize()
         init_arg.mNumRenderTarget        = 1;
         init_arg.mRenderTargetFormats[0] = bel::gfx::TextureFormat::cR11G11B10_Float;
         init_arg.mDepthStencilFormat     = bel::gfx::TextureFormat::cD32_Float;
+        init_arg.mNumConstantBuffer      = 1;
 
         mPipeline.initialize(init_arg, mResShaderResource);
     }
@@ -40,13 +41,17 @@ void Application::initialize()
 
     // メッシュ生成
     {
-        std::array<float, (3 + 3) * 3> vertices = {
+        std::array<float, (3 + 3) * 6> vertices = {
             // position      , normal
              0.0f,  0.5f, 0.f, 0.f, 0.f, 1.f,
             -0.5f, -0.5f, 0.f, 0.f, 0.f, 1.f,
-             0.5f, -0.5f, 0.f, 0.f, 0.f, 1.f
+             0.5f, -0.5f, 0.f, 0.f, 0.f, 1.f,
+             // position      , normal
+              0.0f,  0.5f, 0.f, 0.f, 0.f, -1.f,
+              0.5f, -0.5f, 0.f, 0.f, 0.f, -1.f,
+             -0.5f, -0.5f, 0.f, 0.f, 0.f, -1.f
         };
-        std::array<uint16_t, 3> indices = { 0, 1, 2 };
+        std::array<uint16_t, 6> indices = { 0, 1, 2, 3, 4, 5 };
 
         bel::gfx::Mesh::InitializeArg init_arg;
         init_arg.mpVertexBuffer    = vertices.data();
@@ -62,8 +67,21 @@ void Application::initialize()
         init_arg.mIndexBufferSize = sizeof(uint16_t) * 3;
         mScreenMesh.initialize(init_arg);
     }
+    
+    // 定数バッファー（モデル）
+    {
+        bel::gfx::ConstantBuffer::InitializeArg init_arg;
+        init_arg.mNumBuffer  = 2;
+        init_arg.mBufferSize = sizeof(ModelCB);
+        mModelCB.initialize(init_arg);
 
-    // 定数バッファー
+        ModelCB cb;
+        cb.mWorldMatrix.makeIdentity();
+        cb.mViewProjectionMatrix.makeIdentity();
+        mModelCB.copyStruct(cb);
+    }
+
+    // 定数バッファー（トーンマッピング）
     {
         bel::gfx::ConstantBuffer::InitializeArg init_arg;
         init_arg.mNumBuffer  = 2;
@@ -106,6 +124,44 @@ void Application::initialize()
 //-----------------------------------------------------------------------------
 void Application::onCalc()
 {
+    // カメラ更新
+    {
+        ModelCB cb;
+
+        // ワールド行列は固定
+        cb.mWorldMatrix.makeIdentity();
+
+        // ビュープロジェクション行列
+        {
+            static float sFrameCount = 0.f;
+            sFrameCount += 1.f;
+            if (sFrameCount >= 360.f) { sFrameCount = 0.f; }
+
+            // カメラ行列
+            bel::Matrix34 view_matrix;
+            view_matrix.makeLookAtRH(
+                bel::Vector3(std::sin(bel::Radian(bel::Degree(sFrameCount))) * 2.f, 0.f, std::cos(bel::Radian(bel::Degree(sFrameCount))) * 2.f),
+                bel::Vector3(0.f, 0.f, 0.f),
+                bel::Vector3(0.f, 1.f, 0.f)
+            );
+
+            // プロジェクション行列
+            uint32_t render_width  = bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().getWidth();
+            uint32_t render_height = bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().getHeight();
+
+            bel::Matrix44 proj_matrix;
+            proj_matrix.makePerspectiveProjectionRH(
+                bel::Radian(bel::Degree(45.f)),
+                static_cast<float>(render_width) / static_cast<float>(render_height),
+                1.f, 1000.f
+            );
+            cb.mViewProjectionMatrix.setMul(proj_matrix, view_matrix);
+        }
+
+        mModelCB.swapBuffer();
+        mModelCB.copyStruct(cb);
+    }
+
     // 定数バッファーのカラー更新
     {
         static float sFrameCount = 0.f;
@@ -153,7 +209,11 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
     mDepthTexture.barrierTransition(command, bel::gfx::ResourceState::cDepthWrite);
     mRenderBuffer.bind(command);
 
+    // クリア
+    mRenderBuffer.clear(command, bel::Color::cBlack(), 1.f, 0, { bel::gfx::EClearType::cColor, bel::gfx::EClearType::cDepth });
+
     // 三角形描画
+    mPipeline.activateConstantBuffer(0, mModelCB);
     mPipeline.setPipeline(command);
     mMesh.drawIndexedInstanced(command);
 

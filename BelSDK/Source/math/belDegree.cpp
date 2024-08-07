@@ -11,7 +11,7 @@
 
 namespace bel {
 //-----------------------------------------------------------------------------
-constexpr Degree::Degree(const Radian& radian)
+Degree::Degree(const Radian& radian)
     : mDegree(radian.getValue() * (180.f / Math::cPi)) {}
 //-----------------------------------------------------------------------------
 } // bel

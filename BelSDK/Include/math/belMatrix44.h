@@ -102,10 +102,10 @@ public:
     //-------------------------------------------------------------------------
 public:
     //! *this *= m
-    inline Matrix44& setMul(const Matrix44& m);
+    inline Matrix44& setMul(const Matrix44& m1, const Matrix44& m2);
 
     //! *this *= m
-    inline Matrix44& setMul(const Matrix34& m);
+    inline Matrix44& setMul(const Matrix44& m2, const Matrix34& m1);
 
     //! *this * m
     inline Matrix44& mul(Matrix44& out, const Matrix44& m) const;

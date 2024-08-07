@@ -79,8 +79,9 @@ int Application::enterLoop()
         //    -> [WaitCommandQueue]
         //     -> [Present]
         //      -> Display
-        // 前フレームの画面反映
-        GraphicsEngine::GetInstance().present();
+
+        // 計算処理
+        if (mpCallback) { mpCallback->onCalc(); }
         
         // コマンドの生成
         {
@@ -117,12 +118,12 @@ int Application::enterLoop()
             }
             accessor.getMainCommandList().end();
         }
-        
+
         // コマンド実行
         GraphicsEngine::GetInstance().executeCommand();
 
-        // 計算処理
-        if (mpCallback) { mpCallback->onCalc(); }
+        // 前フレームの画面反映
+        GraphicsEngine::GetInstance().present();
 
         // コマンド実行と VSync 待ち
         GraphicsEngine::GetInstance().waitCommandQueue();

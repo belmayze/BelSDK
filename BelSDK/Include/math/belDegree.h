@@ -20,7 +20,7 @@ public:
     //! 初期化
     constexpr Degree(float degree) : mDegree(degree) {}
     //! Radian -> Degree
-    constexpr Degree(const Radian& radian);
+    Degree(const Radian& radian);
 
     //-------------------------------------------------------------------------
     // getter

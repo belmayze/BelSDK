@@ -111,9 +111,11 @@ bool GraphicsEngineD3D::initialize()
             BEL_PRINT("メインコマンドキューの生成に失敗しました\n");
             return false;
         }
-
-        mpMainCommandList = std::make_unique<gfx::CommandList>();
-        if (!mpMainCommandList->initialize(gfx::CommandType::cGraphics))
+    }
+    mpMainCommandLists  = std::make_unique<gfx::CommandList[]>(2);
+    for (uint32_t i_buffer = 0; i_buffer < 2; ++i_buffer)
+    {
+        if (!mpMainCommandLists[i_buffer].initialize(gfx::CommandType::cGraphics))
         {
             BEL_PRINT("メインコマンドリストの生成に失敗しました\n");
             return false;
@@ -251,6 +253,8 @@ bool GraphicsEngineD3D::initialize()
             mSwapChainRenderBuffers[i_buffer].setResolution(desc.Width, desc.Height);
         }
     }
+    // バッファー番号を記録
+    mSwapChainBufferIndex = mpSwapChain->GetCurrentBackBufferIndex();
 
     // 共通のシグネチャを作る
     if (!createRootSignature_())
@@ -266,14 +270,9 @@ void GraphicsEngineD3D::executeCommand()
 {
     // コマンド実行
     {
-        ID3D12CommandList* p_command_lists[1] = { &mpMainCommandList->getCommandList() };
+        ID3D12CommandList* p_command_lists[1] = { &mpMainCommandLists[mCommandBufferIndex].getCommandList()};
         mpMainCommandQueue->getCommandQueue().ExecuteCommandLists(1, p_command_lists);
     }
-
-    // 終了したことを知らせるフェンスを最後に入れる
-    ResetEvent(mWaitFenceHandle);
-    mpFence->Signal(0);
-    mpMainCommandQueue->getCommandQueue().Signal(mpFence.Get(), 1);
 }
 //-----------------------------------------------------------------------------
 void GraphicsEngineD3D::makeInitialCommand(gfx::CommandContext& command) const
@@ -285,12 +284,21 @@ void GraphicsEngineD3D::makeInitialCommand(gfx::CommandContext& command) const
 //-----------------------------------------------------------------------------
 void GraphicsEngineD3D::waitCommandQueue()
 {
+    // 終了したことを知らせるフェンスをキューに入れる
+    ResetEvent(mWaitFenceHandle);
+    mpFence->Signal(0);
+    mpMainCommandQueue->getCommandQueue().Signal(mpFence.Get(), 1);
+
     // フェンスが1になるまで待機
     mpFence->SetEventOnCompletion(1, mWaitFenceHandle);
     if (mpFence->GetCompletedValue() < 1)
     {
         WaitForSingleObject(mWaitFenceHandle, INFINITE);
     }
+
+    // バッファー番号更新
+    mSwapChainBufferIndex = mpSwapChain->GetCurrentBackBufferIndex();
+    mCommandBufferIndex   = 1 - mCommandBufferIndex;
 }
 //-----------------------------------------------------------------------------
 void GraphicsEngineD3D::present()
@@ -307,28 +315,28 @@ void GraphicsEngineD3D::finalize()
 //-----------------------------------------------------------------------------
 gfx::RenderTarget& GraphicsEngineD3D::getDefaultRenderTarget() const
 {
-    uint32_t buffer_index = mpSwapChain->GetCurrentBackBufferIndex();
-    return mSwapChainRenderTargets[buffer_index];
+    return mSwapChainRenderTargets[mSwapChainBufferIndex];
 }
 //-----------------------------------------------------------------------------
 gfx::RenderBuffer& GraphicsEngineD3D::getDefaultRenderBuffer() const
 {
-    uint32_t buffer_index = mpSwapChain->GetCurrentBackBufferIndex();
-    return mSwapChainRenderBuffers[buffer_index];
+    return mSwapChainRenderBuffers[mSwapChainBufferIndex];
 }
 //-----------------------------------------------------------------------------
 // Accessor
 //-----------------------------------------------------------------------------
 gfx::CommandQueue& GraphicsEngineD3D::ApplicationAccessor::getMainCommandQueue()
 {
-    BEL_ASSERT(GraphicsEngineD3D::GetInstance().mpMainCommandQueue.get());
-    return *GraphicsEngineD3D::GetInstance().mpMainCommandQueue;
+    GraphicsEngineD3D& instance = GraphicsEngineD3D::GetInstance();
+    BEL_ASSERT(instance.mpMainCommandQueue.get());
+    return *instance.mpMainCommandQueue;
 }
 //-----------------------------------------------------------------------------
 gfx::CommandList& GraphicsEngineD3D::ApplicationAccessor::getMainCommandList()
 {
-    BEL_ASSERT(GraphicsEngineD3D::GetInstance().mpMainCommandList.get());
-    return *GraphicsEngineD3D::GetInstance().mpMainCommandList;
+    GraphicsEngineD3D& instance = GraphicsEngineD3D::GetInstance();
+    BEL_ASSERT(instance.mpMainCommandLists.get());
+    return instance.mpMainCommandLists[instance.mCommandBufferIndex];
 }
 //-----------------------------------------------------------------------------
 // internal

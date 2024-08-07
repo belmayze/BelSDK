@@ -84,6 +84,7 @@ Matrix44& Matrix44::makeOrthoProjectionRH(float width, float height, float z_nea
     mV[1][0] = 0.f;         mV[1][1] = 2.f / height; mV[1][2] = 0.f; mV[1][3] = 0.f;
     mV[2][0] = 0.f;         mV[2][1] = 0.f;          mV[2][2] = n;   mV[2][3] = -z_near * n;
     mV[3][0] = 0.f;         mV[3][1] = 0.f;          mV[3][2] = 0.f; mV[3][3] = 1.f;
+    return *this;
 }
 //-----------------------------------------------------------------------------
 Matrix44& Matrix44::makePerspectiveProjectionRH(const Radian& fovy, float aspect, float z_near, float z_far)
@@ -95,22 +96,25 @@ Matrix44& Matrix44::makePerspectiveProjectionRH(const Radian& fovy, float aspect
     mV[1][0] = 0.f;        mV[1][1] = f;   mV[1][2] = 0.f;        mV[1][3] = 0.f;
     mV[2][0] = 0.f;        mV[2][1] = 0.f; mV[2][2] = -z_far * n; mV[2][3] = -z_far * z_near * n;
     mV[3][0] = 0.f;        mV[3][1] = 0.f; mV[3][2] = -1.f;       mV[3][3] = 0.f;
+    return *this;
 }
 //-----------------------------------------------------------------------------
 // multiply
 //-----------------------------------------------------------------------------
-Matrix44& Matrix44::setMul(const Matrix44& m)
+Matrix44& Matrix44::setMul(const Matrix44& m1, const Matrix44& m2)
 {
     Matrix44 tmp;
-    mul(tmp, m);
+    m1.mul(tmp, m2);
     *this = tmp;
+    return *this;
 }
 //-----------------------------------------------------------------------------
-Matrix44& Matrix44::setMul(const Matrix34& m)
+Matrix44& Matrix44::setMul(const Matrix44& m1, const Matrix34& m2)
 {
     Matrix44 tmp;
-    mul(tmp, m);
+    m1.mul(tmp, m2);
     *this = tmp;
+    return *this;
 }
 //-----------------------------------------------------------------------------
 Matrix44& Matrix44::mul(Matrix44& out, const Matrix44& m) const

@@ -43,6 +43,16 @@ public:
      */
     virtual void onMakeCommand(bel::gfx::CommandContext& command) const override;
 
+    //-------------------------------------------------------------------------
+private:
+    //! 定数バッファー構造体
+    struct ModelCB
+    {
+        bel::Matrix34 mWorldMatrix;
+        bel::Matrix44 mViewProjectionMatrix;
+    };
+
+    //-------------------------------------------------------------------------
 private:
     bel::res::ShaderResource mResShaderResource;
     bel::res::ShaderResource mResToneMappingShaderResource;
@@ -51,6 +61,7 @@ private:
     bel::gfx::Mesh           mMesh;
     bel::gfx::Mesh           mScreenMesh;
 
+    bel::gfx::ConstantBuffer mModelCB;
     bel::gfx::ConstantBuffer mToneMappingCB;
 
     bel::gfx::Texture      mColorTexture;
