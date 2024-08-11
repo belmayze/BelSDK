@@ -15,6 +15,7 @@
 #include "graphics/common/belGraphicsRenderBuffer.h"
 #include "graphics/common/belGraphicsRenderTarget.h"
 #include "graphics/common/belGraphicsTexture.h"
+#include "graphics/dev/belGraphicsDevMeshHolder.h"
 #include "resource/belResourceShaderResource.h"
 
 namespace app::test {
@@ -58,7 +59,6 @@ private:
     bel::res::ShaderResource mResToneMappingShaderResource;
     bel::gfx::Pipeline       mPipeline;
     bel::gfx::Pipeline       mToneMappingPipeline;
-    bel::gfx::Mesh           mMesh;
     bel::gfx::Mesh           mScreenMesh;
 
     bel::gfx::ConstantBuffer mModelCB;
@@ -69,6 +69,8 @@ private:
     bel::gfx::RenderTarget mRenderTarget;
     bel::gfx::DepthStencil mDepthStencil;
     bel::gfx::RenderBuffer mRenderBuffer;
+
+    bel::gfx::dev::MeshHolder mMeshHolder;
 };
 //-----------------------------------------------------------------------------
 }

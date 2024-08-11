@@ -85,6 +85,12 @@
     <Filter Include="ヘッダー ファイル\common">
       <UniqueIdentifier>{0f0d7b0d-fc4a-4993-b30b-f7086f4cb157}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\graphics\dev">
+      <UniqueIdentifier>{463f9efc-ca13-4d94-9345-2e99d42de947}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\graphics\dev">
+      <UniqueIdentifier>{c9fc2c99-decb-4d01-8ad1-6d6bc67ec7a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\belMain.h">
@@ -249,6 +255,9 @@
     <ClInclude Include="..\Include\math\belMatrix44.h">
       <Filter>ヘッダー ファイル\math</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\graphics\dev\belGraphicsDevMeshHolder.h">
+      <Filter>ヘッダー ファイル\graphics\dev</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -343,6 +352,9 @@
     </ClCompile>
     <ClCompile Include="..\Source\math\belDegree.cpp">
       <Filter>ソース ファイル\math</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\graphics\dev\belGraphicsDevMeshHolder.cpp">
+      <Filter>ソース ファイル\graphics\dev</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

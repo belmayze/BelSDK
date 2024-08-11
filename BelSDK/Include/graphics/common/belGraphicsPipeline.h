@@ -21,12 +21,20 @@ class Pipeline
 {
     //-------------------------------------------------------------------------
 public:
+    //! デプス設定
+    struct DepthConfig
+    {
+        bool mDepthEnable = false;
+        bool mDepthWrite  = false;
+    };
     //! 初期化引数
     struct InitializeArg
     {
         uint32_t                                     mNumRenderTarget = 0;
         std::array<TextureFormat, cMaxRenderTargets> mRenderTargetFormats = {};
         TextureFormat                                mDepthStencilFormat = TextureFormat::cUnknown;
+
+        DepthConfig mDepthConfig;
 
         uint32_t mNumTexture        = 0;
         uint32_t mNumConstantBuffer = 0;

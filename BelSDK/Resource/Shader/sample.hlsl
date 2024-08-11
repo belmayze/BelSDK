@@ -41,11 +41,12 @@ PS_INPUT main(VS_INPUT input)
     PS_INPUT output;
     output.position = mul(float4(position_world, 1.f), cViewProjectionMatrix);
 
-    float4 colors[3];
+    float4 colors[4];
     colors[0] = float4(1.0, 0.1, 0.1, 1.0);
     colors[1] = float4(0.1, 1.0, 0.1, 1.0);
     colors[2] = float4(0.1, 0.1, 1.0, 1.0);
-    output.color = colors[input.vertex_id % 3];
+    colors[3] = float4(0.7, 0.7, 0.1, 1.0);
+    output.color = colors[input.vertex_id % 4];
 
     return output;
 }

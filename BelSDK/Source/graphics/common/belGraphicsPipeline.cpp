@@ -123,8 +123,8 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
                 desc.BlendState.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
                 // デプス
-                desc.DepthStencilState.DepthEnable    = false;
-                desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+                desc.DepthStencilState.DepthEnable    = arg.mDepthConfig.mDepthEnable;
+                desc.DepthStencilState.DepthWriteMask = arg.mDepthConfig.mDepthWrite ? D3D12_DEPTH_WRITE_MASK_ALL : D3D12_DEPTH_WRITE_MASK_ZERO;
                 desc.DepthStencilState.DepthFunc      = D3D12_COMPARISON_FUNC_LESS;
 
                 // トポロジー

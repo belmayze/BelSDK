@@ -15,6 +15,11 @@ namespace app::test {
 //-----------------------------------------------------------------------------
 void Application::initialize()
 {
+    // メッシュ保持
+    {
+        mMeshHolder.initialize();
+    }
+
     // パイプライン生成
     {
         mResShaderResource = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderResource>("Shader/Sample.bsh");
@@ -24,6 +29,9 @@ void Application::initialize()
         init_arg.mRenderTargetFormats[0] = bel::gfx::TextureFormat::cR11G11B10_Float;
         init_arg.mDepthStencilFormat     = bel::gfx::TextureFormat::cD32_Float;
         init_arg.mNumConstantBuffer      = 1;
+
+        init_arg.mDepthConfig.mDepthEnable = true;
+        init_arg.mDepthConfig.mDepthWrite  = true;
 
         mPipeline.initialize(init_arg, mResShaderResource);
     }
@@ -39,28 +47,6 @@ void Application::initialize()
         mToneMappingPipeline.initialize(init_arg, mResToneMappingShaderResource);
     }
 
-    // メッシュ生成
-    {
-        std::array<float, (3 + 3) * 6> vertices = {
-            // position      , normal
-             0.0f,  0.5f, 0.f, 0.f, 0.f, 1.f,
-            -0.5f, -0.5f, 0.f, 0.f, 0.f, 1.f,
-             0.5f, -0.5f, 0.f, 0.f, 0.f, 1.f,
-             // position      , normal
-              0.0f,  0.5f, 0.f, 0.f, 0.f, -1.f,
-              0.5f, -0.5f, 0.f, 0.f, 0.f, -1.f,
-             -0.5f, -0.5f, 0.f, 0.f, 0.f, -1.f
-        };
-        std::array<uint16_t, 6> indices = { 0, 1, 2, 3, 4, 5 };
-
-        bel::gfx::Mesh::InitializeArg init_arg;
-        init_arg.mpVertexBuffer    = vertices.data();
-        init_arg.mVertexBufferSize = sizeof(float) * vertices.size();
-        init_arg.mpIndexBuffer     = indices.data();
-        init_arg.mIndexBufferSize  = sizeof(uint16_t) * indices.size();
-        init_arg.mVertexStride     = sizeof(float) * (3 + 3);
-        mMesh.initialize(init_arg);
-    }
     // スクリーン用メッシュ生成
     {
         bel::gfx::Mesh::InitializeArg init_arg;
@@ -140,7 +126,7 @@ void Application::onCalc()
             // カメラ行列
             bel::Matrix34 view_matrix;
             view_matrix.makeLookAtRH(
-                bel::Vector3(std::sin(bel::Radian(bel::Degree(sFrameCount))) * 2.f, 0.f, std::cos(bel::Radian(bel::Degree(sFrameCount))) * 2.f),
+                bel::Vector3(std::sin(bel::Radian(bel::Degree(sFrameCount))) * 2.f, 1.f, std::cos(bel::Radian(bel::Degree(sFrameCount))) * 2.f),
                 bel::Vector3(0.f, 0.f, 0.f),
                 bel::Vector3(0.f, 1.f, 0.f)
             );
@@ -215,7 +201,7 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
     // 三角形描画
     mPipeline.activateConstantBuffer(0, mModelCB);
     mPipeline.setPipeline(command);
-    mMesh.drawIndexedInstanced(command);
+    mMeshHolder.getMesh(bel::gfx::dev::MeshHolder::Type::cCube).drawIndexedInstanced(command);
 
     // バリア
     mColorTexture.barrierTransition(command, bel::gfx::ResourceState::cGenericRead);
