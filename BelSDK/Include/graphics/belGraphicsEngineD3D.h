@@ -114,6 +114,8 @@ private:
     static constexpr uint32_t cNumBuffer = 3;
     //! テクスチャーハンドルの最大数
     static constexpr uint32_t cMaxTextureHandle = 1024;
+    //! デスクリプターハンドルの最大数
+    static constexpr uint32_t cMaxDynamicDescriptorHandle = 8192;
 
     //-------------------------------------------------------------------------
 private:

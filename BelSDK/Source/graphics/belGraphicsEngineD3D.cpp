@@ -13,6 +13,7 @@
 #include "graphics/common/belGraphicsRenderBuffer.h"
 #include "graphics/common/belGraphicsRenderTarget.h"
 #include "graphics/common/belGraphicsTexture.h"
+#include "graphics/internal/belGraphicsDynamicDescriptorHeap.h"
 #include "graphics/internal/belGraphicsGlobalDescriptorRegistry.h"
 #include "graphics/belGraphicsEngineD3D.h"
 
@@ -23,6 +24,7 @@ GraphicsEngineD3D::GraphicsEngineD3D()
 {
     // グラフィックスのシングルトンはここで生成する
     gfx::GlobalDescriptorRegistry::GetInstance();
+    gfx::DynamicDescriptorHeap::GetInstance();
 }
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
@@ -141,9 +143,16 @@ bool GraphicsEngineD3D::initialize()
     }
 
     // グローバルなデスクリプターを作る
-    if (!gfx::GlobalDescriptorRegistry::GetInstance().allocate(cMaxTextureHandle))
+    if (!gfx::GlobalDescriptorRegistry::GetInstance().initialize(cMaxTextureHandle))
     {
         BEL_PRINT("グローバルデスクリプターヒープの作成に失敗しました\n");
+        return false;
+    }
+
+    // 動的確保を行うデスクリプターを作る
+    if (!gfx::DynamicDescriptorHeap::GetInstance().initialize(cMaxDynamicDescriptorHandle))
+    {
+        BEL_PRINT("ダイナミックデスクリプターヒープの作成に失敗しました\n");
         return false;
     }
 

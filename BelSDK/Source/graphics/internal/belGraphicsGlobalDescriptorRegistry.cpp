@@ -15,7 +15,7 @@ namespace bel::gfx {
 //-----------------------------------------------------------------------------
 // memory
 //-----------------------------------------------------------------------------
-bool GlobalDescriptorRegistry::allocate(uint32_t num)
+bool GlobalDescriptorRegistry::initialize(uint32_t num)
 {
     // グローバルで大きなテクスチャー用デスクリプターヒープを作る
     {

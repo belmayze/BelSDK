@@ -27,7 +27,7 @@ public:
      * テクスチャー用デスクリプターヒープの確保を行う
      * @param[in] num 最大デスクリプター数
      */
-    bool allocate(uint32_t num);
+    bool initialize(uint32_t num);
 
     /*!
      * テクスチャーを登録する

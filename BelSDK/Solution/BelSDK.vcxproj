@@ -41,6 +41,7 @@
     <ClInclude Include="..\Include\graphics\common\belGraphicsTextureType.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsViewport.h" />
     <ClInclude Include="..\Include\graphics\dev\belGraphicsDevMeshHolder.h" />
+    <ClInclude Include="..\Include\graphics\internal\belGraphicsDynamicDescriptorHeap.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsGlobalDescriptorHandle.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsGlobalDescriptorRegistry.h" />
     <ClInclude Include="..\Include\math\belColor.h" />
@@ -88,6 +89,7 @@
     <ClCompile Include="..\Source\graphics\common\belGraphicsTexture.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsViewport.cpp" />
     <ClCompile Include="..\Source\graphics\dev\belGraphicsDevMeshHolder.cpp" />
+    <ClCompile Include="..\Source\graphics\internal\belGraphicsDynamicDescriptorHeap.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsGlobalDescriptorHandle.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsGlobalDescriptorRegistry.cpp" />
     <ClCompile Include="..\Source\math\belColor.cpp" />
