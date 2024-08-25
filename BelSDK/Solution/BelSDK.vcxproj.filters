@@ -261,6 +261,9 @@
     <ClInclude Include="..\Include\graphics\internal\belGraphicsDynamicDescriptorHeap.h">
       <Filter>ヘッダー ファイル\graphics\internal</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\graphics\internal\belGraphicsDynamicDescriptorHandle.h">
+      <Filter>ヘッダー ファイル\graphics\internal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -360,6 +363,9 @@
       <Filter>ソース ファイル\graphics\dev</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\graphics\internal\belGraphicsDynamicDescriptorHeap.cpp">
+      <Filter>ソース ファイル\graphics\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\graphics\internal\belGraphicsDynamicDescriptorHandle.cpp">
       <Filter>ソース ファイル\graphics\internal</Filter>
     </ClCompile>
   </ItemGroup>
