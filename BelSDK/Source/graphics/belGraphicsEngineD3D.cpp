@@ -304,18 +304,18 @@ void GraphicsEngineD3D::waitCommandQueue()
     {
         WaitForSingleObject(mWaitFenceHandle, INFINITE);
     }
-
-    // バッファー番号更新
-    mSwapChainBufferIndex = mpSwapChain->GetCurrentBackBufferIndex();
-    mCommandBufferIndex   = 1 - mCommandBufferIndex;
-
-    // 動的デスクリプターヒープのバッファーも切り替え
-    gfx::DynamicDescriptorHeap::GetInstance().swapBuffer();
 }
 //-----------------------------------------------------------------------------
 void GraphicsEngineD3D::present()
 {
     mpSwapChain->Present(1, 0);
+
+    // バッファー番号更新
+    mSwapChainBufferIndex = mpSwapChain->GetCurrentBackBufferIndex();
+    mCommandBufferIndex = 1 - mCommandBufferIndex;
+
+    // 動的デスクリプターヒープのバッファーも切り替え
+    gfx::DynamicDescriptorHeap::GetInstance().swapBuffer();
 }
 //-----------------------------------------------------------------------------
 void GraphicsEngineD3D::finalize()

@@ -80,6 +80,12 @@ int Application::enterLoop()
         //     -> [Present]
         //      -> Display
 
+        // コマンド実行
+        GraphicsEngine::GetInstance().executeCommand();
+
+        // 前フレームの画面反映
+        GraphicsEngine::GetInstance().present();
+
         // 計算処理
         if (mpCallback) { mpCallback->onCalc(); }
         
@@ -119,14 +125,9 @@ int Application::enterLoop()
             accessor.getMainCommandList().end();
         }
 
-        // コマンド実行
-        GraphicsEngine::GetInstance().executeCommand();
-
-        // 前フレームの画面反映
-        GraphicsEngine::GetInstance().present();
-
         // コマンド実行と VSync 待ち
         GraphicsEngine::GetInstance().waitCommandQueue();
+
         //debug::PerfTime::GetInstance().end();
     }
 
