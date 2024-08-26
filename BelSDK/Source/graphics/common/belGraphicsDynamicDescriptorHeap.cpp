@@ -34,6 +34,7 @@ bool DynamicDescriptorHeap::initialize(uint32_t num)
 void DynamicDescriptorHeap::swapBuffer()
 {
     mBufferIndex = 1 - mBufferIndex;
+    mDescriptorIndex.store(0);
 }
 //-----------------------------------------------------------------------------
 // allocate
