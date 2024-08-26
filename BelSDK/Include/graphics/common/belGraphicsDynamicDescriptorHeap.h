@@ -7,7 +7,7 @@
  */
 #pragma once
 // bel
-#include "graphics/internal/belGraphicsDynamicDescriptorHandle.h"
+#include "graphics/common/belGraphicsDynamicDescriptorHandle.h"
 #include "memory/belSingleton.h"
 
 namespace bel::gfx {
@@ -40,6 +40,17 @@ public:
      * @param[in] num 必要な個数
      */
     DynamicDescriptorHandle allocate(uint32_t num);
+
+    //-------------------------------------------------------------------------
+    // command
+    //-------------------------------------------------------------------------
+public:
+    /*!
+     * デスクリプターヒープを設定する
+     * @param[in] handle  ハンドル
+     * @param[in] command コマンド
+     */
+    void setDescriptorHeap(DynamicDescriptorHandle& handle, CommandContext& command) const;
 
     //-------------------------------------------------------------------------
 private:

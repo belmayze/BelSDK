@@ -6,7 +6,7 @@
  * Copyright (c) belmayze. All rights reserved.
  */
 // bel
-#include "graphics/internal/belGraphicsDynamicDescriptorHandle.h"
+#include "graphics/common/belGraphicsDynamicDescriptorHandle.h"
 
 namespace bel::gfx {
 //-----------------------------------------------------------------------------

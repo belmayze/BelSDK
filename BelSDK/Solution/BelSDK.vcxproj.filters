@@ -258,11 +258,11 @@
     <ClInclude Include="..\Include\graphics\dev\belGraphicsDevMeshHolder.h">
       <Filter>ヘッダー ファイル\graphics\dev</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\graphics\internal\belGraphicsDynamicDescriptorHeap.h">
-      <Filter>ヘッダー ファイル\graphics\internal</Filter>
+    <ClInclude Include="..\Include\graphics\common\belGraphicsDynamicDescriptorHandle.h">
+      <Filter>ヘッダー ファイル\graphics\common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\graphics\internal\belGraphicsDynamicDescriptorHandle.h">
-      <Filter>ヘッダー ファイル\graphics\internal</Filter>
+    <ClInclude Include="..\Include\graphics\common\belGraphicsDynamicDescriptorHeap.h">
+      <Filter>ヘッダー ファイル\graphics\common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -362,11 +362,11 @@
     <ClCompile Include="..\Source\graphics\dev\belGraphicsDevMeshHolder.cpp">
       <Filter>ソース ファイル\graphics\dev</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\graphics\internal\belGraphicsDynamicDescriptorHeap.cpp">
-      <Filter>ソース ファイル\graphics\internal</Filter>
+    <ClCompile Include="..\Source\graphics\common\belGraphicsDynamicDescriptorHandle.cpp">
+      <Filter>ソース ファイル\graphics\common</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\graphics\internal\belGraphicsDynamicDescriptorHandle.cpp">
-      <Filter>ソース ファイル\graphics\internal</Filter>
+    <ClCompile Include="..\Source\graphics\common\belGraphicsDynamicDescriptorHeap.cpp">
+      <Filter>ソース ファイル\graphics\common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

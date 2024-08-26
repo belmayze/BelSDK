@@ -11,6 +11,7 @@
 #include "resource/belResourceShaderResource.h"
 
 namespace bel::gfx { class ConstantBuffer; }
+namespace bel::gfx { class DynamicDescriptorHandle; }
 namespace bel::gfx { class Texture; }
 
 namespace bel::gfx {
@@ -57,17 +58,19 @@ public:
 public:
     /*!
      * テクスチャーを使用可能にする
+     * @param[in] handle  デスクリプターハンドル
      * @param[in] index   レジスター番号
      * @param[in] texture テクスチャー
      */
-    void activateTexture(uint32_t index, const Texture& texture) const;
+    void activateTexture(DynamicDescriptorHandle& handle, uint32_t index, const Texture& texture) const;
 
     /*!
      * 定数バッファーを使用可能にする
+     * @param[in] handle デスクリプターハンドル
      * @param[in] index  レジスター番号
      * @param[in] buffer 定数バッファー
      */
-    void activateConstantBuffer(uint32_t index, const ConstantBuffer& buffer) const;
+    void activateConstantBuffer(DynamicDescriptorHandle& handle, uint32_t index, const ConstantBuffer& buffer) const;
 
     //-------------------------------------------------------------------------
     // command
@@ -80,12 +83,19 @@ public:
     void setPipeline(CommandContext& command) const;
 
     //-------------------------------------------------------------------------
+    // getter
+    //-------------------------------------------------------------------------
+public:
+    //! デスクリプターの数を取得する
+    uint32_t getNumDescriptor() const { return mNumDescriptor; }
+
+    //-------------------------------------------------------------------------
 private:
     Microsoft::WRL::ComPtr<ID3D12RootSignature>  mpRootSignature;
     Microsoft::WRL::ComPtr<ID3D12PipelineState>  mpPipeline;
-    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> mpDescriptorHeap;
     res::ShaderResource::ShaderType              mShaderType = res::ShaderResource::ShaderType::VertexPixel;
 
+    uint32_t mNumDescriptor        = 0;
     uint32_t mConstantBufferOffset = 0;
 };
 //-----------------------------------------------------------------------------

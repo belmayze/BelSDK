@@ -32,6 +32,8 @@
     <ClInclude Include="..\Include\graphics\common\belGraphicsCommandType.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsConstantBuffer.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsDepthStencil.h" />
+    <ClInclude Include="..\Include\graphics\common\belGraphicsDynamicDescriptorHandle.h" />
+    <ClInclude Include="..\Include\graphics\common\belGraphicsDynamicDescriptorHeap.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsMesh.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsPipeline.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsRenderBuffer.h" />
@@ -41,8 +43,6 @@
     <ClInclude Include="..\Include\graphics\common\belGraphicsTextureType.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsViewport.h" />
     <ClInclude Include="..\Include\graphics\dev\belGraphicsDevMeshHolder.h" />
-    <ClInclude Include="..\Include\graphics\internal\belGraphicsDynamicDescriptorHandle.h" />
-    <ClInclude Include="..\Include\graphics\internal\belGraphicsDynamicDescriptorHeap.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsGlobalDescriptorHandle.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsGlobalDescriptorRegistry.h" />
     <ClInclude Include="..\Include\math\belColor.h" />
@@ -83,6 +83,8 @@
     <ClCompile Include="..\Source\graphics\common\belGraphicsCommandQueue.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsConstantBuffer.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsDepthStencil.cpp" />
+    <ClCompile Include="..\Source\graphics\common\belGraphicsDynamicDescriptorHandle.cpp" />
+    <ClCompile Include="..\Source\graphics\common\belGraphicsDynamicDescriptorHeap.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsMesh.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsPipeline.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsRenderBuffer.cpp" />
@@ -90,8 +92,6 @@
     <ClCompile Include="..\Source\graphics\common\belGraphicsTexture.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsViewport.cpp" />
     <ClCompile Include="..\Source\graphics\dev\belGraphicsDevMeshHolder.cpp" />
-    <ClCompile Include="..\Source\graphics\internal\belGraphicsDynamicDescriptorHandle.cpp" />
-    <ClCompile Include="..\Source\graphics\internal\belGraphicsDynamicDescriptorHeap.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsGlobalDescriptorHandle.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsGlobalDescriptorRegistry.cpp" />
     <ClCompile Include="..\Source\math\belColor.cpp" />

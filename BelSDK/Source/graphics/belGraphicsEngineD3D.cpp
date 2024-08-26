@@ -10,10 +10,10 @@
 #include "graphics/common/belGraphicsCommandContext.h"
 #include "graphics/common/belGraphicsCommandList.h"
 #include "graphics/common/belGraphicsCommandQueue.h"
+#include "graphics/common/belGraphicsDynamicDescriptorHeap.h"
 #include "graphics/common/belGraphicsRenderBuffer.h"
 #include "graphics/common/belGraphicsRenderTarget.h"
 #include "graphics/common/belGraphicsTexture.h"
-#include "graphics/internal/belGraphicsDynamicDescriptorHeap.h"
 #include "graphics/internal/belGraphicsGlobalDescriptorRegistry.h"
 #include "graphics/belGraphicsEngineD3D.h"
 

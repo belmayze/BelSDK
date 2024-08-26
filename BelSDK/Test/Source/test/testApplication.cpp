@@ -6,6 +6,7 @@
  * Copyright (c) belmayze. All rights reserved.
  */
 // bel
+#include "graphics/common/belGraphicsDynamicDescriptorHeap.h"
 #include "graphics/belGraphicsEngine.h"
 #include "resource/belResourceLoader.h"
 // app
@@ -190,6 +191,9 @@ void Application::onCalc()
 //-----------------------------------------------------------------------------
 void Application::onMakeCommand(bel::gfx::CommandContext& command) const
 {
+    // クラス
+    bel::gfx::DynamicDescriptorHeap& descriptor_heap = bel::gfx::DynamicDescriptorHeap::GetInstance();
+
     // レンダーバッファー切り替え
     mColorTexture.barrierTransition(command, bel::gfx::ResourceState::cRenderTarget);
     mDepthTexture.barrierTransition(command, bel::gfx::ResourceState::cDepthWrite);
@@ -199,19 +203,29 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
     mRenderBuffer.clear(command, bel::Color::cBlack(), 1.f, 0, { bel::gfx::EClearType::cColor, bel::gfx::EClearType::cDepth });
 
     // 三角形描画
-    mPipeline.activateConstantBuffer(0, mModelCB);
-    mPipeline.setPipeline(command);
-    mMeshHolder.getMesh(bel::gfx::dev::MeshHolder::Type::cCube).drawIndexedInstanced(command);
+    {
+        bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mPipeline.getNumDescriptor());
+
+        mPipeline.activateConstantBuffer(handle, 0, mModelCB);
+        mPipeline.setPipeline(command);
+        descriptor_heap.setDescriptorHeap(handle, command);
+        mMeshHolder.getMesh(bel::gfx::dev::MeshHolder::Type::cCube).drawIndexedInstanced(command);
+    }
 
     // バリア
     mColorTexture.barrierTransition(command, bel::gfx::ResourceState::cGenericRead);
 
     // オフスクリーンレンダリングのテクスチャーを設定して描画
-    bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().bind(command);
-    mToneMappingPipeline.activateTexture(0, mColorTexture);
-    mToneMappingPipeline.activateConstantBuffer(0, mToneMappingCB);
-    mToneMappingPipeline.setPipeline(command);
-    mScreenMesh.drawInstanced(command);
+    {
+        bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mToneMappingPipeline.getNumDescriptor());
+
+        bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().bind(command);
+        mToneMappingPipeline.activateTexture(handle, 0, mColorTexture);
+        mToneMappingPipeline.activateConstantBuffer(handle, 0, mToneMappingCB);
+        mToneMappingPipeline.setPipeline(command);
+        descriptor_heap.setDescriptorHeap(handle, command);
+        mScreenMesh.drawInstanced(command);
+    }
 }
 //-----------------------------------------------------------------------------
 }

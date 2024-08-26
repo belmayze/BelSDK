@@ -7,6 +7,7 @@
  */
 // bel
 #include "graphics/common/belGraphicsConstantBuffer.h"
+#include "graphics/common/belGraphicsDynamicDescriptorHandle.h"
 #include "graphics/common/belGraphicsPipeline.h"
 #include "graphics/common/belGraphicsTexture.h"
 #include "graphics/internal/belGraphicsGlobalDescriptorRegistry.h"
@@ -314,17 +315,18 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
     //
     mpRootSignature  = std::move(p_root_signature);
     mpPipeline       = std::move(p_pipeline);
-    mpDescriptorHeap = std::move(p_descriptor_heap);
+
+    mNumDescriptor = arg.mNumTexture + arg.mNumConstantBuffer;
 
     return true;
 }
 //-----------------------------------------------------------------------------
 // shader
 //-----------------------------------------------------------------------------
-void Pipeline::activateTexture(uint32_t index, const Texture& texture) const
+void Pipeline::activateTexture(DynamicDescriptorHandle& handle, uint32_t index, const Texture& texture) const
 {
     D3D12_CPU_DESCRIPTOR_HANDLE src = GlobalDescriptorRegistry::GetInstance().getDescriptorHandle(texture.getDescriptorHandle());
-    D3D12_CPU_DESCRIPTOR_HANDLE dst = mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+    D3D12_CPU_DESCRIPTOR_HANDLE dst = handle.getCpuHandle();
     dst.ptr += GraphicsEngine::GetInstance().getDevice().GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * index;
 
     GraphicsEngine::GetInstance().getDevice().CopyDescriptors(
@@ -334,10 +336,10 @@ void Pipeline::activateTexture(uint32_t index, const Texture& texture) const
     );
 }
 //-----------------------------------------------------------------------------
-void Pipeline::activateConstantBuffer(uint32_t index, const ConstantBuffer& buffer) const
+void Pipeline::activateConstantBuffer(DynamicDescriptorHandle& handle, uint32_t index, const ConstantBuffer& buffer) const
 {
     D3D12_CPU_DESCRIPTOR_HANDLE src = GlobalDescriptorRegistry::GetInstance().getDescriptorHandle(buffer.getCurrentDescriptorHandle());
-    D3D12_CPU_DESCRIPTOR_HANDLE dst = mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+    D3D12_CPU_DESCRIPTOR_HANDLE dst = handle.getCpuHandle();
     dst.ptr += GraphicsEngine::GetInstance().getDevice().GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * (mConstantBufferOffset + index);
 
     GraphicsEngine::GetInstance().getDevice().CopyDescriptors(
@@ -363,14 +365,6 @@ void Pipeline::setPipeline(CommandContext& command) const
 
     // パイプライン
     command.getCommandList().SetPipelineState(mpPipeline.Get());
-
-    // デスクリプターヒープがあれば適用
-    if (mpDescriptorHeap.Get())
-    {
-        ID3D12DescriptorHeap* p_heaps[] = { mpDescriptorHeap.Get() };
-        command.getCommandList().SetDescriptorHeaps(1, p_heaps);
-        command.getCommandList().SetGraphicsRootDescriptorTable(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, mpDescriptorHeap->GetGPUDescriptorHandleForHeapStart());
-    }
 }
 //-----------------------------------------------------------------------------
 }
