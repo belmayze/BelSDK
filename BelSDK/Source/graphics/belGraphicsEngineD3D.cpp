@@ -308,6 +308,9 @@ void GraphicsEngineD3D::waitCommandQueue()
     // バッファー番号更新
     mSwapChainBufferIndex = mpSwapChain->GetCurrentBackBufferIndex();
     mCommandBufferIndex   = 1 - mCommandBufferIndex;
+
+    // 動的デスクリプターヒープのバッファーも切り替え
+    gfx::DynamicDescriptorHeap::GetInstance().swapBuffer();
 }
 //-----------------------------------------------------------------------------
 void GraphicsEngineD3D::present()

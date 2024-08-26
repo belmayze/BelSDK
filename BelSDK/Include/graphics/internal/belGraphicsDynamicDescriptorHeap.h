@@ -7,6 +7,7 @@
  */
 #pragma once
 // bel
+#include "graphics/internal/belGraphicsDynamicDescriptorHandle.h"
 #include "memory/belSingleton.h"
 
 namespace bel::gfx {
@@ -25,10 +26,20 @@ public:
      */
     bool initialize(uint32_t num);
 
+    /*!
+     * バッファーの切り替え
+     */
+    void swapBuffer();
+
     //-------------------------------------------------------------------------
     // allocate
     //-------------------------------------------------------------------------
 public:
+    /*!
+     * 指定した数を確保した動的デスクリプターハンドルを取得する
+     * @param[in] num 必要な個数
+     */
+    DynamicDescriptorHandle allocate(uint32_t num);
 
     //-------------------------------------------------------------------------
 private:

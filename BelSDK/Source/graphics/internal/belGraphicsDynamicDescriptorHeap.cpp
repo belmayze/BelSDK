@@ -31,4 +31,38 @@ bool DynamicDescriptorHeap::initialize(uint32_t num)
     return true;
 }
 //-----------------------------------------------------------------------------
+void DynamicDescriptorHeap::swapBuffer()
+{
+    mBufferIndex = 1 - mBufferIndex;
+}
+//-----------------------------------------------------------------------------
+// allocate
+//-----------------------------------------------------------------------------
+DynamicDescriptorHandle DynamicDescriptorHeap::allocate(uint32_t num)
+{
+    // インデックス移動
+    uint32_t index = mDescriptorIndex.fetch_add(num);
+    if ((index + num) >= mDescriptorSize)
+    {
+        // 上限に達した
+        return DynamicDescriptorHandle();
+    }
+
+    // オフセット計算
+    uint32_t offset      = mDescriptorSize * mBufferIndex + index;
+    UINT     offset_size = GraphicsEngine::GetInstance().getDevice().GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV) * offset;
+
+    // ハンドル取得
+    D3D12_CPU_DESCRIPTOR_HANDLE cpu_handle = mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+    cpu_handle.ptr += offset_size;
+
+    D3D12_GPU_DESCRIPTOR_HANDLE gpu_handle = mpDescriptorHeap->GetGPUDescriptorHandleForHeapStart();
+    gpu_handle.ptr += offset_size;
+
+    // ハンドルを作成して返す
+    DynamicDescriptorHandle handle;
+    handle.setProperty(cpu_handle, gpu_handle);
+    return handle;
+}
+//-----------------------------------------------------------------------------
 }
