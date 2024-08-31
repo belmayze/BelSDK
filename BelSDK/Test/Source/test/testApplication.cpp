@@ -27,7 +27,7 @@ void Application::initialize()
 
         bel::gfx::Pipeline::InitializeArg init_arg;
         init_arg.mNumRenderTarget        = 1;
-        init_arg.mRenderTargetFormats[0] = bel::gfx::TextureFormat::cR11G11B10_Float;
+        init_arg.mRenderTargetFormats[0] = bel::gfx::TextureFormat::cR11G11B10_uFloat;
         init_arg.mDepthStencilFormat     = bel::gfx::TextureFormat::cD32_Float;
         init_arg.mNumConstantBuffer      = 1;
 
@@ -89,7 +89,7 @@ void Application::initialize()
         init_arg.mWidth     = render_width;
         init_arg.mHeight    = render_height;
         init_arg.mDimension = bel::gfx::TextureDimension::c2D;
-        init_arg.mFormat    = bel::gfx::TextureFormat::cR11G11B10_Float;
+        init_arg.mFormat    = bel::gfx::TextureFormat::cR11G11B10_uFloat;
         mColorTexture.initialize(init_arg);
 
         // デプスバッファー
