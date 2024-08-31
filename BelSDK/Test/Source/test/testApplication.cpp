@@ -21,33 +21,6 @@ void Application::initialize()
         mMeshHolder.initialize();
     }
 
-    // パイプライン生成
-    {
-        mResShaderResource = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderResource>("Shader/Sample.bsh");
-
-        bel::gfx::Pipeline::InitializeArg init_arg;
-        init_arg.mNumRenderTarget        = 1;
-        init_arg.mRenderTargetFormats[0] = bel::gfx::TextureFormat::cR11G11B10_uFloat;
-        init_arg.mDepthStencilFormat     = bel::gfx::TextureFormat::cD32_Float;
-        init_arg.mNumConstantBuffer      = 1;
-
-        init_arg.mDepthConfig.mDepthEnable = true;
-        init_arg.mDepthConfig.mDepthWrite  = true;
-
-        mPipeline.initialize(init_arg, mResShaderResource);
-    }
-    {
-        mResToneMappingShaderResource = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderResource>("Shader/ToneMapping.bsh");
-
-        bel::gfx::Pipeline::InitializeArg init_arg;
-        init_arg.mNumRenderTarget        = 1;
-        init_arg.mRenderTargetFormats[0] = bel::gfx::TextureFormat::cR8G8B8A8_sRGB;
-        init_arg.mNumTexture             = 1;
-        init_arg.mNumConstantBuffer      = 1;
-
-        mToneMappingPipeline.initialize(init_arg, mResToneMappingShaderResource);
-    }
-
     // スクリーン用メッシュ生成
     {
         bel::gfx::Mesh::InitializeArg init_arg;
@@ -89,7 +62,7 @@ void Application::initialize()
         init_arg.mWidth     = render_width;
         init_arg.mHeight    = render_height;
         init_arg.mDimension = bel::gfx::TextureDimension::c2D;
-        init_arg.mFormat    = bel::gfx::TextureFormat::cR11G11B10_uFloat;
+        init_arg.mFormat    = bel::gfx::TextureFormat::cR16G16B16A16_Float;
         mColorTexture.initialize(init_arg);
 
         // デプスバッファー
@@ -104,6 +77,33 @@ void Application::initialize()
         mRenderBuffer.setRenderTarget(0, mRenderTarget);
         mRenderBuffer.setDepthStencil(mDepthStencil);
         mRenderBuffer.setResolution(render_width, render_height);
+    }
+
+    // パイプライン生成
+    {
+        mResShaderResource = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderResource>("Shader/Sample.bsh");
+
+        bel::gfx::Pipeline::InitializeArg init_arg;
+        init_arg.mNumRenderTarget        = 1;
+        init_arg.mRenderTargetFormats[0] = mColorTexture.getFormat();
+        init_arg.mDepthStencilFormat     = mDepthTexture.getFormat();
+        init_arg.mNumConstantBuffer      = 1;
+
+        init_arg.mDepthConfig.mDepthEnable = true;
+        init_arg.mDepthConfig.mDepthWrite  = true;
+
+        mPipeline.initialize(init_arg, mResShaderResource);
+    }
+    {
+        mResToneMappingShaderResource = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderResource>("Shader/ToneMapping.bsh");
+
+        bel::gfx::Pipeline::InitializeArg init_arg;
+        init_arg.mNumRenderTarget        = 1;
+        init_arg.mRenderTargetFormats[0] = bel::gfx::TextureFormat::cR8G8B8A8_sRGB;
+        init_arg.mNumTexture             = 1;
+        init_arg.mNumConstantBuffer      = 1;
+
+        mToneMappingPipeline.initialize(init_arg, mResToneMappingShaderResource);
     }
 }
 //-----------------------------------------------------------------------------
