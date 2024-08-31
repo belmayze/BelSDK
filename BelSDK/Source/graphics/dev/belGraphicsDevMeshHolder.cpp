@@ -25,11 +25,11 @@ bool MeshHolder::initialize()
         };
         constexpr std::array<uint16_t, 3> cIndexes = { 0, 1, 2 };
         bel::gfx::Mesh::InitializeArg init_arg;
-        init_arg.mpVertexBuffer    = cVertices.data();
-        init_arg.mVertexBufferSize = sizeof(float) * cVertices.size();
-        init_arg.mpIndexBuffer     = cIndexes.data();
-        init_arg.mIndexBufferSize  = sizeof(uint16_t) * cIndexes.size();
-        init_arg.mVertexStride     = sizeof(float) * (3 + 3 + 2);
+        init_arg.p_vertex_buffer    = cVertices.data();
+        init_arg.vertex_buffer_size = sizeof(float) * cVertices.size();
+        init_arg.vertex_stride      = sizeof(float) * (3 + 3 + 2);
+        init_arg.p_index_buffer     = cIndexes.data();
+        init_arg.index_buffer_size  = sizeof(uint16_t) * cIndexes.size();
         mMeshes[to_underlying(Type::cTriangle)].initialize(init_arg);
     }
     // Quad
@@ -44,11 +44,11 @@ bool MeshHolder::initialize()
         };
         constexpr std::array<uint16_t, 6> cIndexes = { 0, 1, 2, 0, 2, 3 };
         bel::gfx::Mesh::InitializeArg init_arg;
-        init_arg.mpVertexBuffer    = cVertices.data();
-        init_arg.mVertexBufferSize = sizeof(float) * cVertices.size();
-        init_arg.mpIndexBuffer     = cIndexes.data();
-        init_arg.mIndexBufferSize  = sizeof(uint16_t) * cIndexes.size();
-        init_arg.mVertexStride     = sizeof(float) * (3 + 3 + 2);
+        init_arg.p_vertex_buffer    = cVertices.data();
+        init_arg.vertex_buffer_size = sizeof(float) * cVertices.size();
+        init_arg.vertex_stride      = sizeof(float) * (3 + 3 + 2);
+        init_arg.p_index_buffer     = cIndexes.data();
+        init_arg.index_buffer_size  = sizeof(uint16_t) * cIndexes.size();
         mMeshes[to_underlying(Type::cQuad)].initialize(init_arg);
     }
     // Cube
@@ -96,11 +96,11 @@ bool MeshHolder::initialize()
             20, 21, 22, 20, 22, 23, // -Y
         };
         bel::gfx::Mesh::InitializeArg init_arg;
-        init_arg.mpVertexBuffer    = cVertices.data();
-        init_arg.mVertexBufferSize = sizeof(float) * cVertices.size();
-        init_arg.mpIndexBuffer     = cIndexes.data();
-        init_arg.mIndexBufferSize  = sizeof(uint16_t) * cIndexes.size();
-        init_arg.mVertexStride     = sizeof(float) * (3 + 3 + 2);
+        init_arg.p_vertex_buffer    = cVertices.data();
+        init_arg.vertex_buffer_size = sizeof(float) * cVertices.size();
+        init_arg.vertex_stride      = sizeof(float) * (3 + 3 + 2);
+        init_arg.p_index_buffer     = cIndexes.data();
+        init_arg.index_buffer_size  = sizeof(uint16_t) * cIndexes.size();
         mMeshes[to_underlying(Type::cCube)].initialize(init_arg);
     }
 

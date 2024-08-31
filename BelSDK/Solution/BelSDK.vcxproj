@@ -19,6 +19,7 @@
     <ClInclude Include="..\Include\belMain.h" />
     <ClInclude Include="..\Include\belPrecompile.h" />
     <ClInclude Include="..\Include\common\belEnumFlags.h" />
+    <ClInclude Include="..\Include\common\belOptionParser.h" />
     <ClInclude Include="..\Include\container\belDeque.h" />
     <ClInclude Include="..\Include\container\belVector.h" />
     <ClInclude Include="..\Include\debug\belConsole.h" />
@@ -45,6 +46,8 @@
     <ClInclude Include="..\Include\graphics\dev\belGraphicsDevMeshHolder.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsGlobalDescriptorHandle.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsGlobalDescriptorRegistry.h" />
+    <ClInclude Include="..\Include\image\belImage.h" />
+    <ClInclude Include="..\Include\image\belImageConverter.h" />
     <ClInclude Include="..\Include\math\belColor.h" />
     <ClInclude Include="..\Include\math\belColor.inl.h" />
     <ClInclude Include="..\Include\math\belDegree.h" />
@@ -74,6 +77,7 @@
     <ClCompile Include="..\Source\base\belApplicationWindow.cpp" />
     <ClCompile Include="..\Source\base\belApplicationWindowWin.cpp" />
     <ClCompile Include="..\Source\belMain.cpp" />
+    <ClCompile Include="..\Source\common\belOptionParser.cpp" />
     <ClCompile Include="..\Source\debug\belConsole.cpp" />
     <ClCompile Include="..\Source\debug\performance\belPerfTime.cpp" />
     <ClCompile Include="..\Source\graphics\belGraphicsEngine.cpp" />
@@ -94,6 +98,8 @@
     <ClCompile Include="..\Source\graphics\dev\belGraphicsDevMeshHolder.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsGlobalDescriptorHandle.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsGlobalDescriptorRegistry.cpp" />
+    <ClCompile Include="..\Source\image\belImage.cpp" />
+    <ClCompile Include="..\Source\image\belImageConverter.cpp" />
     <ClCompile Include="..\Source\math\belColor.cpp" />
     <ClCompile Include="..\Source\math\belDegree.cpp" />
     <ClCompile Include="..\Source\math\belRadian.cpp" />

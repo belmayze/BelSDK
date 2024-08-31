@@ -19,7 +19,7 @@ bool Mesh::initialize(const InitializeArg& arg)
     Microsoft::WRL::ComPtr<ID3D12Resource> p_vertex_buffer, p_index_buffer;
 
     // 頂点バッファー
-    if (arg.mpVertexBuffer)
+    if (arg.p_vertex_buffer)
     {
         D3D12_HEAP_PROPERTIES props = {};
         props.Type             = D3D12_HEAP_TYPE_UPLOAD;
@@ -28,7 +28,7 @@ bool Mesh::initialize(const InitializeArg& arg)
 
         D3D12_RESOURCE_DESC desc = {};
         desc.Dimension        = D3D12_RESOURCE_DIMENSION_BUFFER;
-        desc.Width            = arg.mVertexBufferSize;
+        desc.Width            = arg.vertex_buffer_size;
         desc.Height           = 1;
         desc.DepthOrArraySize = 1;
         desc.MipLevels        = 1;
@@ -46,12 +46,12 @@ bool Mesh::initialize(const InitializeArg& arg)
         // データ転送
         uint8_t* dst_ptr = nullptr;
         if (FAILED(p_vertex_buffer->Map(0, nullptr, reinterpret_cast<void**>(&dst_ptr)))) { return false; }
-        std::memcpy(dst_ptr, arg.mpVertexBuffer, arg.mVertexBufferSize);
+        std::memcpy(dst_ptr, arg.p_vertex_buffer, arg.vertex_buffer_size);
         p_vertex_buffer->Unmap(0, nullptr);
     }
 
     // インデックスバッファー
-    if (arg.mpIndexBuffer)
+    if (arg.p_index_buffer)
     {
         D3D12_HEAP_PROPERTIES props = {};
         props.Type             = D3D12_HEAP_TYPE_UPLOAD;
@@ -60,7 +60,7 @@ bool Mesh::initialize(const InitializeArg& arg)
 
         D3D12_RESOURCE_DESC desc = {};
         desc.Dimension        = D3D12_RESOURCE_DIMENSION_BUFFER;
-        desc.Width            = arg.mIndexBufferSize;
+        desc.Width            = arg.index_buffer_size;
         desc.Height           = 1;
         desc.DepthOrArraySize = 1;
         desc.MipLevels        = 1;
@@ -78,7 +78,7 @@ bool Mesh::initialize(const InitializeArg& arg)
         // データ転送
         uint8_t* dst_ptr = nullptr;
         if (FAILED(p_index_buffer->Map(0, nullptr, reinterpret_cast<void**>(&dst_ptr)))) { return false; }
-        std::memcpy(dst_ptr, arg.mpIndexBuffer, arg.mIndexBufferSize);
+        std::memcpy(dst_ptr, arg.p_index_buffer, arg.index_buffer_size);
         p_index_buffer->Unmap(0, nullptr);
     }
 
@@ -87,26 +87,26 @@ bool Mesh::initialize(const InitializeArg& arg)
     mpIndexResource  = std::move(p_index_buffer);
 
     //
-    BEL_ASSERT(arg.mIndexBufferFormat == DXGI_FORMAT_R16_UINT || arg.mIndexBufferFormat == DXGI_FORMAT_R32_UINT);
-    size_t index_size = (arg.mIndexBufferFormat == DXGI_FORMAT_R16_UINT) ? sizeof(uint16_t) : sizeof(uint32_t);
+    BEL_ASSERT(arg.index_buffer_format == DXGI_FORMAT_R16_UINT || arg.index_buffer_format == DXGI_FORMAT_R32_UINT);
+    size_t index_size = (arg.index_buffer_format == DXGI_FORMAT_R16_UINT) ? sizeof(uint16_t) : sizeof(uint32_t);
 
     // ビューの作成
     if (mpVertexResource)
     {
         mVertexBufferView.BufferLocation = mpVertexResource->GetGPUVirtualAddress();
-        mVertexBufferView.SizeInBytes    = static_cast<uint32_t>(arg.mVertexBufferSize);
-        mVertexBufferView.StrideInBytes  = static_cast<uint32_t>(arg.mVertexStride);
+        mVertexBufferView.SizeInBytes    = static_cast<uint32_t>(arg.vertex_buffer_size);
+        mVertexBufferView.StrideInBytes  = static_cast<uint32_t>(arg.vertex_stride);
     }
 
     if (mpIndexResource)
     {
         mIndexBufferView.BufferLocation = mpIndexResource->GetGPUVirtualAddress();
-        mIndexBufferView.SizeInBytes    = static_cast<uint32_t>(arg.mIndexBufferSize);
-        mIndexBufferView.Format         = arg.mIndexBufferFormat;
+        mIndexBufferView.SizeInBytes    = static_cast<uint32_t>(arg.index_buffer_size);
+        mIndexBufferView.Format         = arg.index_buffer_format;
     }
 
-    mIndexCount        = static_cast<uint32_t>(arg.mIndexBufferSize / index_size);
-    mPrimitiveTopology = arg.mPrimitiveTopology;
+    mIndexCount        = static_cast<uint32_t>(arg.index_buffer_size / index_size);
+    mPrimitiveTopology = arg.primitive_topology;
 
     return true;
 }

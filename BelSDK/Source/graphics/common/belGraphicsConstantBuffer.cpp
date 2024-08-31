@@ -17,9 +17,9 @@ namespace bel::gfx {
 bool ConstantBuffer::initialize(const InitializeArg& arg)
 {
     // 保持
-    mNumBuffer = arg.mNumBuffer;
+    mNumBuffer = arg.num_buffer;
     // バッファーサイズ計算
-    mBufferSize = Math::Roundup(arg.mBufferSize, static_cast<size_t>(D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT));
+    mBufferSize = Math::Roundup(arg.buffer_size, static_cast<size_t>(D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT));
 
     // バッファーを生成
     auto p_resources        = std::make_unique<Microsoft::WRL::ComPtr<ID3D12Resource>[]>(mNumBuffer);

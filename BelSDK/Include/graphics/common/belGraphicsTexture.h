@@ -21,12 +21,12 @@ public:
     //! 初期化引数
     struct InitializeArg
     {
-        uint32_t         mWidth     = 1;
-        uint32_t         mHeight    = 1;
-        uint32_t         mDepth     = 1;
-        uint32_t         mNumMip    = 1;
-        TextureFormat    mFormat    = TextureFormat::cR8G8B8A8_uNorm;
-        TextureDimension mDimension = TextureDimension::c2D;
+        uint32_t         width      = 1;
+        uint32_t         height     = 1;
+        uint32_t         depth      = 1;
+        uint32_t         mip_levels = 1;
+        TextureFormat    format     = TextureFormat::cR8G8B8A8_uNorm;
+        TextureDimension dimension  = TextureDimension::c2D;
     };
 
     //-------------------------------------------------------------------------
@@ -57,7 +57,7 @@ public:
     uint32_t getDepth() const { return mDepth; }
 
     //! ミップマップ数を取得する
-    uint32_t getNumMip() const { return mNumMip; }
+    uint32_t getMipLevels() const { return mMipLevels; }
 
     //! フォーマットを取得する
     TextureFormat getFormat() const { return mFormat; }
@@ -89,7 +89,7 @@ private:
     uint32_t              mWidth         = 1;
     uint32_t              mHeight        = 1;
     uint32_t              mDepth         = 1;
-    uint32_t              mNumMip        = 1;
+    uint32_t              mMipLevels     = 1;
     TextureFormat         mFormat        = TextureFormat::cR8G8B8A8_uNorm;
     TextureDimension      mDimension     = TextureDimension::c2D;
     mutable ResourceState mResourceState = ResourceState::cGenericRead;

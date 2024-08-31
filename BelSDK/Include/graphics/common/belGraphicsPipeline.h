@@ -25,20 +25,20 @@ public:
     //! デプス設定
     struct DepthConfig
     {
-        bool mDepthEnable = false;
-        bool mDepthWrite  = false;
+        bool depth_enable = false;
+        bool depth_write  = false;
     };
     //! 初期化引数
     struct InitializeArg
     {
-        uint32_t                                     mNumRenderTarget = 0;
-        std::array<TextureFormat, cMaxRenderTargets> mRenderTargetFormats = {};
-        TextureFormat                                mDepthStencilFormat = TextureFormat::cUnknown;
+        uint32_t                                     num_render_target     = 0;
+        std::array<TextureFormat, cMaxRenderTargets> render_target_formats = {};
+        TextureFormat                                depth_stencil_format  = TextureFormat::cUnknown;
 
-        DepthConfig mDepthConfig;
+        DepthConfig depth_config;
 
-        uint32_t mNumTexture        = 0;
-        uint32_t mNumConstantBuffer = 0;
+        uint32_t num_texture         = 0;
+        uint32_t num_constant_buffer = 0;
     };
 
     //-------------------------------------------------------------------------

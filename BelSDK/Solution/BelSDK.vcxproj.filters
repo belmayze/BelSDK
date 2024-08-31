@@ -264,6 +264,9 @@
     <ClInclude Include="..\Include\graphics\common\belGraphicsDynamicDescriptorHeap.h">
       <Filter>ヘッダー ファイル\graphics\common</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\common\belOptionParser.h">
+      <Filter>ヘッダー ファイル\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -367,6 +370,9 @@
     </ClCompile>
     <ClCompile Include="..\Source\graphics\common\belGraphicsDynamicDescriptorHeap.cpp">
       <Filter>ソース ファイル\graphics\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\common\belOptionParser.cpp">
+      <Filter>ソース ファイル\common</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

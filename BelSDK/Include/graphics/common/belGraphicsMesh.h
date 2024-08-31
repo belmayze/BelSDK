@@ -18,13 +18,13 @@ public:
     //! 初期化引数
     struct InitializeArg
     {
-        const void*            mpVertexBuffer     = nullptr;
-        const void*            mpIndexBuffer      = nullptr;
-        size_t                 mVertexBufferSize  = 0;
-        size_t                 mVertexStride      = 0;
-        size_t                 mIndexBufferSize   = 0;
-        DXGI_FORMAT            mIndexBufferFormat = DXGI_FORMAT_R16_UINT;
-        D3D_PRIMITIVE_TOPOLOGY mPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+        const void*            p_vertex_buffer     = nullptr;
+        const void*            p_index_buffer      = nullptr;
+        size_t                 vertex_buffer_size  = 0;
+        size_t                 vertex_stride       = 0;
+        size_t                 index_buffer_size   = 0;
+        DXGI_FORMAT            index_buffer_format = DXGI_FORMAT_R16_UINT;
+        D3D_PRIMITIVE_TOPOLOGY primitive_topology  = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
     };
 
     //-------------------------------------------------------------------------

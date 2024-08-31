@@ -46,8 +46,8 @@ private:
     struct ThreadContext
     {
         // 入れ子にできるようにする
-        std::chrono::system_clock::time_point mStart;
-        uint32_t mMicrosec = 0;
+        std::chrono::system_clock::time_point start;
+        uint32_t microsec = 0;
     };
 
     //-------------------------------------------------------------------------

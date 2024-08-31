@@ -244,10 +244,10 @@ bool GraphicsEngineD3D::initialize()
             }
 
             gfx::Texture::InitializeArg init_arg;
-            init_arg.mWidth     = desc.Width;
-            init_arg.mHeight    = desc.Height;
-            init_arg.mFormat    = mIsSupportedHDR ? cHDRTextureFormat : cSDRsRGBTextureFormat;
-            init_arg.mDimension = gfx::TextureDimension::c2D;
+            init_arg.width     = desc.Width;
+            init_arg.height    = desc.Height;
+            init_arg.format    = mIsSupportedHDR ? cHDRTextureFormat : cSDRsRGBTextureFormat;
+            init_arg.dimension = gfx::TextureDimension::c2D;
             mSwapChainTextures[i_buffer].initializeFromGPUMemory(
                 init_arg,
                 std::move(p_resource),

@@ -31,7 +31,7 @@ void PerfTime::start(const std::string& name)
     uint32_t thread_index = Thread::GetThreadIndex();
     ThreadContext& ctx = mThreadContexts[thread_index];
     // 計測開始
-    ctx.mStart = std::chrono::system_clock::now();
+    ctx.start = std::chrono::system_clock::now();
 }
 //-----------------------------------------------------------------------------
 void PerfTime::end()
@@ -40,10 +40,10 @@ void PerfTime::end()
     uint32_t thread_index = Thread::GetThreadIndex();
     ThreadContext& ctx = mThreadContexts[thread_index];
     // 計測終了
-    ctx.mMicrosec = static_cast<uint32_t>(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - ctx.mStart).count());
+    ctx.microsec = static_cast<uint32_t>(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - ctx.start).count());
 
     // @TODO: いったん仮で文字出力する
-    BEL_PRINT("%u us. (%.2f fps)\n", ctx.mMicrosec, (1000.f * 1000.f) / static_cast<float>(ctx.mMicrosec));
+    BEL_PRINT("%u us. (%.2f fps)\n", ctx.microsec, (1000.f * 1000.f) / static_cast<float>(ctx.microsec));
 }
 //-----------------------------------------------------------------------------
 }

@@ -58,33 +58,33 @@ GlobalDescriptorHandle GlobalDescriptorRegistry::registerTexture(const Texture& 
     switch (desc.ViewDimension)
     {
     case D3D12_SRV_DIMENSION_TEXTURE1D:
-        desc.Texture1D.MipLevels = texture.getNumMip();
+        desc.Texture1D.MipLevels = texture.getMipLevels();
         break;
 
     case D3D12_SRV_DIMENSION_TEXTURE1DARRAY:
-        desc.Texture1DArray.MipLevels = texture.getNumMip();
+        desc.Texture1DArray.MipLevels = texture.getMipLevels();
         desc.Texture1DArray.ArraySize = texture.getDepth();
         break;
 
     case D3D12_SRV_DIMENSION_TEXTURE2D:
-        desc.Texture2D.MipLevels = texture.getNumMip();
+        desc.Texture2D.MipLevels = texture.getMipLevels();
         break;
 
     case D3D12_SRV_DIMENSION_TEXTURE2DARRAY:
-        desc.Texture2DArray.MipLevels = texture.getNumMip();
+        desc.Texture2DArray.MipLevels = texture.getMipLevels();
         desc.Texture2DArray.ArraySize = texture.getDepth();
         break;
 
     case D3D12_SRV_DIMENSION_TEXTURE3D:
-        desc.Texture3D.MipLevels = texture.getNumMip();
+        desc.Texture3D.MipLevels = texture.getMipLevels();
         break;
 
     case D3D12_SRV_DIMENSION_TEXTURECUBE:
-        desc.TextureCube.MipLevels = texture.getNumMip();
+        desc.TextureCube.MipLevels = texture.getMipLevels();
         break;
 
     case D3D12_SRV_DIMENSION_TEXTURECUBEARRAY:
-        desc.TextureCubeArray.MipLevels = texture.getNumMip();
+        desc.TextureCubeArray.MipLevels = texture.getMipLevels();
         desc.TextureCubeArray.NumCubes = texture.getDepth() / 6;
         break;
     }

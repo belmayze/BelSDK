@@ -57,3 +57,6 @@
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "xinput.lib")
+#ifndef _LIB
+#   pragma comment(lib, "bel.lib")
+#endif // _LIB

@@ -20,8 +20,8 @@ public:
     //! 初期化引数
     struct InitializeArg
     {
-        size_t   mBufferSize = 0;
-        uint32_t mNumBuffer  = 1;
+        size_t   buffer_size = 0;
+        uint32_t num_buffer  = 1;
     };
 
     //-------------------------------------------------------------------------

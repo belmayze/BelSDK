@@ -8,114 +8,31 @@
 // windows
 #include <wincodec.h>
 #include <wrl/client.h>
-//
-#include "belOptionParser.h"
+// bel
+#include "common/belOptionParser.h"
+#include "graphics/common/belGraphicsTextureType.h"
+#include "image/belImage.h"
 
 namespace
 {
 
-//-----------------------------------------------------------------------------
-// テクスチャーフォーマット
-//-----------------------------------------------------------------------------
-enum class TextureFormat
-{
-    // Unknown
-    cUnknown,
-
-    // 8bit カラー
-    cR8_uNorm,           //!< 1ch 8ビット符号なし正規化整数
-    cR8_sNorm,           //!< 1ch 8ビット符号あり正規化整数
-    cR8_uInt,            //!< 1ch 8ビット符号なし整数
-    cR8_sInt,            //!< 1ch 8ビット符号あり整数
-    cA8_uNorm,           //!< 1ch 32ビット符号なし正規化整数
-    cR8G8_uNorm,         //!< 2ch 16ビット符号なし正規化整数
-    cR8G8_sNorm,         //!< 2ch 16ビット符号あり正規化整数
-    cR8G8_uInt,          //!< 2ch 16ビット符号なし整数
-    cR8G8_sInt,          //!< 2ch 16ビット符号あり整数
-    cR8G8B8A8_uNorm,     //!< 4ch 32ビット符号なし正規化整数
-    cR8G8B8A8_sNorm,     //!< 4ch 32ビット符号あり正規化整数
-    cR8G8B8A8_sRGB,      //!< 4ch 32ビット符号なし正規化整数（sRGB）
-    cR8G8B8A8_uInt,      //!< 4ch 32ビット符号なし整数
-    cR8G8B8A8_sInt,      //!< 4ch 32ビット符号あり整数
-
-    // 16ビットカラー
-    cR16_uNorm,          //!< 1ch 16ビット符号なし正規化整数
-    cR16_sNorm,          //!< 1ch 16ビット符号あり正規化整数
-    cR16_uInt,           //!< 1ch 16ビット符号なし整数
-    cR16_sInt,           //!< 1ch 16ビット符号あり整数
-    cR16_Float,          //!< 1ch 16ビット符号あり浮動小数
-    cR16G16_uNorm,       //!< 2ch 32ビット符号なし正規化整数
-    cR16G16_sNorm,       //!< 2ch 32ビット符号あり正規化整数
-    cR16G16_uInt,        //!< 2ch 32ビット符号なし整数
-    cR16G16_sInt,        //!< 2ch 32ビット符号あり整数
-    cR16G16_Float,       //!< 2ch 32ビット符号あり浮動小数
-    cR16G16B16A16_uNorm, //!< 4ch 64ビット符号なし正規化整数
-    cR16G16B16A16_sNorm, //!< 4ch 64ビット符号あり正規化整数
-    cR16G16B16A16_uInt,  //!< 4ch 64ビット符号なし整数
-    cR16G16B16A16_sInt,  //!< 4ch 64ビット符号あり整数
-    cR16G16B16A16_Float, //!< 4ch 64ビット符号あり浮動小数
-
-    // 32ビットカラー
-    cR32_uInt,           //!< 1ch 32ビット符号なし整数
-    cR32_sInt,           //!< 1ch 32ビット符号あり整数
-    cR32_Float,          //!< 1ch 32ビット符号あり浮動小数
-    cR32G32_uInt,        //!< 2ch 64ビット符号なし整数
-    cR32G32_sInt,        //!< 2ch 64ビット符号あり整数
-    cR32G32_Float,       //!< 2ch 64ビット符号あり浮動小数
-    cR32G32B32_uInt,     //!< 3ch 96ビット符号なし整数
-    cR32G32B32_sInt,     //!< 3ch 96ビット符号あり整数
-    cR32G32B32_Float,    //!< 3ch 96ビット符号あり浮動小数
-    cR32G32B32A32_uInt,  //!< 4ch 128ビット符号なし整数
-    cR32G32B32A32_sInt,  //!< 4ch 128ビット符号あり整数
-    cR32G32B32A32_Float, //!< 4ch 128ビット符号あり浮動小数
-
-    // その他カラー
-    cR5G6B5_uNorm,       //!< 3ch 32ビット符号なし正規化整数
-    cR5G5B5A1_uNorm,     //!< 4ch 32ビット符号なし正規化整数
-    cR10G10B10A2_uNorm,  //!< 4ch 32ビット符号なし正規化整数
-    cR10G10B10A2_uInt,   //!< 4ch 32ビット符号なし整数
-    cR11G11B10_uFloat,   //!< 3ch 32ビット符号なし浮動小数
-
-    // デプス
-    cD16_uNorm,          //!< 16ビット正規化整数デプス
-    cD24_uNorm_S8_uInt,  //!< 24ビット正規化整数デプス + 8ビット整数ステンシル
-    cD32_Float,          //!< 32ビット浮動小数デプス
-    cD32_Float_S8_uInt,  //!< 32ビット浮動小数デプス + 8ビット整数ステンシル
-
-    // BC圧縮
-    cBC1_uNorm,          //!< 4bpp 3ch もしくは 4ch（2値アルファ）符号なし正規化整数
-    cBC1_sRGB,           //!< 4bpp 3ch もしくは 4ch（2値アルファ）符号なし正規化整数（sRGB）
-    cBC2_uNorm,          //!< 8bpp 4ch 符号なし16階調正規化整数
-    cBC2_sRGB,           //!< 8bpp 4ch 符号なし16階調正規化整数（sRGB）
-    cBC3_uNorm,          //!< 8bpp 4ch 符号なし正規化整数
-    cBC3_sRGB,           //!< 8bpp 4ch 符号なし正規化整数（sRGB）
-    cBC4_uNorm,          //!< 4bpp 1ch 符号なし正規化整数
-    cBC4_sNorm,          //!< 4bpp 1ch 符号あり正規化整数
-    cBC5_uNorm,          //!< 8bpp 2ch 符号なし正規化整数
-    cBC5_sNorm,          //!< 8bpp 2ch 符号あり正規化整数
-    cBC6_uFloat,         //!< 8bpp 3ch 符号なし浮動小数（FP16）
-    cBC6_sFloat,         //!< 8bpp 3ch 符号あり浮動小数（FP16）
-    cBC7_uNorm,          //!< 8bpp 3ch もしくは 4ch 符号なし正規化整数
-    cBC7_sRGB,           //!< 8bpp 3ch もしくは 4ch 符号なし正規化整数（sRGB）
-
-    cNum
-};
-
 //! 画像プロパティ
 struct TextureProperty
 {
-    size_t        width        = 0;
-    size_t        height       = 0;
-    size_t        depth        = 0;
-    size_t        array_size   = 0;
-    size_t        mip_levels   = 0;
-    TextureFormat format       = TextureFormat::cUnknown;
-    GUID          convert_guid = GUID_NULL;
+    size_t width        = 0;
+    size_t height       = 0;
+    size_t depth        = 0;
+    size_t array_size   = 0;
+    size_t mip_levels   = 0;
+    bel::gfx::TextureFormat    format    = bel::gfx::TextureFormat::cUnknown;
+    bel::gfx::TextureDimension dimension = bel::gfx::TextureDimension::c2D;
+    WICPixelFormatGUID file_format  = GUID_NULL;
+    GUID               convert_guid = GUID_NULL;
 };
 
 }
 
-int main(int argc, const char* argv[])
+int belMain(int argc, const char** argv)
 {
     // オプション解析
     std::string input_filepath;
@@ -151,7 +68,7 @@ int main(int argc, const char* argv[])
     if (input_filepath.empty() || output_filepath.empty() || format_name.empty())
     {
         printf("必須オプションが指定されていません\n");
-        return 1;
+        return -1;
     }
 
     // @TODO: 出力ファイルの指定が無ければ入力ファイル名を使う
@@ -170,7 +87,7 @@ int main(int argc, const char* argv[])
     if (FAILED(hr))
     {
         printf("COMの初期化に失敗しました\n");
-        return 2;
+        return hr;
     }
 
     // WIC Interface
@@ -185,7 +102,7 @@ int main(int argc, const char* argv[])
         if (FAILED(hr))
         {
             printf("WICファクトリーの生成に失敗しました\n");
-            return 2;
+            return hr;
         }
 
         // WIC 初期化
@@ -193,8 +110,8 @@ int main(int argc, const char* argv[])
         hr = p_factory->CreateDecoderFromFilename(input_filepath_w.get(), nullptr, GENERIC_READ, WICDecodeMetadataCacheOnDemand, p_decoder.GetAddressOf());
         if (FAILED(hr))
         {
-            printf("デコーダーの生成に失敗しました\n");
-            return 2;
+            printf("画像の読み込みに失敗しました\n");
+            return hr;
         }
 
         // フレーム取得
@@ -203,7 +120,7 @@ int main(int argc, const char* argv[])
         if (FAILED(hr))
         {
             printf("画像の取得に失敗しました\n");
-            return 2;
+            return hr;
         }
 
         // プロパティ取得
@@ -216,7 +133,7 @@ int main(int argc, const char* argv[])
                 if (FAILED(hr))
                 {
                     printf("プロパティのアクセスに失敗しました\n");
-                    return 2;
+                    return hr;
                 }
                 property.width = w;
                 property.height = h;
@@ -229,10 +146,10 @@ int main(int argc, const char* argv[])
                 if (FAILED(hr))
                 {
                     printf("プロパティのアクセスに失敗しました\n");
-                    return 2;
+                    return hr;
                 }
 
-                auto checker = [&format, &property](const GUID& guid, TextureFormat texture_format, GUID convert_guid)
+                auto checker = [&format, &property](const GUID& guid, bel::gfx::TextureFormat texture_format, GUID convert_guid)
                 {
                     if (std::memcmp(&guid, &format, sizeof(WICPixelFormatGUID)) == 0)
                     {
@@ -243,10 +160,101 @@ int main(int argc, const char* argv[])
                     return false;
                 };
 
-                if      (checker(GUID_WICPixelFormat24bppRGB, TextureFormat::cR8G8B8A8_uNorm, GUID_WICPixelFormat32bppRGBA)) {}
-                else if (checker(GUID_WICPixelFormat24bppBGR, TextureFormat::cR8G8B8A8_uNorm, GUID_WICPixelFormat32bppRGBA)) {}
+                // @TODO: 特定のフォーマットのみに限定
+                if      (checker(GUID_WICPixelFormat24bppRGB, bel::gfx::TextureFormat::cR8G8B8A8_uNorm, GUID_WICPixelFormat32bppRGBA)) {}
+                else if (checker(GUID_WICPixelFormat24bppBGR, bel::gfx::TextureFormat::cR8G8B8A8_uNorm, GUID_WICPixelFormat32bppRGBA)) {}
+
+                // 出力
+                property.file_format = format;
+            }
+
+            // いったん固定
+            property.mip_levels = 1;
+            property.array_size = 1;
+            property.depth      = 1;
+            property.dimension  = bel::gfx::TextureDimension::c2D;
+        }
+
+        // 画像データを生成
+        bel::Image image;
+        {
+            bel::Image::InitializeArg init_arg;
+            init_arg.width      = property.width;
+            init_arg.height     = property.height;
+            init_arg.array_size = property.array_size;
+            init_arg.mip_levels = property.mip_levels;
+            init_arg.format     = property.format;
+
+            // @TODO: いったん DIMENSION_2D のみ
+            if (!image.initialize2D(init_arg))
+            {
+                printf("画像の初期化に失敗しました\n");
+                return hr;
+            }
+
+            // @TODO: いったん１枚の画像のみ
+            // 画像プロパティ取得
+            const bel::Image::ImageProperty& image_property = image.getImageProperty(0);
+
+            // GUID が NULL であれば変換不要
+            if (std::memcmp(&property.convert_guid, &GUID_NULL, sizeof(GUID)) == 0)
+            {
+                hr = p_frame->CopyPixels(
+                    nullptr,
+                    static_cast<UINT>(image_property.row_pitch),
+                    static_cast<UINT>(image_property.slice_pitch),
+                    image.getMemoryPtr(image_property.memory_offset)
+                );
+                if (FAILED(hr))
+                {
+                    printf("画像のコピーに失敗しました\n");
+                    return hr;
+                }
+            }
+            else
+            {
+                // 指定したフォーマットにコンバートする
+                Microsoft::WRL::ComPtr<IWICFormatConverter> p_converter;
+                hr = p_factory->CreateFormatConverter(p_converter.GetAddressOf());
+                if (FAILED(hr))
+                {
+                    printf("画像コンバーターの生成に失敗しました\n");
+                    return hr;
+                }
+
+                BOOL can_convert = FALSE;
+                hr = p_converter->CanConvert(property.file_format, property.convert_guid, &can_convert);
+                if (FAILED(hr))
+                {
+                    printf("コンバートチェックに失敗しました\n");
+                    return hr;
+                }
+
+                // コンバート
+                hr = p_converter->Initialize(p_frame.Get(), property.convert_guid, WICBitmapDitherTypeNone, nullptr, 0, WICBitmapPaletteTypeMedianCut);
+                if (FAILED(hr))
+                {
+                    printf("コンバートに失敗しました\n");
+                    return hr;
+                }
+
+                hr = p_converter->CopyPixels(
+                    nullptr,
+                    static_cast<UINT>(image_property.row_pitch),
+                    static_cast<UINT>(image_property.slice_pitch),
+                    image.getMemoryPtr(image_property.memory_offset)
+                );
+                if (FAILED(hr))
+                {
+                    printf("画像のコピーに失敗しました\n");
+                    return hr;
+                }
             }
         }
+
+        // @TODO: フォーマット変換
+
+        // 出力
     }
 
     // 終了処理

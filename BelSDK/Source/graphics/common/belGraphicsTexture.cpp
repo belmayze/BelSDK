@@ -27,20 +27,20 @@ bool Texture::initialize(const InitializeArg& arg)
 
     // リソース情報
     D3D12_RESOURCE_DESC desc = {};
-    desc.Dimension        = to_native(arg.mDimension);
-    desc.Width            = arg.mWidth;
-    desc.Height           = arg.mHeight;
-    desc.DepthOrArraySize = arg.mDepth;
-    desc.MipLevels        = arg.mNumMip;
-    desc.Format           = to_native(arg.mFormat);
+    desc.Dimension        = to_native(arg.dimension);
+    desc.Width            = arg.width;
+    desc.Height           = arg.height;
+    desc.DepthOrArraySize = arg.depth;
+    desc.MipLevels        = arg.mip_levels;
+    desc.Format           = to_native(arg.format);
     desc.SampleDesc.Count = 1;
-    desc.Flags            = TextureFormatInfo::isDepthFormat(arg.mFormat) ? D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL
-                                                                          : D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+    desc.Flags            = TextureFormatInfo::IsDepth(arg.format) ? D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL
+                                                                   : D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
     
     // クリアカラーの最適化
     D3D12_CLEAR_VALUE clear_value;
     clear_value.Format = desc.Format;
-    if (TextureFormatInfo::isDepthFormat(arg.mFormat))
+    if (TextureFormatInfo::IsDepth(arg.format))
     {
         clear_value.DepthStencil.Depth   = 1.f;
         clear_value.DepthStencil.Stencil = 0;
@@ -72,11 +72,11 @@ bool Texture::initialize(const InitializeArg& arg)
 bool Texture::initializeFromGPUMemory(const InitializeArg& arg, Microsoft::WRL::ComPtr<ID3D12Resource>&& p_resource, ResourceState state)
 {
     // GPU メモリーなので記録するだけ
-    mWidth         = arg.mWidth;
-    mHeight        = arg.mHeight;
-    mNumMip        = arg.mNumMip;
-    mFormat        = arg.mFormat;
-    mDimension     = arg.mDimension;
+    mWidth         = arg.width;
+    mHeight        = arg.height;
+    mMipLevels     = arg.mip_levels;
+    mFormat        = arg.format;
+    mDimension     = arg.dimension;
     mResourceState = state;
     mpResource     = std::move(p_resource);
 

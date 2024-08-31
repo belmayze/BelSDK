@@ -6,7 +6,7 @@
  * Copyright (c) belmayze. All rights reserved.
  */
 // bel
-#include "belOptionParser.h"
+#include "common/belOptionParser.h"
 
 namespace bel {
 

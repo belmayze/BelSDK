@@ -49,8 +49,8 @@ private:
     //! 定数バッファー構造体
     struct ModelCB
     {
-        bel::Matrix34 mWorldMatrix;
-        bel::Matrix44 mViewProjectionMatrix;
+        bel::Matrix34 world_matrix;
+        bel::Matrix44 view_projection_matrix;
     };
 
     //-------------------------------------------------------------------------

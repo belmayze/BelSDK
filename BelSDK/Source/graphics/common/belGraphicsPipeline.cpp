@@ -29,10 +29,10 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
     uint32_t num_ranges = 0;
 
     // SRV
-    if (arg.mNumTexture > 0)
+    if (arg.num_texture > 0)
     {
         ranges[num_ranges].RangeType          = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-        ranges[num_ranges].NumDescriptors     = arg.mNumTexture;
+        ranges[num_ranges].NumDescriptors     = arg.num_texture;
         ranges[num_ranges].BaseShaderRegister = 0;
         ranges[num_ranges].RegisterSpace      = 0;
         ranges[num_ranges].Flags              = D3D12_DESCRIPTOR_RANGE_FLAG_NONE;
@@ -40,17 +40,17 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
         ++num_ranges;
     }
     // CBV
-    if (arg.mNumConstantBuffer > 0)
+    if (arg.num_constant_buffer > 0)
     {
         ranges[num_ranges].RangeType          = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-        ranges[num_ranges].NumDescriptors     = arg.mNumConstantBuffer;
+        ranges[num_ranges].NumDescriptors     = arg.num_constant_buffer;
         ranges[num_ranges].BaseShaderRegister = 0;
         ranges[num_ranges].RegisterSpace      = 0;
         ranges[num_ranges].Flags              = D3D12_DESCRIPTOR_RANGE_FLAG_NONE;
         ranges[num_ranges].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
         ++num_ranges;
 
-        mConstantBufferOffset = arg.mNumTexture;
+        mConstantBufferOffset = arg.num_texture;
     }
 
     // デスクリプターヒープは必ず CopyDescriptors() を使う前提のシステムなので単一のヒープのみ使用する
@@ -124,21 +124,21 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
                 desc.BlendState.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
                 // デプス
-                desc.DepthStencilState.DepthEnable    = arg.mDepthConfig.mDepthEnable;
-                desc.DepthStencilState.DepthWriteMask = arg.mDepthConfig.mDepthWrite ? D3D12_DEPTH_WRITE_MASK_ALL : D3D12_DEPTH_WRITE_MASK_ZERO;
+                desc.DepthStencilState.DepthEnable    = arg.depth_config.depth_enable;
+                desc.DepthStencilState.DepthWriteMask = arg.depth_config.depth_write ? D3D12_DEPTH_WRITE_MASK_ALL : D3D12_DEPTH_WRITE_MASK_ZERO;
                 desc.DepthStencilState.DepthFunc      = D3D12_COMPARISON_FUNC_LESS;
 
                 // トポロジー
                 desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 
                 // 出力フォーマット
-                BEL_ASSERT(arg.mNumRenderTarget < cMaxRenderTargets);
-                desc.NumRenderTargets = arg.mNumRenderTarget;
-                for (uint32_t i = 0; i < arg.mNumRenderTarget; ++i)
+                BEL_ASSERT(arg.num_render_target < cMaxRenderTargets);
+                desc.NumRenderTargets = arg.num_render_target;
+                for (uint32_t i = 0; i < arg.num_render_target; ++i)
                 {
-                    desc.RTVFormats[i] = to_native(arg.mRenderTargetFormats[i]);
+                    desc.RTVFormats[i] = to_native(arg.render_target_formats[i]);
                 }
-                if (arg.mDepthStencilFormat != TextureFormat::cUnknown) { desc.DSVFormat = to_native(arg.mDepthStencilFormat); }
+                if (arg.depth_stencil_format != TextureFormat::cUnknown) { desc.DSVFormat = to_native(arg.depth_stencil_format); }
 
                 // サンプル
                 desc.SampleMask       = std::numeric_limits<uint32_t>::max();
@@ -297,26 +297,11 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
         }
     }
 
-    // デスクリプターヒープ
-    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> p_descriptor_heap;
-    if (num_ranges > 0)
-    {
-        D3D12_DESCRIPTOR_HEAP_DESC desc = {};
-        desc.NumDescriptors = arg.mNumTexture + arg.mNumConstantBuffer;
-        desc.Flags          = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-        desc.Type           = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-
-        if (FAILED(GraphicsEngine::GetInstance().getDevice().CreateDescriptorHeap(&desc, IID_PPV_ARGS(&p_descriptor_heap))))
-        {
-            return false;
-        }
-    }
-
     //
     mpRootSignature  = std::move(p_root_signature);
     mpPipeline       = std::move(p_pipeline);
 
-    mNumDescriptor = arg.mNumTexture + arg.mNumConstantBuffer;
+    mNumDescriptor = arg.num_texture + arg.num_constant_buffer;
 
     return true;
 }
