@@ -84,7 +84,8 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>if not exist "$(TargetDir)Content" (
+      <Command>rem Contentパスのリンクを作ることで読み込みディレクトリはカレントを見るだけでよくなる
+if not exist "$(TargetDir)Content" (
   mklink /j $(TargetDir)Content $(SolutionDir)..\Content
 )</Command>
     </PostBuildEvent>
@@ -112,7 +113,8 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>if not exist "$(TargetDir)Content" (
+      <Command>rem Contentパスのリンクを作ることで読み込みディレクトリはカレントを見るだけでよくなる
+if not exist "$(TargetDir)Content" (
   mklink /j $(TargetDir)Content $(SolutionDir)..\Content
 )</Command>
     </PostBuildEvent>
