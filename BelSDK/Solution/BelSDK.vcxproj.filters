@@ -91,6 +91,12 @@
     <Filter Include="ソース ファイル\graphics\dev">
       <UniqueIdentifier>{c9fc2c99-decb-4d01-8ad1-6d6bc67ec7a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\image">
+      <UniqueIdentifier>{fb487529-f8a9-4824-b494-a7748ffec721}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\image">
+      <UniqueIdentifier>{b3ed5cce-dead-41bb-82ee-9d084406f505}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\belMain.h">
@@ -267,6 +273,12 @@
     <ClInclude Include="..\Include\common\belOptionParser.h">
       <Filter>ヘッダー ファイル\common</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\image\belImage.h">
+      <Filter>ヘッダー ファイル\image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\image\belImageConverter.h">
+      <Filter>ヘッダー ファイル\image</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -373,6 +385,12 @@
     </ClCompile>
     <ClCompile Include="..\Source\common\belOptionParser.cpp">
       <Filter>ソース ファイル\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\image\belImage.cpp">
+      <Filter>ソース ファイル\image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\image\belImageConverter.cpp">
+      <Filter>ソース ファイル\image</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
