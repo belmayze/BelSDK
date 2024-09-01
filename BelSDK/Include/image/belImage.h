@@ -50,6 +50,23 @@ public:
     // getter
     //-------------------------------------------------------------------------
 public:
+    //! 横幅
+    size_t getWidth() const { return mMetadata.width; }
+    //! 高さ
+    size_t getHeight() const { return mMetadata.height; }
+    //! 深さ
+    size_t getDepth() const { return mMetadata.depth; }
+    //! 配列数
+    size_t getArraySize() const { return mMetadata.array_size; }
+    //! ミップレベル数
+    size_t getMipLevels() const { return mMetadata.mip_levels; }
+    //! メモリーサイズ
+    size_t getMemorySize() const { return mMetadata.memory_size; }
+    //! フォーマット
+    gfx::TextureFormat getFormat() const { return mMetadata.format; }
+    //! ディメンジョン
+    gfx::TextureDimension getDimension() const { return mMetadata.dimension; }
+
     /*!
      * 指定したミップレベルの画像を取得
      * @param[in] level レベル
@@ -60,18 +77,20 @@ public:
      * 画像プロパティの先頭アドレスを取得
      * @param[in] offset メモリーオフセット
      */
-    uint8_t* getMemoryPtr(size_t offset) { return mMemory.get() + offset; }
+    uint8_t*       getMemoryPtr(size_t offset)       { return mMemory.get() + offset; }
+    const uint8_t* getMemoryPtr(size_t offset) const { return mMemory.get() + offset; }
 
      //-------------------------------------------------------------------------
 private:
     //! メタデータ
     struct Metadata
     {
-        size_t width      = 0;
-        size_t height     = 0;
-        size_t depth      = 0;
-        size_t array_size = 0;
-        size_t mip_levels = 0;
+        size_t width       = 0;
+        size_t height      = 0;
+        size_t depth       = 0;
+        size_t array_size  = 0;
+        size_t mip_levels  = 0;
+        size_t memory_size = 0;
         gfx::TextureFormat    format    = gfx::TextureFormat::cUnknown;
         gfx::TextureDimension dimension = gfx::TextureDimension::c2D;
     };

@@ -29,8 +29,8 @@ bool Image::initialize2D(const InitializeArg& arg)
     mImageProperties = std::make_unique<ImageProperty[]>(mMetadata.mip_levels);
 
     // メモリー確保
-    size_t pixel_size = computePixelSize_();
-    mMemory = std::make_unique<uint8_t[]>(pixel_size);
+    mMetadata.memory_size = computePixelSize_();
+    mMemory = std::make_unique<uint8_t[]>(mMetadata.memory_size);
 
     return true;
 }

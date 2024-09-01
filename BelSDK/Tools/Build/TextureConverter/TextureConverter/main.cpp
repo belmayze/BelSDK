@@ -5,6 +5,8 @@
  *
  * Copyright (c) belmayze. All rights reserved.
  */
+// C++
+#include <algorithm>
 // windows
 #include <wincodec.h>
 #include <wrl/client.h>
@@ -12,6 +14,7 @@
 #include "common/belOptionParser.h"
 #include "graphics/common/belGraphicsTextureType.h"
 #include "image/belImage.h"
+#include "image/belImageConverter.h"
 
 namespace
 {
@@ -60,6 +63,7 @@ int belMain(int argc, const char** argv)
                      std::strcmp(option.first.c_str(), "-f") == 0)
             {
                 format_name = option.second;
+                std::transform(format_name.begin(), format_name.end(), format_name.begin(), std::tolower);
             }
         }
     }
@@ -67,11 +71,28 @@ int belMain(int argc, const char** argv)
     // 必須オプションの指定が無ければ終了
     if (input_filepath.empty() || output_filepath.empty() || format_name.empty())
     {
-        printf("必須オプションが指定されていません\n");
+        BEL_ERROR("必須オプションが指定されていません\n");
         return -1;
     }
 
     // @TODO: 出力ファイルの指定が無ければ入力ファイル名を使う
+
+    // 出力フォーマット
+    bel::gfx::TextureFormat output_format = bel::gfx::TextureFormat::cUnknown;
+    if      (std::strcmp(format_name.c_str(), "r8_unorm")       == 0) { output_format = bel::gfx::TextureFormat::cR8_uNorm; }
+    else if (std::strcmp(format_name.c_str(), "r8_snorm")       == 0) { output_format = bel::gfx::TextureFormat::cR8_sNorm; }
+    else if (std::strcmp(format_name.c_str(), "a8_unorm")       == 0) { output_format = bel::gfx::TextureFormat::cA8_uNorm; }
+    else if (std::strcmp(format_name.c_str(), "r8g8_unorm")     == 0) { output_format = bel::gfx::TextureFormat::cR8G8_uNorm; }
+    else if (std::strcmp(format_name.c_str(), "r8g8_snorm")     == 0) { output_format = bel::gfx::TextureFormat::cR8G8_sNorm; }
+    else if (std::strcmp(format_name.c_str(), "r8g8b8a8_unorm") == 0) { output_format = bel::gfx::TextureFormat::cR8G8B8A8_uNorm; }
+    else if (std::strcmp(format_name.c_str(), "r8g8b8a8_snorm") == 0) { output_format = bel::gfx::TextureFormat::cR8G8B8A8_sNorm; }
+    else if (std::strcmp(format_name.c_str(), "r8g8b8a8_srgb")  == 0) { output_format = bel::gfx::TextureFormat::cR8G8B8A8_sRGB; }
+    // 
+    if (output_format == bel::gfx::TextureFormat::cUnknown)
+    {
+        BEL_ERROR("非対応の変換フォーマットが指定されました\n");
+        return -1;
+    }
 
     // ファイル名を WCHAR に変換
     std::unique_ptr<WCHAR[]> input_filepath_w = std::make_unique<WCHAR[]>(MAX_PATH);
@@ -86,7 +107,7 @@ int belMain(int argc, const char** argv)
     HRESULT hr = CoInitialize(nullptr);
     if (FAILED(hr))
     {
-        printf("COMの初期化に失敗しました\n");
+        BEL_ERROR("COMの初期化に失敗しました\n");
         return hr;
     }
 
@@ -101,7 +122,7 @@ int belMain(int argc, const char** argv)
         );
         if (FAILED(hr))
         {
-            printf("WICファクトリーの生成に失敗しました\n");
+            BEL_ERROR("WICファクトリーの生成に失敗しました\n");
             return hr;
         }
 
@@ -110,7 +131,7 @@ int belMain(int argc, const char** argv)
         hr = p_factory->CreateDecoderFromFilename(input_filepath_w.get(), nullptr, GENERIC_READ, WICDecodeMetadataCacheOnDemand, p_decoder.GetAddressOf());
         if (FAILED(hr))
         {
-            printf("画像の読み込みに失敗しました\n");
+            BEL_ERROR("画像の読み込みに失敗しました\n");
             return hr;
         }
 
@@ -119,7 +140,7 @@ int belMain(int argc, const char** argv)
         hr = p_decoder->GetFrame(0, p_frame.GetAddressOf());
         if (FAILED(hr))
         {
-            printf("画像の取得に失敗しました\n");
+            BEL_ERROR("画像の取得に失敗しました\n");
             return hr;
         }
 
@@ -132,7 +153,7 @@ int belMain(int argc, const char** argv)
                 hr = p_frame->GetSize(&w, &h);
                 if (FAILED(hr))
                 {
-                    printf("プロパティのアクセスに失敗しました\n");
+                    BEL_ERROR("プロパティのアクセスに失敗しました\n");
                     return hr;
                 }
                 property.width = w;
@@ -145,7 +166,7 @@ int belMain(int argc, const char** argv)
                 hr = p_frame->GetPixelFormat(&format);
                 if (FAILED(hr))
                 {
-                    printf("プロパティのアクセスに失敗しました\n");
+                    BEL_ERROR("プロパティのアクセスに失敗しました\n");
                     return hr;
                 }
 
@@ -188,7 +209,7 @@ int belMain(int argc, const char** argv)
             // @TODO: いったん DIMENSION_2D のみ
             if (!image.initialize2D(init_arg))
             {
-                printf("画像の初期化に失敗しました\n");
+                BEL_ERROR("画像の初期化に失敗しました\n");
                 return hr;
             }
 
@@ -207,7 +228,7 @@ int belMain(int argc, const char** argv)
                 );
                 if (FAILED(hr))
                 {
-                    printf("画像のコピーに失敗しました\n");
+                    BEL_ERROR("画像のコピーに失敗しました\n");
                     return hr;
                 }
             }
@@ -218,7 +239,7 @@ int belMain(int argc, const char** argv)
                 hr = p_factory->CreateFormatConverter(p_converter.GetAddressOf());
                 if (FAILED(hr))
                 {
-                    printf("画像コンバーターの生成に失敗しました\n");
+                    BEL_ERROR("画像コンバーターの生成に失敗しました\n");
                     return hr;
                 }
 
@@ -226,7 +247,7 @@ int belMain(int argc, const char** argv)
                 hr = p_converter->CanConvert(property.file_format, property.convert_guid, &can_convert);
                 if (FAILED(hr))
                 {
-                    printf("コンバートチェックに失敗しました\n");
+                    BEL_ERROR("コンバートチェックに失敗しました\n");
                     return hr;
                 }
 
@@ -234,7 +255,7 @@ int belMain(int argc, const char** argv)
                 hr = p_converter->Initialize(p_frame.Get(), property.convert_guid, WICBitmapDitherTypeNone, nullptr, 0, WICBitmapPaletteTypeMedianCut);
                 if (FAILED(hr))
                 {
-                    printf("コンバートに失敗しました\n");
+                    BEL_ERROR("コンバートに失敗しました\n");
                     return hr;
                 }
 
@@ -246,15 +267,22 @@ int belMain(int argc, const char** argv)
                 );
                 if (FAILED(hr))
                 {
-                    printf("画像のコピーに失敗しました\n");
+                    BEL_ERROR("画像のコピーに失敗しました\n");
                     return hr;
                 }
             }
         }
 
-        // @TODO: フォーマット変換
+        // フォーマット変換
+        bel::Image output_image = bel::img::Converter::ConvertFormat(image, output_format);
+        if (output_image.getFormat() == bel::gfx::TextureFormat::cUnknown)
+        {
+            BEL_ERROR("フォーマットの変換に失敗しました\n");
+            return -2;
+        }
 
         // 出力
+
     }
 
     // 終了処理

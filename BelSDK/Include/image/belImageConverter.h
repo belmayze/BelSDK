@@ -6,6 +6,8 @@
  * Copyright (c) belmayze. All rights reserved.
  */
 #pragma once
+// bel
+#include "image/belImage.h"
 
 namespace bel::img {
 //-----------------------------------------------------------------------------
@@ -15,21 +17,12 @@ class Converter
 {
     //-------------------------------------------------------------------------
 public:
-    //! 初期化引数
-    struct InitializeArg
-    {
-
-    };
-
-    //-------------------------------------------------------------------------
-    // initialize
-    //-------------------------------------------------------------------------
-public:
     /*!
-     * コンバーターの初期化
-     * @param[in] arg 初期化引数
+     * 画像を任意のフォーマットに変換します
+     * @param[in] image  入力画像
+     * @param[in] format 変換フォーマット
      */
-    bool initialize(const InitializeArg& arg);
+    static Image ConvertFormat(const Image& input, gfx::TextureFormat format);
 
      //-------------------------------------------------------------------------
 private:
