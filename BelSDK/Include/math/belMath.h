@@ -44,6 +44,43 @@ public:
         return static_cast<size_t>(std::ceil(t) * times);
     }
 
+    /*!
+     * 最大、最小
+     */
+    template <typename T>
+    static constexpr T Min(T x, T y) { return x < y ? x : y; }
+
+    template <typename T>
+    static constexpr T Max(T x, T y) { return x > y ? x : y; }
+
+    template <typename T>
+    static constexpr T Clamp(T x, T min, T max) { return x < min ? min : (x > max ? max : x); }
+
+    //-------------------------------------------------------------------------
+    // カラー
+    //-------------------------------------------------------------------------
+public:
+    //! 輝度計算
+    //! @note 与える色はリニアガンマです
+    static constexpr float CalcLuminance(float r, float g, float b)
+    {
+        return r * 0.2126729f + g * 0.7151522f + b * 0.0721750f;
+    }
+    //! sRGB -> Linear
+    //! constexpr は C++26 から
+    static inline float ConvertSRGBToLinear(float v)
+    {
+        if (v <= 0.04045f) { return v / 12.92f; }
+        else               { return std::pow((v + 0.055f) / 1.055f, 2.4f); }
+    }
+    //! Linear -> sRGB
+    //! constexpr は C++26 から
+    static inline float ConvertLinearToSRGB(float v)
+    {
+        if (v <= 0.0031308f) { return v * 12.92f; }
+        else                 { return 1.055f * std::pow(v, 1.f / 2.4f) - 0.055f; }
+    }
+
     //-------------------------------------------------------------------------
     // 補間
     //-------------------------------------------------------------------------

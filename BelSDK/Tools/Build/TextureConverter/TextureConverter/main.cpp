@@ -182,8 +182,8 @@ int belMain(int argc, const char** argv)
                 };
 
                 // @TODO: 特定のフォーマットのみに限定
-                if      (checker(GUID_WICPixelFormat24bppRGB, bel::gfx::TextureFormat::cR8G8B8A8_uNorm, GUID_WICPixelFormat32bppRGBA)) {}
-                else if (checker(GUID_WICPixelFormat24bppBGR, bel::gfx::TextureFormat::cR8G8B8A8_uNorm, GUID_WICPixelFormat32bppRGBA)) {}
+                if      (checker(GUID_WICPixelFormat24bppRGB, bel::gfx::TextureFormat::cR8G8B8A8_sRGB, GUID_WICPixelFormat32bppRGBA)) {}
+                else if (checker(GUID_WICPixelFormat24bppBGR, bel::gfx::TextureFormat::cR8G8B8A8_sRGB, GUID_WICPixelFormat32bppRGBA)) {}
 
                 // 出力
                 property.file_format = format;
