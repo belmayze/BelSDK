@@ -15,6 +15,7 @@
 #include "graphics/common/belGraphicsTextureType.h"
 #include "image/belImage.h"
 #include "image/belImageConverter.h"
+#include "resource/belResourceTexture.h"
 
 namespace
 {
@@ -282,7 +283,9 @@ int belMain(int argc, const char** argv)
         }
 
         // 出力
-
+        {
+            bel::res::Texture texture = bel::res::Texture::Create(output_image);
+        }
     }
 
     // 終了処理

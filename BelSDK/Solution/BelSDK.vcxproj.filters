@@ -279,6 +279,9 @@
     <ClInclude Include="..\Include\image\belImageConverter.h">
       <Filter>ヘッダー ファイル\image</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\resource\belResourceTexture.h">
+      <Filter>ヘッダー ファイル\resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -391,6 +394,9 @@
     </ClCompile>
     <ClCompile Include="..\Source\image\belImageConverter.cpp">
       <Filter>ソース ファイル\image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\resource\belResourceTexture.cpp">
+      <Filter>ソース ファイル\resource</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
