@@ -57,6 +57,9 @@ public:
     //! フォーマット
     gfx::TextureFormat getFormat() const { return mFileHeader.format; }
 
+    //! コンポーネントマッピング
+    uint32_t getComponentMapping() const { return mFileHeader.component_mapping; }
+
     //! 画像メモリー取得
     const void* getImageMemoryPtr() const { return getBuffer(sizeof(FileHeader)); }
 
@@ -77,8 +80,9 @@ private:
         uint8_t               mip_levels = 1;
         gfx::TextureDimension dimension  = gfx::TextureDimension::c2D;
         gfx::TextureFormat    format     = gfx::TextureFormat::cR8G8B8A8_uNorm;
+        uint32_t              component_mapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
     };
-    static_assert(sizeof(FileHeader) == 16);
+    static_assert(sizeof(FileHeader) == 20);
 
     //-------------------------------------------------------------------------
 private:

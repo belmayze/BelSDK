@@ -23,12 +23,13 @@ public:
     //! 初期化引数
     struct InitializeArg
     {
-        uint32_t         width      = 1;
-        uint32_t         height     = 1;
-        uint32_t         depth      = 1;
-        uint32_t         mip_levels = 1;
-        TextureFormat    format     = TextureFormat::cR8G8B8A8_uNorm;
-        TextureDimension dimension  = TextureDimension::c2D;
+        uint32_t         width             = 1;
+        uint32_t         height            = 1;
+        uint32_t         depth             = 1;
+        uint32_t         mip_levels        = 1;
+        uint32_t         component_mapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+        TextureFormat    format            = TextureFormat::cR8G8B8A8_uNorm;
+        TextureDimension dimension         = TextureDimension::c2D;
     };
 
     //-------------------------------------------------------------------------
@@ -73,6 +74,9 @@ public:
     //! ディメンジョンを取得する
     TextureDimension getDimension() const { return mDimension; }
 
+    //! コンポーネントマッピングを取得する
+    uint32_t getComponentMapping() const { return mComponentMapping; }
+
     //! リソース取得
     ID3D12Resource& getResource() const { BEL_ASSERT(mpResource.Get() != nullptr); return *mpResource.Get(); }
 
@@ -94,13 +98,14 @@ public:
 private:
     Microsoft::WRL::ComPtr<ID3D12Resource> mpResource;
 
-    uint32_t              mWidth         = 1;
-    uint32_t              mHeight        = 1;
-    uint32_t              mDepth         = 1;
-    uint32_t              mMipLevels     = 1;
-    TextureFormat         mFormat        = TextureFormat::cR8G8B8A8_uNorm;
-    TextureDimension      mDimension     = TextureDimension::c2D;
-    mutable ResourceState mResourceState = ResourceState::cGenericRead;
+    uint32_t              mWidth            = 1;
+    uint32_t              mHeight           = 1;
+    uint32_t              mDepth            = 1;
+    uint32_t              mMipLevels        = 1;
+    uint32_t              mComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+    TextureFormat         mFormat           = TextureFormat::cR8G8B8A8_uNorm;
+    TextureDimension      mDimension        = TextureDimension::c2D;
+    mutable ResourceState mResourceState    = ResourceState::cGenericRead;
 
     GlobalDescriptorHandle mDescriptorHandle;
 };

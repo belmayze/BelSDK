@@ -25,6 +25,8 @@ bool Image::initialize2D(const InitializeArg& arg)
     mMetadata.depth     = 1;
     mMetadata.dimension = gfx::TextureDimension::c2D;
 
+    mMetadata.component_mapping = arg.component_mapping;
+
     // プロパティ作成
     mImageProperties = std::make_unique<ImageProperty[]>(mMetadata.mip_levels);
 

@@ -47,6 +47,7 @@ Image Converter::ConvertFormat(const Image& input, gfx::TextureFormat format)
         init_arg.mip_levels = input.getMipLevels();
         init_arg.array_size = input.getArraySize();
         init_arg.format     = format;
+        init_arg.component_mapping = input.getComponentMapping();
         if (!output.initialize2D(init_arg))
         {
             return Image();
@@ -68,9 +69,42 @@ Image Converter::ConvertFormat(const Image& input, gfx::TextureFormat format)
         init_arg.mip_levels = input.getMipLevels();
         init_arg.array_size = input.getArraySize();
         init_arg.format     = format;
+        init_arg.component_mapping = gfx::TextureFormatInfo::DefaultComponentMapping(format);
         if (!output.initialize2D(init_arg))
         {
             return Image();
+        }
+
+        // RGBA
+        if (input.getFormat() == gfx::TextureFormat::cR8G8B8A8_uNorm ||
+            input.getFormat() == gfx::TextureFormat::cR8G8B8A8_sRGB)
+        {
+            if (format == gfx::TextureFormat::cR8_uNorm)
+            {
+                // RGBA -> R
+                for (size_t i_depth = 0; i_depth < input.getDepth(); ++i_depth)
+                {
+                    for (size_t i_mip = 0; i_mip < input.getMipLevels(); ++i_mip)
+                    {
+                        // ミップマップのメモリー取得
+                        const Image::ImageProperty& mip_property = input.getImageProperty(i_mip);
+                        const uint8_t* src_ptr = input.getMemoryPtr(mip_property.memory_offset);
+                        uint8_t*       dst_ptr = output.getMemoryPtr(output.getImageProperty(i_mip).memory_offset);
+
+                        // 変換
+                        for (size_t i_height = 0; i_height < mip_property.height; ++i_height)
+                        {
+                            for (size_t i_width = 0; i_width < mip_property.width; ++i_width)
+                            {
+                                *dst_ptr = *src_ptr;
+                                dst_ptr += 1;
+                                src_ptr += 4;
+                            }
+                        }
+                    }
+                }
+            }
+            return output;
         }
 
         // @TODO: コンバート

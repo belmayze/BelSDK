@@ -226,7 +226,8 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
         bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mToneMappingPipeline.getNumDescriptor());
 
         bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().bind(command);
-        mToneMappingPipeline.activateTexture(handle, 0, mColorTexture);
+        //mToneMappingPipeline.activateTexture(handle, 0, mColorTexture);
+        mToneMappingPipeline.activateTexture(handle, 0, mTexture);
         mToneMappingPipeline.activateConstantBuffer(handle, 0, mToneMappingCB);
         mToneMappingPipeline.setPipeline(command);
         descriptor_heap.setDescriptorHeap(handle, command);

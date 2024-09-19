@@ -37,6 +37,7 @@ Texture Texture::Create(const Image& image)
     header.mip_levels = static_cast<uint8_t>(image.getMipLevels());
     header.format     = image.getFormat();
     header.dimension  = image.getDimension();
+    header.component_mapping = image.getComponentMapping();
 
     // できればメモリーコピー不要にしたい
     std::memcpy(memory.get() + sizeof(FileHeader), image.getMemoryPtr(0), image.getMemorySize());

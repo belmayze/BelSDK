@@ -76,12 +76,13 @@ bool Texture::initialize(const res::Texture& resource)
     // リソーステクスチャーから arg を生成
     {
         InitializeArg init_arg;
-        init_arg.width      = resource.getWidth();
-        init_arg.height     = resource.getHeight();
-        init_arg.depth      = resource.getDepth();
-        init_arg.mip_levels = resource.getMipLevels();
-        init_arg.format     = resource.getFormat();
-        init_arg.dimension  = resource.getDimension();
+        init_arg.width             = resource.getWidth();
+        init_arg.height            = resource.getHeight();
+        init_arg.depth             = resource.getDepth();
+        init_arg.mip_levels        = resource.getMipLevels();
+        init_arg.format            = resource.getFormat();
+        init_arg.dimension         = resource.getDimension();
+        init_arg.component_mapping = resource.getComponentMapping();
         if (!initialize(init_arg)) { return false; }
     }
 
@@ -94,13 +95,14 @@ bool Texture::initialize(const res::Texture& resource)
 bool Texture::initializeFromGPUMemory(const InitializeArg& arg, Microsoft::WRL::ComPtr<ID3D12Resource>&& p_resource, ResourceState state)
 {
     // GPU メモリーなので記録するだけ
-    mWidth         = arg.width;
-    mHeight        = arg.height;
-    mMipLevels     = arg.mip_levels;
-    mFormat        = arg.format;
-    mDimension     = arg.dimension;
-    mResourceState = state;
-    mpResource     = std::move(p_resource);
+    mWidth            = arg.width;
+    mHeight           = arg.height;
+    mMipLevels        = arg.mip_levels;
+    mFormat           = arg.format;
+    mDimension        = arg.dimension;
+    mResourceState    = state;
+    mpResource        = std::move(p_resource);
+    mComponentMapping = arg.component_mapping;
 
     // デスクリプターに登録
     mDescriptorHandle = GlobalDescriptorRegistry::GetInstance().registerTexture(*this);

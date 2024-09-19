@@ -22,6 +22,8 @@ public:
     static constexpr bool IsDepth(TextureFormat f) { return cProperties[static_cast<size_t>(f)].flags.test(FormatFlag::cDepth); }
     //! 圧縮フォーマット
     static constexpr bool IsCompressed(TextureFormat f) { return cProperties[static_cast<size_t>(f)].flags.test(FormatFlag::cCompressed); }
+    //! デフォルトのコンポーネントマッピング
+    static constexpr uint32_t DefaultComponentMapping(TextureFormat f) { return cProperties[static_cast<size_t>(f)].default_component_mapping; }
     //! bpp
     static constexpr size_t BitsPerPixel(TextureFormat f) { return cProperties[static_cast<size_t>(f)].bpp; }
 
@@ -40,7 +42,8 @@ private:
     struct Property
     {
         EnumFlags<FormatFlag> flags;   //!< フラグ
-        size_t                bpp = 0; //!< ピクセル当たりのビット数
+        uint32_t default_component_mapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING; //!< デフォルトのコンポーネントマッピング
+        size_t   bpp = 0; //!< ピクセル当たりのビット数
     };
 
     //! テクスチャー情報
@@ -61,6 +64,7 @@ private:
                 arr[i].flags.set(FormatFlag::cDepth, false);
                 arr[i].flags.set(FormatFlag::cCompressed, false);
                 arr[i].bpp = 8;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 0, 0, 0);
                 break;
 
             case TextureFormat::cR8G8_uNorm:
@@ -70,6 +74,7 @@ private:
                 arr[i].flags.set(FormatFlag::cDepth, false);
                 arr[i].flags.set(FormatFlag::cCompressed, false);
                 arr[i].bpp = 16;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 1, 4, 5);
                 break;
 
             case TextureFormat::cR8G8B8A8_uNorm:
@@ -80,6 +85,7 @@ private:
                 arr[i].flags.set(FormatFlag::cDepth, false);
                 arr[i].flags.set(FormatFlag::cCompressed, false);
                 arr[i].bpp = 32;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 1, 2, 3);
                 break;
 
                 // ----------------------------------------
@@ -92,6 +98,7 @@ private:
                 arr[i].flags.set(FormatFlag::cDepth, false);
                 arr[i].flags.set(FormatFlag::cCompressed, false);
                 arr[i].bpp = 16;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 0, 0, 0);
                 break;
 
             case TextureFormat::cR16G16_uNorm:
@@ -102,6 +109,7 @@ private:
                 arr[i].flags.set(FormatFlag::cDepth, false);
                 arr[i].flags.set(FormatFlag::cCompressed, false);
                 arr[i].bpp = 32;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 1, 4, 5);
                 break;
 
             case TextureFormat::cR16G16B16A16_uNorm:
@@ -112,6 +120,7 @@ private:
                 arr[i].flags.set(FormatFlag::cDepth, false);
                 arr[i].flags.set(FormatFlag::cCompressed, false);
                 arr[i].bpp = 64;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 1, 2, 3);
                 break;
 
                 // ----------------------------------------
@@ -122,6 +131,7 @@ private:
                 arr[i].flags.set(FormatFlag::cDepth, false);
                 arr[i].flags.set(FormatFlag::cCompressed, false);
                 arr[i].bpp = 32;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 0, 0, 0);
                 break;
 
             case TextureFormat::cR32G32_uInt:
@@ -130,6 +140,7 @@ private:
                 arr[i].flags.set(FormatFlag::cDepth, false);
                 arr[i].flags.set(FormatFlag::cCompressed, false);
                 arr[i].bpp = 64;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 1, 4, 5);
                 break;
 
             case TextureFormat::cR32G32B32_uInt:
@@ -138,6 +149,7 @@ private:
                 arr[i].flags.set(FormatFlag::cDepth, false);
                 arr[i].flags.set(FormatFlag::cCompressed, false);
                 arr[i].bpp = 96;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 1, 2, 5);
                 break;
 
             case TextureFormat::cR32G32B32A32_uInt:
@@ -146,6 +158,7 @@ private:
                 arr[i].flags.set(FormatFlag::cDepth, false);
                 arr[i].flags.set(FormatFlag::cCompressed, false);
                 arr[i].bpp = 128;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 1, 2, 3);
                 break;
 
                 // ----------------------------------------
@@ -154,21 +167,36 @@ private:
                 arr[i].flags.set(FormatFlag::cDepth, false);
                 arr[i].flags.set(FormatFlag::cCompressed, false);
                 arr[i].bpp = 1;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 0, 0, 0);
                 break;
 
             case TextureFormat::cR5G6B5_uNorm:
+                arr[i].flags.set(FormatFlag::cDepth, false);
+                arr[i].flags.set(FormatFlag::cCompressed, false);
+                arr[i].bpp = 16;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 1, 2, 5);
+                break;
+
             case TextureFormat::cR5G5B5A1_uNorm:
                 arr[i].flags.set(FormatFlag::cDepth, false);
                 arr[i].flags.set(FormatFlag::cCompressed, false);
                 arr[i].bpp = 16;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 1, 2, 3);
                 break;
 
             case TextureFormat::cR10G10B10A2_uNorm:
             case TextureFormat::cR10G10B10A2_uInt:
+                arr[i].flags.set(FormatFlag::cDepth, false);
+                arr[i].flags.set(FormatFlag::cCompressed, false);
+                arr[i].bpp = 32;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 1, 2, 3);
+                break;
+
             case TextureFormat::cR11G11B10_uFloat:
                 arr[i].flags.set(FormatFlag::cDepth, false);
                 arr[i].flags.set(FormatFlag::cCompressed, false);
                 arr[i].bpp = 32;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 1, 2, 5);
                 break;
 
                 // ----------------------------------------
@@ -177,19 +205,28 @@ private:
                 arr[i].flags.set(FormatFlag::cDepth, true);
                 arr[i].flags.set(FormatFlag::cCompressed, false);
                 arr[i].bpp = 16;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 0, 0, 0);
                 break;
 
             case TextureFormat::cD24_uNorm_S8_uInt:
+                arr[i].flags.set(FormatFlag::cDepth, true);
+                arr[i].flags.set(FormatFlag::cCompressed, false);
+                arr[i].bpp = 32;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 1, 4, 5);
+                break;
+
             case TextureFormat::cD32_Float:
                 arr[i].flags.set(FormatFlag::cDepth, true);
                 arr[i].flags.set(FormatFlag::cCompressed, false);
                 arr[i].bpp = 32;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 0, 0, 0);
                 break;
 
             case TextureFormat::cD32_Float_S8_uInt:
                 arr[i].flags.set(FormatFlag::cDepth, true);
                 arr[i].flags.set(FormatFlag::cCompressed, false);
                 arr[i].bpp = 64;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 1, 4, 5);
                 break;
 
                 // ----------------------------------------
@@ -201,6 +238,7 @@ private:
                 arr[i].flags.set(FormatFlag::cDepth, false);
                 arr[i].flags.set(FormatFlag::cCompressed, true);
                 arr[i].bpp = 4;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 1, 2, 3);
                 break;
 
             case TextureFormat::cBC2_uNorm:
@@ -216,6 +254,7 @@ private:
                 arr[i].flags.set(FormatFlag::cDepth, false);
                 arr[i].flags.set(FormatFlag::cCompressed, true);
                 arr[i].bpp = 8;
+                arr[i].default_component_mapping = D3D12_ENCODE_SHADER_4_COMPONENT_MAPPING(0, 1, 2, 3);
                 break;
             }
         }

@@ -52,7 +52,7 @@ GlobalDescriptorHandle GlobalDescriptorRegistry::registerTexture(const Texture& 
 
     // 登録情報生成
     D3D12_SHADER_RESOURCE_VIEW_DESC desc = {};
-    desc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+    desc.Shader4ComponentMapping = texture.getComponentMapping();
     desc.Format                  = to_native(texture.getFormat());
     desc.ViewDimension           = to_native_srv(texture.getDimension());
     switch (desc.ViewDimension)

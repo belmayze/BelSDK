@@ -20,11 +20,12 @@ public:
     //! 初期化引数
     struct InitializeArg
     {
-        size_t width      = 0;
-        size_t height     = 0;
-        size_t array_size = 0;
-        size_t mip_levels = 0;
-        gfx::TextureFormat format = gfx::TextureFormat::cUnknown;
+        size_t   width             = 0;
+        size_t   height            = 0;
+        size_t   array_size        = 0;
+        size_t   mip_levels        = 0;
+        uint32_t component_mapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+        gfx::TextureFormat format  = gfx::TextureFormat::cUnknown;
     };
     //! 画像データ
     struct ImageProperty
@@ -66,6 +67,8 @@ public:
     gfx::TextureFormat getFormat() const { return mMetadata.format; }
     //! ディメンジョン
     gfx::TextureDimension getDimension() const { return mMetadata.dimension; }
+    //! コンポーネントマッピング
+    uint32_t getComponentMapping() const { return mMetadata.component_mapping; }
 
     /*!
      * 指定したミップレベルの画像を取得
@@ -85,12 +88,13 @@ private:
     //! メタデータ
     struct Metadata
     {
-        size_t width       = 0;
-        size_t height      = 0;
-        size_t depth       = 0;
-        size_t array_size  = 0;
-        size_t mip_levels  = 0;
-        size_t memory_size = 0;
+        size_t   width             = 0;
+        size_t   height            = 0;
+        size_t   depth             = 0;
+        size_t   array_size        = 0;
+        size_t   mip_levels        = 0;
+        size_t   memory_size       = 0;
+        uint32_t component_mapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
         gfx::TextureFormat    format    = gfx::TextureFormat::cUnknown;
         gfx::TextureDimension dimension = gfx::TextureDimension::c2D;
     };
