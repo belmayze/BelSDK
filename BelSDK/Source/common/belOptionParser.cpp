@@ -34,6 +34,9 @@ void OptionParser::parse(int argc, const char* argv[])
                 ++mNumOption;
             }
             p_token = argv[i_arg];
+
+            // -h の場合はヘルプフラグを立てる
+            if (strcmp(p_token, "-h") == 0) { mHasHelp = true; }
         }
         else
         {
@@ -42,6 +45,14 @@ void OptionParser::parse(int argc, const char* argv[])
             ++mNumOption;
             p_token = nullptr;
         }
+    }
+
+    // ここで p_token が残ってた時のケア
+    if (p_token)
+    {
+        mpOptions[mNumOption] = OptionValue(p_token, "");
+        ++mNumOption;
+        p_token = nullptr;
     }
 }
 //-----------------------------------------------------------------------------

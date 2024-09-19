@@ -47,6 +47,22 @@ int belMain(int argc, const char** argv)
         bel::OptionParser parser;
         parser.parse(argc, argv);
 
+        // ヘルプが立ってる場合は出力
+        if (parser.hasHelp())
+        {
+            BEL_PRINT("--input  / -i    : 入力ファイルパス\n");
+            BEL_PRINT("--output / -o    : 出力ファイルパス\n");
+            BEL_PRINT("--format / -f    : 変換フォーマット\n");
+            BEL_PRINT("format list:\n");
+            BEL_PRINT("<< 8bit >>\n");
+            BEL_PRINT("\tr8_unorm, r8_snorm, a8_unorm\n");
+            BEL_PRINT("<< 16bit >>\n");
+            BEL_PRINT("\tr8g8_unorm, r8g8_snorm\n");
+            BEL_PRINT("<< 32bit >>\n");
+            BEL_PRINT("\tr8g8b8a8_unorm, r8g8b8a8_snorm, r8g8b8a8_srgb");
+            return 0;
+        }
+
         for (uint32_t i_option = 0; i_option < parser.getNumOption(); ++i_option)
         {
             const bel::OptionParser::OptionValue& option = parser.getOption(i_option);
@@ -285,6 +301,18 @@ int belMain(int argc, const char** argv)
         // 出力
         {
             bel::res::Texture texture = bel::res::Texture::Create(output_image);
+            if (!texture.isValid())
+            {
+                BEL_ERROR("リソースの生成に失敗しました\n");
+                return -2;
+            }
+
+            // 書き出し
+            if (!bel::res::Loader::GetInstance().writeSync(output_filepath, texture))
+            {
+                BEL_ERROR("出力に失敗しました\n");
+                return -3;
+            }
         }
     }
 

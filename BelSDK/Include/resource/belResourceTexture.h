@@ -7,6 +7,7 @@
  */
 #pragma once
 // bel
+#include "graphics/common/belGraphicsTextureType.h"
 #include "resource/belResource.h"
 #include "resource/belResourceLoader.h"
 
@@ -39,8 +40,17 @@ private:
     //! ヘッダー構造体
     struct FileHeader
     {
-        uint8_t magic[4] = { 'B', 'T', 'E', 'X'};
+        uint8_t               magic[4]   = { 'B', 'T', 'E', 'X'};
+        uint8_t               version    = 1;
+        uint8_t               reserved   = 0;
+        uint16_t              width      = 1;
+        uint16_t              height     = 1;
+        uint16_t              depth      = 1;
+        uint8_t               mip_levels = 1;
+        gfx::TextureDimension dimension  = gfx::TextureDimension::c2D;
+        gfx::TextureFormat    format     = gfx::TextureFormat::cR8G8B8A8_uNorm;
     };
+    static_assert(sizeof(FileHeader) == 16);
 
     //-------------------------------------------------------------------------
 private:

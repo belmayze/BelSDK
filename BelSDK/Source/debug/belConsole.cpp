@@ -5,6 +5,8 @@
  *
  * Copyright (c) belmayze. All rights reserved.
  */
+// C++
+#include <iostream>
 // bel
 #include "debug/belConsole.h"
 
@@ -20,11 +22,11 @@ void Console::Output(const char* format, ...)
 
     va_list va;
     va_start(va, format);
-#   if BEL_PLATFORM_IS_WIN
+#   if BEL_PLATFORM_IS_WIN()
     vsnprintf_s(string_buffer.get(), cMaxSize, cMaxSize, format, va);
 #   else
     vsnprintf(string_buffer.get(), cMaxSize, format, va);
-#   endif
+#   endif // BEL_PLATFORM_IS_WIN()
     va_end(va);
 
     // string -> tcahr
@@ -39,7 +41,10 @@ void Console::Output(const char* format, ...)
 #   endif
 
     OutputDebugString(tchar.get());
-#   endif // BEL_PLATFORM_IS_WIN
+#   endif // BEL_PLATFORM_IS_WIN()
+
+    // コンソール出力
+    std::cout << string_buffer.get();
 }
 //-----------------------------------------------------------------------------
 void Console::Error(const char* format, ...)
@@ -52,11 +57,12 @@ void Console::Error(const char* format, ...)
 
     va_list va;
     va_start(va, format);
-#   if BEL_PLATFORM_IS_WIN
+#   if BEL_PLATFORM_IS_WIN()
     vsnprintf_s(string_buffer.get(), cMaxSize, cMaxSize, format, va);
+    vfprintf(stderr, format, va);
 #   else
     vsnprintf(string_buffer.get(), cMaxSize, format, va);
-#   endif
+#   endif // BEL_PLATFORM_IS_WIN()
     va_end(va);
 
     // string -> tcahr
@@ -71,7 +77,10 @@ void Console::Error(const char* format, ...)
 #   endif
 
     OutputDebugString(tchar.get());
-#   endif // BEL_PLATFORM_IS_WIN
+#   endif // BEL_PLATFORM_IS_WIN()
+
+    // コンソール出力
+    std::cerr << string_buffer.get();
 }
 //-----------------------------------------------------------------------------
 }

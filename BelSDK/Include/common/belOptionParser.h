@@ -31,6 +31,11 @@ public:
      */
     void parse(int argc, const char* argv[]);
 
+    /*!
+     * -h が存在すれば true になります
+     */
+    bool hasHelp() const { return mHasHelp; }
+
     //-------------------------------------------------------------------------
     // getter
     //-------------------------------------------------------------------------
@@ -49,6 +54,7 @@ public:
 private:
     uint32_t                       mNumOption = 0;
     std::unique_ptr<OptionValue[]> mpOptions;
+    bool                           mHasHelp = false;
 };
 //-----------------------------------------------------------------------------
 } // bel::

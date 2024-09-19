@@ -33,7 +33,7 @@ public:
 //-----------------------------------------------------------------------------
 // define
 //-----------------------------------------------------------------------------
-#if BEL_TARGET_IS_DEBUG()
+#if 1//BEL_TARGET_IS_DEBUG()
 #   define BEL_PRINT(...)   bel::debug::Console::Output(__VA_ARGS__)
 #   define BEL_ERROR(...)   bel::debug::Console::Error(__VA_ARGS__)
 #else

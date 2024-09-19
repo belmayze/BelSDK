@@ -11,7 +11,7 @@ namespace bel::gfx {
 //-----------------------------------------------------------------------------
 // テクスチャーフォーマット
 //-----------------------------------------------------------------------------
-enum class TextureFormat
+enum class TextureFormat : std::uint16_t
 {
     // Unknown
     cUnknown,
@@ -181,7 +181,7 @@ constexpr DXGI_FORMAT to_native(TextureFormat format)
 //-----------------------------------------------------------------------------
 // テクスチャーの次元
 //-----------------------------------------------------------------------------
-enum class TextureDimension
+enum class TextureDimension : std::uint8_t
 {
     c1D,        //!< 1次元
     c1DArray,   //!< 1次元配列
