@@ -17,6 +17,7 @@
 #include "graphics/common/belGraphicsTexture.h"
 #include "graphics/dev/belGraphicsDevMeshHolder.h"
 #include "resource/belResourceShaderResource.h"
+#include "resource/belResourceTexture.h"
 
 namespace app::test {
 //-----------------------------------------------------------------------------
@@ -71,6 +72,8 @@ private:
     bel::gfx::RenderBuffer mRenderBuffer;
 
     bel::gfx::dev::MeshHolder mMeshHolder;
+
+    bel::gfx::Texture mTexture;
 };
 //-----------------------------------------------------------------------------
 }

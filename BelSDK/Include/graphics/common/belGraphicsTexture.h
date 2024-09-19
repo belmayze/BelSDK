@@ -10,6 +10,8 @@
 #include "graphics/common/belGraphicsTextureType.h"
 #include "graphics/internal/belGraphicsGlobalDescriptorHandle.h"
 
+namespace bel::res { class Texture; }
+
 namespace bel::gfx {
 //-----------------------------------------------------------------------------
 // テクスチャー
@@ -38,6 +40,12 @@ public:
      * @param[in] arg 初期化引数
      */
     bool initialize(const InitializeArg& arg);
+
+    /*!
+     * リソースからテクスチャーを初期化
+     * @param[in] resource リソース
+     */
+    bool initialize(const res::Texture& resource);
 
     /*!
      * テクスチャーを GPU メモリーで初期化します

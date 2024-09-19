@@ -105,6 +105,12 @@ void Application::initialize()
 
         mToneMappingPipeline.initialize(init_arg, mResToneMappingShaderResource);
     }
+
+    // テクスチャーリソース
+    {
+        auto resource = bel::res::Loader::GetInstance().loadSyncAs<bel::res::Texture>("Texture/jis_font.btex");
+        mTexture.initialize(resource);
+    }
 }
 //-----------------------------------------------------------------------------
 // callback

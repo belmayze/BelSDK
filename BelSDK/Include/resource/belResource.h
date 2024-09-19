@@ -36,8 +36,13 @@ public:
 public:
     /*!
      * バッファーを取得する
+     * @param[in] offset オフセット
      */
-    const void* getBuffer() const { return mpBuffer.get(); }
+    const void* getBuffer(size_t offset = 0) const
+    {
+        BEL_ASSERT(offset < mSize);
+        return mpBuffer.get() + offset;
+    }
 
     /*!
      * サイズを取得する

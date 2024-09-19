@@ -10,6 +10,7 @@
 #include "graphics/common/belGraphicsTextureFormatInfo.h"
 #include "graphics/internal/belGraphicsGlobalDescriptorRegistry.h"
 #include "graphics/belGraphicsEngine.h"
+#include "resource/belResourceTexture.h"
 
 namespace bel::gfx {
 //-----------------------------------------------------------------------------
@@ -67,6 +68,39 @@ bool Texture::initialize(const InitializeArg& arg)
     }
 
     return initializeFromGPUMemory(arg, std::move(p_resource), ResourceState::cGenericRead);
+}
+//-----------------------------------------------------------------------------
+bool Texture::initialize(const res::Texture& resource)
+{
+    // リソーステクスチャーから arg を生成
+    {
+        InitializeArg init_arg;
+        init_arg.width      = resource.getWidth();
+        init_arg.height     = resource.getHeight();
+        init_arg.depth      = resource.getDepth();
+        init_arg.mip_levels = resource.getMipLevels();
+        init_arg.format     = resource.getFormat();
+        init_arg.dimension  = resource.getDimension();
+        if (!initialize(init_arg)) { return false; }
+    }
+
+    // メモリーコピー
+    // @TODO: コピーコマンドからコピーする方法がいい
+    {
+        uint8_t* memory_ptr = nullptr;
+        mpResource->Map(0, nullptr, reinterpret_cast<void**>(&memory_ptr));
+        {
+            mpResource->WriteToSubresource(
+                0, nullptr,
+                resource.getImageMemoryPtr(),
+                TextureFormatInfo::BitsPerPixel(resource.getFormat()) / 8 * resource.getWidth(),
+                resource.getImageMemorySize()
+            );
+        }
+        mpResource->Unmap(0, nullptr);
+    }
+
+    return true;
 }
 //-----------------------------------------------------------------------------
 bool Texture::initializeFromGPUMemory(const InitializeArg& arg, Microsoft::WRL::ComPtr<ID3D12Resource>&& p_resource, ResourceState state)

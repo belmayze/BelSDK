@@ -36,6 +36,34 @@ public:
     static Texture Create(const Image& image);
 
     //-------------------------------------------------------------------------
+    // 情報取得
+    //-------------------------------------------------------------------------
+public:
+    //! 横幅
+    uint32_t getWidth() const { return mFileHeader.width; }
+
+    //! 高さ
+    uint32_t getHeight() const { return mFileHeader.height; }
+
+    //! 深さ
+    uint32_t getDepth() const { return mFileHeader.depth; }
+
+    //! ミップレベル
+    uint32_t getMipLevels() const { return mFileHeader.mip_levels; }
+
+    //! ディメンジョン
+    gfx::TextureDimension getDimension() const { return mFileHeader.dimension; }
+
+    //! フォーマット
+    gfx::TextureFormat getFormat() const { return mFileHeader.format; }
+
+    //! 画像メモリー取得
+    const void* getImageMemoryPtr() const { return getBuffer(sizeof(FileHeader)); }
+
+    //! 画像メモリーサイズ
+    size_t getImageMemorySize() const { return getSize() - sizeof(FileHeader); }
+
+    //-------------------------------------------------------------------------
 private:
     //! ヘッダー構造体
     struct FileHeader
@@ -54,19 +82,20 @@ private:
 
     //-------------------------------------------------------------------------
 private:
-    const FileHeader* mpFileHeader = nullptr;
+    static FileHeader sInvalidFileHeader;
+    const FileHeader& mFileHeader = sInvalidFileHeader;
 
     //-------------------------------------------------------------------------
 private:
     //! ヘッダー取得関数
-    const FileHeader& getHeader_() const { BEL_ASSERT(mpFileHeader != nullptr); return *mpFileHeader; }
+    const FileHeader& getHeader_() const { return mFileHeader; }
 
     //-------------------------------------------------------------------------
 private:
     //! リソース初期化
     Texture(Resource&& resource, const FileHeader& header)
         : Resource(std::move(resource))
-        , mpFileHeader(&header) {}
+        , mFileHeader(header) {}
 };
 
 //-----------------------------------------------------------------------------
