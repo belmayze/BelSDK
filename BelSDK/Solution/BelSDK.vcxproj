@@ -46,6 +46,7 @@
     <ClInclude Include="..\Include\graphics\dev\belGraphicsDevMeshHolder.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsGlobalDescriptorHandle.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsGlobalDescriptorRegistry.h" />
+    <ClInclude Include="..\Include\graphics\internal\belGraphicsTextureCopyQueue.h" />
     <ClInclude Include="..\Include\image\belImage.h" />
     <ClInclude Include="..\Include\image\belImageConverter.h" />
     <ClInclude Include="..\Include\math\belColor.h" />
@@ -99,6 +100,7 @@
     <ClCompile Include="..\Source\graphics\dev\belGraphicsDevMeshHolder.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsGlobalDescriptorHandle.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsGlobalDescriptorRegistry.cpp" />
+    <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureCopyQueue.cpp" />
     <ClCompile Include="..\Source\image\belImage.cpp" />
     <ClCompile Include="..\Source\image\belImageConverter.cpp" />
     <ClCompile Include="..\Source\math\belColor.cpp" />

@@ -9,6 +9,7 @@
 #include "graphics/common/belGraphicsTexture.h"
 #include "graphics/common/belGraphicsTextureFormatInfo.h"
 #include "graphics/internal/belGraphicsGlobalDescriptorRegistry.h"
+#include "graphics/internal/belGraphicsTextureCopyQueue.h"
 #include "graphics/belGraphicsEngine.h"
 #include "resource/belResourceTexture.h"
 
@@ -59,7 +60,7 @@ bool Texture::initialize(const InitializeArg& arg)
     if (FAILED(
         GraphicsEngine::GetInstance().getDevice().CreateCommittedResource(
             &props, D3D12_HEAP_FLAG_NONE, &desc,
-            D3D12_RESOURCE_STATE_GENERIC_READ,
+            D3D12_RESOURCE_STATE_COPY_DEST,
             &clear_value, IID_PPV_ARGS(&p_resource)
         )
     ))
@@ -67,7 +68,7 @@ bool Texture::initialize(const InitializeArg& arg)
         return false;
     }
 
-    return initializeFromGPUMemory(arg, std::move(p_resource), ResourceState::cGenericRead);
+    return initializeFromGPUMemory(arg, std::move(p_resource), ResourceState::cCopyDest);
 }
 //-----------------------------------------------------------------------------
 bool Texture::initialize(const res::Texture& resource)
@@ -84,21 +85,8 @@ bool Texture::initialize(const res::Texture& resource)
         if (!initialize(init_arg)) { return false; }
     }
 
-    // メモリーコピー
-    // @TODO: コピーコマンドからコピーする方法がいい
-    {
-        uint8_t* memory_ptr = nullptr;
-        mpResource->Map(0, nullptr, reinterpret_cast<void**>(&memory_ptr));
-        {
-            mpResource->WriteToSubresource(
-                0, nullptr,
-                resource.getImageMemoryPtr(),
-                TextureFormatInfo::BitsPerPixel(resource.getFormat()) / 8 * resource.getWidth(),
-                resource.getImageMemorySize()
-            );
-        }
-        mpResource->Unmap(0, nullptr);
-    }
+    // コピー
+    GraphicsEngine::GetInstance().getTextureCopyQueue().executeCopy(*this, resource);
 
     return true;
 }
@@ -130,6 +118,7 @@ void Texture::barrierTransition(CommandContext& command, ResourceState next_stat
         D3D12_RESOURCE_BARRIER desc = {};
         desc.Type                   = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
         desc.Transition.pResource   = mpResource.Get();
+        desc.Transition.Subresource = 0;
         desc.Transition.StateBefore = to_native(mResourceState);
         desc.Transition.StateAfter  = to_native(next_state);
         command.getCommandList().ResourceBarrier(1, &desc);

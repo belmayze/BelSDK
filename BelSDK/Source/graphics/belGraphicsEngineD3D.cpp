@@ -15,6 +15,7 @@
 #include "graphics/common/belGraphicsRenderTarget.h"
 #include "graphics/common/belGraphicsTexture.h"
 #include "graphics/internal/belGraphicsGlobalDescriptorRegistry.h"
+#include "graphics/internal/belGraphicsTextureCopyQueue.h"
 #include "graphics/belGraphicsEngineD3D.h"
 
 namespace bel {
@@ -49,7 +50,7 @@ bool GraphicsEngineD3D::initialize()
     Microsoft::WRL::ComPtr<IDXGIFactory7> p_factory;
     if (FAILED(CreateDXGIFactory2(dxgi_factory_flags, IID_PPV_ARGS(&p_factory))))
     {
-        BEL_PRINT("DXGIの生成に失敗しました\n");
+        BEL_ERROR("DXGIの生成に失敗しました\n");
         return false;
     }
 
@@ -99,7 +100,7 @@ bool GraphicsEngineD3D::initialize()
 
         if (!found_adapter)
         {
-            BEL_PRINT("DirectX のバージョンが不足しています\n");
+            BEL_ERROR("DirectX のバージョンが不足しています\n");
             return false;
         }
         mpDevice = std::move(p_device);
@@ -110,7 +111,7 @@ bool GraphicsEngineD3D::initialize()
         mpMainCommandQueue = std::make_unique<gfx::CommandQueue>();
         if (!mpMainCommandQueue->initialize(gfx::CommandType::cGraphics))
         {
-            BEL_PRINT("メインコマンドキューの生成に失敗しました\n");
+            BEL_ERROR("メインコマンドキューの生成に失敗しました\n");
             return false;
         }
     }
@@ -119,7 +120,7 @@ bool GraphicsEngineD3D::initialize()
     {
         if (!mpMainCommandLists[i_buffer].initialize(gfx::CommandType::cGraphics))
         {
-            BEL_PRINT("メインコマンドリストの生成に失敗しました\n");
+            BEL_ERROR("メインコマンドリストの生成に失敗しました\n");
             return false;
         }
     }
@@ -130,14 +131,14 @@ bool GraphicsEngineD3D::initialize()
         mWaitFenceHandle = CreateEvent(nullptr, FALSE, FALSE, nullptr);
         if (!mWaitFenceHandle)
         {
-            BEL_PRINT("フェンス用イベントの生成に失敗しました\n");
+            BEL_ERROR("フェンス用イベントの生成に失敗しました\n");
             return false;
         }
 
         // メインのキュー実行完了チェック用フェンス
         if (FAILED(mpDevice->CreateFence(1, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mpFence))))
         {
-            BEL_PRINT("メインキュー用のフェンス生成に失敗しました\n");
+            BEL_ERROR("メインキュー用のフェンス生成に失敗しました\n");
             return false;
         }
     }
@@ -145,14 +146,14 @@ bool GraphicsEngineD3D::initialize()
     // グローバルなデスクリプターを作る
     if (!gfx::GlobalDescriptorRegistry::GetInstance().initialize(cMaxTextureHandle))
     {
-        BEL_PRINT("グローバルデスクリプターヒープの作成に失敗しました\n");
+        BEL_ERROR("グローバルデスクリプターヒープの作成に失敗しました\n");
         return false;
     }
 
     // 動的確保を行うデスクリプターを作る
     if (!gfx::DynamicDescriptorHeap::GetInstance().initialize(cMaxDynamicDescriptorHandle))
     {
-        BEL_PRINT("ダイナミックデスクリプターヒープの作成に失敗しました\n");
+        BEL_ERROR("ダイナミックデスクリプターヒープの作成に失敗しました\n");
         return false;
     }
 
@@ -182,13 +183,13 @@ bool GraphicsEngineD3D::initialize()
             nullptr, &p_tmp_swap_chain
         )))
         {
-            BEL_PRINT("画面出力設定に失敗しました\n");
+            BEL_ERROR("画面出力設定に失敗しました\n");
             return false;
         }
 
         if (FAILED(p_tmp_swap_chain->QueryInterface(IID_PPV_ARGS(&mpSwapChain))))
         {
-            BEL_PRINT("画面出力のインターフェース取得に失敗しました\n");
+            BEL_ERROR("画面出力のインターフェース取得に失敗しました\n");
             return false;
         }
 
@@ -239,7 +240,7 @@ bool GraphicsEngineD3D::initialize()
             Microsoft::WRL::ComPtr<ID3D12Resource> p_resource;
             if (FAILED(mpSwapChain->GetBuffer(i_buffer, IID_PPV_ARGS(&p_resource))))
             {
-                BEL_PRINT("スワップチェーンのバッファー取得に失敗しました\n");
+                BEL_ERROR("スワップチェーンのバッファー取得に失敗しました\n");
                 return false;
             }
 
@@ -265,11 +266,14 @@ bool GraphicsEngineD3D::initialize()
     // バッファー番号を記録
     mSwapChainBufferIndex = mpSwapChain->GetCurrentBackBufferIndex();
 
-    // 共通のシグネチャを作る
-    if (!createRootSignature_())
+    // テクスチャーコピーキューを生成する
     {
-        BEL_PRINT("ルートシグネチャの作成に失敗しました\n");
-        return false;
+        mpTextureCopyQueue = std::make_unique<gfx::TextureCopyQueue>();
+        if (!mpTextureCopyQueue->initialize())
+        {
+            BEL_ERROR("テクスチャーのコピーキューの生成に失敗しました\n");
+            return false;
+        }
     }
 
     return true;
@@ -282,13 +286,6 @@ void GraphicsEngineD3D::executeCommand()
         ID3D12CommandList* p_command_lists[1] = { &mpMainCommandLists[mCommandBufferIndex].getCommandList()};
         mpMainCommandQueue->getCommandQueue().ExecuteCommandLists(1, p_command_lists);
     }
-}
-//-----------------------------------------------------------------------------
-void GraphicsEngineD3D::makeInitialCommand(gfx::CommandContext& command) const
-{
-    // 処理前にコマンドに積む必要のあるものをここで積む
-    //command.getCommandList().SetGraphicsRootSignature(mpGraphicsRootSignature.Get());
-    //command.getCommandList().SetComputeRootSignature(mpComputeRootSignature.Get());
 }
 //-----------------------------------------------------------------------------
 void GraphicsEngineD3D::waitCommandQueue()
@@ -349,144 +346,6 @@ gfx::CommandList& GraphicsEngineD3D::ApplicationAccessor::getMainCommandList()
     GraphicsEngineD3D& instance = GraphicsEngineD3D::GetInstance();
     BEL_ASSERT(instance.mpMainCommandLists.get());
     return instance.mpMainCommandLists[instance.mCommandBufferIndex];
-}
-//-----------------------------------------------------------------------------
-// internal
-//-----------------------------------------------------------------------------
-bool GraphicsEngineD3D::createRootSignature_()
-{
-    // 最大数を格納できるデスクリプターテーブルを作っておく
-    std::array<D3D12_DESCRIPTOR_RANGE1, D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER + 1> ranges = {};
-    
-    // SRV
-    {
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].RangeType          = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].NumDescriptors     = 1;//cMaxDescriptorSRV;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].BaseShaderRegister = 0;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].RegisterSpace      = 0;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].Flags              = D3D12_DESCRIPTOR_RANGE_FLAG_NONE;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SRV].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-    }
-    // UAV
-    {
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_UAV].RangeType          = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_UAV].NumDescriptors     = cMaxDescriptorUAV;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_UAV].BaseShaderRegister = 0;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_UAV].RegisterSpace      = 0;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_UAV].Flags              = D3D12_DESCRIPTOR_RANGE_FLAG_NONE;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_UAV].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-    }
-    // CBV
-    {
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_CBV].RangeType          = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_CBV].NumDescriptors     = cMaxDescriptorCBV;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_CBV].BaseShaderRegister = 0;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_CBV].RegisterSpace      = 0;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_CBV].Flags              = D3D12_DESCRIPTOR_RANGE_FLAG_NONE;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_CBV].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-    }
-    // Sampler
-    {
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER].RangeType          = D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER].NumDescriptors     = cMaxDescriptorSampler;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER].BaseShaderRegister = 0;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER].RegisterSpace      = 0;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER].Flags              = D3D12_DESCRIPTOR_RANGE_FLAG_NONE;
-        ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-    }
-
-    // デスクリプターヒープは必ず CopyDescriptors() を使う前提のシステムなので単一のヒープのみ使用する
-    // ただし CBV_SRV_UAV と Sampler のデスクリプターヒープは別々になる
-    std::array<D3D12_ROOT_PARAMETER1, D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER + 1> params = {};
-    {
-        params[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].ParameterType                       = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-        params[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].ShaderVisibility                    = D3D12_SHADER_VISIBILITY_ALL;
-        params[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].DescriptorTable.NumDescriptorRanges = 1;//3;
-        params[D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV].DescriptorTable.pDescriptorRanges   = &ranges[0];
-    }
-    {
-        params[D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER].ParameterType                       = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-        params[D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER].ShaderVisibility                    = D3D12_SHADER_VISIBILITY_ALL;
-        params[D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER].DescriptorTable.NumDescriptorRanges = 1;
-        params[D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER].DescriptorTable.pDescriptorRanges   = &ranges[D3D12_DESCRIPTOR_RANGE_TYPE_SAMPLER];
-    }
-
-    // グラフィックス用ルートシグネチャ
-    Microsoft::WRL::ComPtr<ID3D12RootSignature> p_graphics_root_signature;
-    {
-        D3D12_VERSIONED_ROOT_SIGNATURE_DESC desc = {};
-        desc.Version                = D3D_ROOT_SIGNATURE_VERSION_1_1;
-        desc.Desc_1_1.NumParameters = 1;//D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER + 1;
-        desc.Desc_1_1.pParameters   = params.data();
-        desc.Desc_1_1.Flags         = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-
-        // 固定サンプラー仮追加
-        D3D12_STATIC_SAMPLER_DESC sampler_desc = {};
-        sampler_desc.Filter           = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-        sampler_desc.AddressU         = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-        sampler_desc.AddressV         = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-        sampler_desc.AddressW         = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-        sampler_desc.ComparisonFunc   = D3D12_COMPARISON_FUNC_NEVER;
-        sampler_desc.MaxLOD           = std::numeric_limits<float>::max();
-        sampler_desc.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-        desc.Desc_1_1.NumStaticSamplers = 1;
-        desc.Desc_1_1.pStaticSamplers   = &sampler_desc;
-
-        Microsoft::WRL::ComPtr<ID3DBlob> p_root_signature_serialized;
-        Microsoft::WRL::ComPtr<ID3DBlob> p_error;
-        if (FAILED(D3D12SerializeVersionedRootSignature(&desc, &p_root_signature_serialized, &p_error)))
-        {
-            return false;
-        }
-        if (FAILED(mpDevice->CreateRootSignature(
-            0,
-            p_root_signature_serialized->GetBufferPointer(),
-            p_root_signature_serialized->GetBufferSize(),
-            IID_PPV_ARGS(&p_graphics_root_signature)
-        )))
-        {
-            return false;
-        }
-    }
-
-    // 頂点レイアウトを使用しないルートシグネチャ
-    Microsoft::WRL::ComPtr<ID3D12RootSignature> p_compute_root_signature;
-    {
-        D3D12_VERSIONED_ROOT_SIGNATURE_DESC desc = {};
-        desc.Version                = D3D_ROOT_SIGNATURE_VERSION_1_1;
-        desc.Desc_1_1.NumParameters = D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER + 1;
-        desc.Desc_1_1.pParameters   = params.data();
-        desc.Desc_1_1.Flags         =
-            D3D12_ROOT_SIGNATURE_FLAG_DENY_VERTEX_SHADER_ROOT_ACCESS |
-            D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
-            D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
-            D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS |
-            D3D12_ROOT_SIGNATURE_FLAG_DENY_PIXEL_SHADER_ROOT_ACCESS |
-            D3D12_ROOT_SIGNATURE_FLAG_DENY_AMPLIFICATION_SHADER_ROOT_ACCESS |
-            D3D12_ROOT_SIGNATURE_FLAG_DENY_MESH_SHADER_ROOT_ACCESS;
-
-        Microsoft::WRL::ComPtr<ID3DBlob> p_root_signature_serialized;
-        Microsoft::WRL::ComPtr<ID3DBlob> p_error;
-        if (FAILED(D3D12SerializeVersionedRootSignature(&desc, &p_root_signature_serialized, &p_error)))
-        {
-            return false;
-        }
-        if (FAILED(mpDevice->CreateRootSignature(
-            0,
-            p_root_signature_serialized->GetBufferPointer(),
-            p_root_signature_serialized->GetBufferSize(),
-            IID_PPV_ARGS(&p_compute_root_signature)
-        )))
-        {
-            return false;
-        }
-    }
-
-    // 成功したらシグネチャを記録する
-    mpGraphicsRootSignature = std::move(p_graphics_root_signature);
-    mpComputeRootSignature  = std::move(p_compute_root_signature);
-
-    return true;
 }
 //-----------------------------------------------------------------------------
 }

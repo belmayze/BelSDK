@@ -26,12 +26,6 @@ public:
     virtual void executeCommand() = 0;
 
     /*!
-     * コマンド生成前に必要なコマンドを積みます
-     * @param[in] command コマンド
-     */
-    virtual void makeInitialCommand(gfx::CommandContext& command) const = 0;
-
-    /*!
      * メインキューのコマンド実行完了を待機する
      */
     virtual void waitCommandQueue() = 0;

@@ -97,9 +97,6 @@ int Application::enterLoop()
                 // コマンドコンテキスト生成
                 gfx::CommandContext command(accessor.getMainCommandList());
 
-                // 初回コマンド生成
-                GraphicsEngine::GetInstance().makeInitialCommand(command);
-
                 // デフォルトレンダーターゲットとレンダーバッファーを取得
                 gfx::RenderTarget& default_render_target = GraphicsEngine::GetInstance().getDefaultRenderTarget();
                 gfx::RenderBuffer& default_render_buffer = GraphicsEngine::GetInstance().getDefaultRenderBuffer();

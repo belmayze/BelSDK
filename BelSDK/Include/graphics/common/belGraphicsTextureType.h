@@ -262,6 +262,7 @@ enum class ResourceState
     cRenderTarget,
     cDepthWrite,
     cGenericRead,
+    cCopyDest,
     cPresent,
     cNum
 };
@@ -274,6 +275,7 @@ constexpr D3D12_RESOURCE_STATES to_native(ResourceState state)
     case ResourceState::cRenderTarget: return D3D12_RESOURCE_STATE_RENDER_TARGET;
     case ResourceState::cDepthWrite:   return D3D12_RESOURCE_STATE_DEPTH_WRITE;
     case ResourceState::cGenericRead:  return D3D12_RESOURCE_STATE_GENERIC_READ;
+    case ResourceState::cCopyDest:     return D3D12_RESOURCE_STATE_COPY_DEST;
     case ResourceState::cPresent:      return D3D12_RESOURCE_STATE_PRESENT;
     }
 

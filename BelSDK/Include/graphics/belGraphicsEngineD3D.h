@@ -16,6 +16,7 @@ namespace bel::gfx { class CommandQueue; }
 namespace bel::gfx { class RenderTarget; }
 namespace bel::gfx { class RenderBuffer; }
 namespace bel::gfx { class Texture; }
+namespace bel::gfx { class TextureCopyQueue; }
 namespace bel { class Application; }
 
 namespace bel {
@@ -54,12 +55,6 @@ public:
     virtual void executeCommand() override;
 
     /*!
-     * コマンド生成前に必要なコマンドを積みます
-     * @param[in] command コマンド
-     */
-    virtual void makeInitialCommand(gfx::CommandContext& command) const override;
-
-    /*!
      * メインキューのコマンド実行完了を待機する
      */
     virtual void waitCommandQueue() override;
@@ -79,15 +74,14 @@ public:
     //! デバイス取得
     ID3D12Device6& getDevice() { BEL_ASSERT(mpDevice.Get()); return *mpDevice.Get(); }
 
-    //! 共有のルート証明取得
-    ID3D12RootSignature& getCommonGraphicsRootSignature() { BEL_ASSERT(mpGraphicsRootSignature.Get()); return *mpGraphicsRootSignature.Get(); }
-    ID3D12RootSignature& getCommonComputeRootSignature()  { BEL_ASSERT(mpComputeRootSignature.Get());  return *mpComputeRootSignature.Get();  }
-
     //! デフォルトレンダーターゲット取得
     gfx::RenderTarget& getDefaultRenderTarget() const;
 
     //! デフォルトレンダーバッファー取得
     gfx::RenderBuffer& getDefaultRenderBuffer() const;
+
+    //! テクスチャーコピーキューを取得
+    gfx::TextureCopyQueue& getTextureCopyQueue() { BEL_ASSERT(mpTextureCopyQueue.get()); return *mpTextureCopyQueue.get(); }
 
     //-------------------------------------------------------------------------
 public:
@@ -130,30 +124,20 @@ private:
 
     //-------------------------------------------------------------------------
 private:
-    Microsoft::WRL::ComPtr<ID3D12Device6>       mpDevice;
-    Microsoft::WRL::ComPtr<IDXGISwapChain4>     mpSwapChain;
-    Microsoft::WRL::ComPtr<ID3D12Fence>         mpFence;
-    Microsoft::WRL::ComPtr<ID3D12RootSignature> mpGraphicsRootSignature;
-    Microsoft::WRL::ComPtr<ID3D12RootSignature> mpComputeRootSignature;
-    std::unique_ptr<gfx::CommandQueue>          mpMainCommandQueue;
-    std::unique_ptr<gfx::CommandList[]>         mpMainCommandLists;
-    std::unique_ptr<gfx::Texture[]>             mSwapChainTextures;
-    std::unique_ptr<gfx::RenderTarget[]>        mSwapChainRenderTargets;
-    std::unique_ptr<gfx::RenderBuffer[]>        mSwapChainRenderBuffers;
-    uint32_t                                    mSwapChainBufferIndex = 0;
-    uint32_t                                    mCommandBufferIndex   = 0;
-    HANDLE                                      mWaitFenceHandle = HANDLE();
+    Microsoft::WRL::ComPtr<ID3D12Device6>   mpDevice;
+    Microsoft::WRL::ComPtr<IDXGISwapChain4> mpSwapChain;
+    Microsoft::WRL::ComPtr<ID3D12Fence>     mpFence;
+    std::unique_ptr<gfx::CommandQueue>      mpMainCommandQueue;
+    std::unique_ptr<gfx::CommandList[]>     mpMainCommandLists;
+    std::unique_ptr<gfx::TextureCopyQueue>  mpTextureCopyQueue;
+    std::unique_ptr<gfx::Texture[]>         mSwapChainTextures;
+    std::unique_ptr<gfx::RenderTarget[]>    mSwapChainRenderTargets;
+    std::unique_ptr<gfx::RenderBuffer[]>    mSwapChainRenderBuffers;
+    uint32_t                                mSwapChainBufferIndex = 0;
+    uint32_t                                mCommandBufferIndex   = 0;
+    HANDLE                                  mWaitFenceHandle = HANDLE();
 
     bool mIsSupportedHDR = false;
-
-    //-------------------------------------------------------------------------
-    // internal
-    //-------------------------------------------------------------------------
-private:
-    /*!
-     * 共通のシグネチャを作る
-     */
-    bool createRootSignature_();
 
 };
 //-----------------------------------------------------------------------------
