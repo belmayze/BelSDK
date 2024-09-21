@@ -31,7 +31,7 @@ HRESULT TextureConverter::initialize()
     if (FAILED(hr))
     {
         BEL_ERROR_LOG("WICファクトリーの生成に失敗しました\n");
-        BEL_ERROR_LOG("  エラー: %s\n", std::system_category().message(hr));
+        BEL_ERROR_LOG("  エラー: %s\n", std::system_category().message(hr).c_str());
         return hr;
     }
     return S_OK;
@@ -61,19 +61,19 @@ HRESULT TextureConverter::readFile(Image& image, const std::string& filepath)
     {
         BEL_ERROR_LOG("画像の読み込みに失敗しました\n");
         BEL_ERROR_LOG("    対象: %s\n", filepath.c_str());
-        BEL_ERROR_LOG("  エラー: %s\n", std::system_category().message(hr));
+        BEL_ERROR_LOG("  エラー: %s\n", std::system_category().message(hr).c_str());
         return hr;
     }
 
     // 画像データの取得
-    // @note 必要になったら複数フレームの取得も実装する
+    // @todo 必要になったら複数フレームの取得も実装する
     Microsoft::WRL::ComPtr<IWICBitmapFrameDecode> p_frame;
     hr = p_decoder->GetFrame(0, p_frame.GetAddressOf());
     if (FAILED(hr))
     {
         BEL_ERROR_LOG("画像の取得に失敗しました\n");
         BEL_ERROR_LOG("    対象: %s\n", filepath.c_str());
-        BEL_ERROR_LOG("  エラー: %s\n", std::system_category().message(hr));
+        BEL_ERROR_LOG("  エラー: %s\n", std::system_category().message(hr).c_str());
         return hr;
     }
 
@@ -88,9 +88,12 @@ HRESULT TextureConverter::readFile(Image& image, const std::string& filepath)
             {
                 BEL_ERROR_LOG("サイズの取得に失敗しました\n");
                 BEL_ERROR_LOG("    対象: %s\n", filepath.c_str());
-                BEL_ERROR_LOG("  エラー: %s\n", std::system_category().message(hr));
+                BEL_ERROR_LOG("  エラー: %s\n", std::system_category().message(hr).c_str());
                 return hr;
             }
+
+            image_property.width  = w;
+            image_property.height = h;
         }
 
         // フォーマット取得
@@ -101,7 +104,7 @@ HRESULT TextureConverter::readFile(Image& image, const std::string& filepath)
             {
                 BEL_ERROR_LOG("フォーマットの取得に失敗しました\n");
                 BEL_ERROR_LOG("    対象: %s\n", filepath.c_str());
-                BEL_ERROR_LOG("  エラー: %s\n", std::system_category().message(hr));
+                BEL_ERROR_LOG("  エラー: %s\n", std::system_category().message(hr).c_str());
                 return hr;
             }
 
@@ -164,7 +167,89 @@ HRESULT TextureConverter::readFile(Image& image, const std::string& filepath)
             hr = E_FAIL;
             BEL_ERROR_LOG("フォーマットの取得に失敗しました\n");
             BEL_ERROR_LOG("    対象: %s\n", filepath.c_str());
-            BEL_ERROR_LOG("  エラー: %s\n", std::system_category().message(hr));
+            BEL_ERROR_LOG("  エラー: %s\n", std::system_category().message(hr).c_str());
+            return hr;
+        }
+    }
+
+    // 画像データをコピーする
+    if (std::memcmp(&image_property.convert_format_guid, &GUID_NULL, sizeof(GUID)) == 0)
+    {
+        // @todo 必要になったらミップマップの読み込みも実装する
+        const Image::ImageProperty& mip_prop = image.getImageProperty(0);
+
+        // 変換が不要ならそのままコピーする
+        hr = p_frame->CopyPixels(
+            nullptr,
+            static_cast<UINT>(mip_prop.row_pitch),
+            static_cast<UINT>(mip_prop.slice_pitch),
+            image.getMemoryPtr(mip_prop.memory_offset)
+        );
+        if (FAILED(hr))
+        {
+            BEL_ERROR_LOG("ピクセルデータの取得に失敗しました\n");
+            BEL_ERROR_LOG("    対象: %s\n", filepath.c_str());
+            BEL_ERROR_LOG("  エラー: %s\n", std::system_category().message(hr).c_str());
+            return hr;
+        }
+    }
+    else
+    {
+        // @todo 必要になったらミップマップの読み込みも実装する
+        const Image::ImageProperty& mip_prop = image.getImageProperty(0);
+
+        // 指定したフォーマットにコンバートする
+        Microsoft::WRL::ComPtr<IWICFormatConverter> p_converter;
+        hr = mpFactory->CreateFormatConverter(p_converter.GetAddressOf());
+        if (FAILED(hr))
+        {
+            BEL_ERROR_LOG("コンバーターの生成に失敗しました\n");
+            BEL_ERROR_LOG("    対象: %s\n", filepath.c_str());
+            BEL_ERROR_LOG("  エラー: %s\n", std::system_category().message(hr).c_str());
+            return hr;
+        }
+
+        BOOL can_convert = FALSE;
+        hr = p_converter->CanConvert(
+            image_property.file_format_guid,
+            image_property.convert_format_guid,
+            &can_convert
+        );
+        if (FAILED(hr))
+        {
+            BEL_ERROR_LOG("コンバートできない組み合わせです\n");
+            BEL_ERROR_LOG("    対象: %s\n", filepath.c_str());
+            BEL_ERROR_LOG("  エラー: %s\n", std::system_category().message(hr).c_str());
+            return hr;
+        }
+
+        // コンバート
+        hr = p_converter->Initialize(
+            p_frame.Get(),
+            image_property.convert_format_guid,
+            WICBitmapDitherTypeNone,
+            nullptr, 0,
+            WICBitmapPaletteTypeMedianCut
+        );
+        if (FAILED(hr))
+        {
+            BEL_ERROR_LOG("コンバートに失敗しました\n");
+            BEL_ERROR_LOG("    対象: %s\n", filepath.c_str());
+            BEL_ERROR_LOG("  エラー: %s\n", std::system_category().message(hr).c_str());
+            return hr;
+        }
+
+        hr = p_converter->CopyPixels(
+            nullptr,
+            static_cast<UINT>(mip_prop.row_pitch),
+            static_cast<UINT>(mip_prop.slice_pitch),
+            image.getMemoryPtr(mip_prop.memory_offset)
+        );
+        if (FAILED(hr))
+        {
+            BEL_ERROR_LOG("ピクセルデータの取得に失敗しました\n");
+            BEL_ERROR_LOG("    対象: %s\n", filepath.c_str());
+            BEL_ERROR_LOG("  エラー: %s\n", std::system_category().message(hr).c_str());
             return hr;
         }
     }

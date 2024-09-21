@@ -17,6 +17,8 @@
 #include "image/belImageConverter.h"
 #include "resource/belResourceTexture.h"
 
+#include "belTextureConverter.h"
+
 namespace
 {
 
@@ -128,174 +130,16 @@ int belMain(int argc, const char** argv)
         return hr;
     }
 
-    // WIC Interface
+    // クラス生成
     {
-        Microsoft::WRL::ComPtr<IWICImagingFactory2> p_factory;
-        hr = CoCreateInstance(
-            CLSID_WICImagingFactory2,
-            nullptr,
-            CLSCTX_INPROC_SERVER,
-            IID_PPV_ARGS(&p_factory)
-        );
-        if (FAILED(hr))
-        {
-            BEL_ERROR_LOG("WICファクトリーの生成に失敗しました\n");
-            return hr;
-        }
+        bel::TextureConverter converter;
+        hr = converter.initialize();
+        if (FAILED(hr)) { return hr; }
 
-        // WIC 初期化
-        Microsoft::WRL::ComPtr<IWICBitmapDecoder> p_decoder;
-        hr = p_factory->CreateDecoderFromFilename(input_filepath_w.get(), nullptr, GENERIC_READ, WICDecodeMetadataCacheOnDemand, p_decoder.GetAddressOf());
-        if (FAILED(hr))
-        {
-            BEL_ERROR_LOG("画像の読み込みに失敗しました\n");
-            return hr;
-        }
-
-        // フレーム取得
-        Microsoft::WRL::ComPtr<IWICBitmapFrameDecode> p_frame;
-        hr = p_decoder->GetFrame(0, p_frame.GetAddressOf());
-        if (FAILED(hr))
-        {
-            BEL_ERROR_LOG("画像の取得に失敗しました\n");
-            return hr;
-        }
-
-        // プロパティ取得
-        TextureProperty property;
-        {
-            // 画像サイズ
-            {
-                UINT w, h;
-                hr = p_frame->GetSize(&w, &h);
-                if (FAILED(hr))
-                {
-                    BEL_ERROR_LOG("プロパティのアクセスに失敗しました\n");
-                    return hr;
-                }
-                property.width = w;
-                property.height = h;
-            }
-
-            // フォーマット取得
-            {
-                WICPixelFormatGUID format;
-                hr = p_frame->GetPixelFormat(&format);
-                if (FAILED(hr))
-                {
-                    BEL_ERROR_LOG("プロパティのアクセスに失敗しました\n");
-                    return hr;
-                }
-
-                auto checker = [&format, &property](const GUID& guid, bel::gfx::TextureFormat texture_format, GUID convert_guid)
-                {
-                    if (std::memcmp(&guid, &format, sizeof(WICPixelFormatGUID)) == 0)
-                    {
-                        property.format       = texture_format;
-                        property.convert_guid = convert_guid;
-                        return true;
-                    }
-                    return false;
-                };
-
-                // @TODO: 特定のフォーマットのみに限定
-                if      (checker(GUID_WICPixelFormat24bppRGB, bel::gfx::TextureFormat::cR8G8B8A8_sRGB, GUID_WICPixelFormat32bppRGBA)) {}
-                else if (checker(GUID_WICPixelFormat24bppBGR, bel::gfx::TextureFormat::cR8G8B8A8_sRGB, GUID_WICPixelFormat32bppRGBA)) {}
-
-                // 出力
-                property.file_format = format;
-            }
-
-            // いったん固定
-            property.mip_levels = 1;
-            property.array_size = 1;
-            property.depth      = 1;
-            property.dimension  = bel::gfx::TextureDimension::c2D;
-        }
-
-        // 画像データを生成
+        // 画像ファイルの読み込み
         bel::Image image;
-        {
-            bel::Image::InitializeArg init_arg;
-            init_arg.width      = property.width;
-            init_arg.height     = property.height;
-            init_arg.depth      = property.array_size;
-            init_arg.mip_levels = property.mip_levels;
-            init_arg.format     = property.format;
-            init_arg.dimenstion = property.dimension;
-
-            // @TODO: いったん DIMENSION_2D のみ
-            if (!image.initialize(init_arg))
-            {
-                BEL_ERROR_LOG("画像の初期化に失敗しました\n");
-                return hr;
-            }
-
-            // @TODO: いったん１枚の画像のみ
-            // 画像プロパティ取得
-            const bel::Image::ImageProperty& image_property = image.getImageProperty(0);
-
-            // GUID が NULL であれば変換不要
-            if (std::memcmp(&property.convert_guid, &GUID_NULL, sizeof(GUID)) == 0)
-            {
-                hr = p_frame->CopyPixels(
-                    nullptr,
-                    static_cast<UINT>(image_property.row_pitch),
-                    static_cast<UINT>(image_property.slice_pitch),
-                    image.getMemoryPtr(image_property.memory_offset)
-                );
-                if (FAILED(hr))
-                {
-                    BEL_ERROR_LOG("画像のコピーに失敗しました\n");
-                    return hr;
-                }
-            }
-            else
-            {
-                // 指定したフォーマットにコンバートする
-                Microsoft::WRL::ComPtr<IWICFormatConverter> p_converter;
-                hr = p_factory->CreateFormatConverter(p_converter.GetAddressOf());
-                if (FAILED(hr))
-                {
-                    BEL_ERROR_LOG("画像コンバーターの生成に失敗しました\n");
-                    return hr;
-                }
-
-                BOOL can_convert = FALSE;
-                hr = p_converter->CanConvert(property.file_format, property.convert_guid, &can_convert);
-                if (FAILED(hr))
-                {
-                    BEL_ERROR_LOG("コンバートチェックに失敗しました\n");
-                    return hr;
-                }
-
-                // コンバート
-                hr = p_converter->Initialize(
-                    p_frame.Get(),
-                    property.convert_guid,
-                    WICBitmapDitherTypeNone,
-                    nullptr, 0,
-                    WICBitmapPaletteTypeMedianCut
-                );
-                if (FAILED(hr))
-                {
-                    BEL_ERROR_LOG("コンバートに失敗しました\n");
-                    return hr;
-                }
-
-                hr = p_converter->CopyPixels(
-                    nullptr,
-                    static_cast<UINT>(image_property.row_pitch),
-                    static_cast<UINT>(image_property.slice_pitch),
-                    image.getMemoryPtr(image_property.memory_offset)
-                );
-                if (FAILED(hr))
-                {
-                    BEL_ERROR_LOG("画像のコピーに失敗しました\n");
-                    return hr;
-                }
-            }
-        }
+        hr = converter.readFile(image, input_filepath);
+        if (FAILED(hr)) { return hr; }
 
         // フォーマット変換
         bel::Image output_image = bel::img::Converter::ConvertFormat(image, output_format);

@@ -59,7 +59,6 @@ void Console::Error(const char* format, ...)
     va_start(va, format);
 #   if BEL_PLATFORM_IS_WIN()
     vsnprintf_s(string_buffer.get(), cMaxSize, cMaxSize, format, va);
-    vfprintf(stderr, format, va);
 #   else
     vsnprintf(string_buffer.get(), cMaxSize, format, va);
 #   endif // BEL_PLATFORM_IS_WIN()
