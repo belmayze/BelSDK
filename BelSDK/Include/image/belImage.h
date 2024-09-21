@@ -22,10 +22,11 @@ public:
     {
         size_t   width             = 0;
         size_t   height            = 0;
-        size_t   array_size        = 0;
+        size_t   depth             = 0;
         size_t   mip_levels        = 0;
         uint32_t component_mapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-        gfx::TextureFormat format  = gfx::TextureFormat::cUnknown;
+        gfx::TextureFormat    format     = gfx::TextureFormat::cUnknown;
+        gfx::TextureDimension dimenstion = gfx::TextureDimension::c2D;
     };
     //! 画像データ
     struct ImageProperty
@@ -45,7 +46,7 @@ public:
      * 2Dテクスチャーを初期化します
      * @param[in] arg 初期化引数
      */
-    bool initialize2D(const InitializeArg& arg);
+    bool initialize(const InitializeArg& arg);
 
     //-------------------------------------------------------------------------
     // getter
@@ -55,10 +56,8 @@ public:
     size_t getWidth() const { return mMetadata.width; }
     //! 高さ
     size_t getHeight() const { return mMetadata.height; }
-    //! 深さ
+    //! 深さ or アレイサイズ
     size_t getDepth() const { return mMetadata.depth; }
-    //! 配列数
-    size_t getArraySize() const { return mMetadata.array_size; }
     //! ミップレベル数
     size_t getMipLevels() const { return mMetadata.mip_levels; }
     //! メモリーサイズ
@@ -91,7 +90,6 @@ private:
         size_t   width             = 0;
         size_t   height            = 0;
         size_t   depth             = 0;
-        size_t   array_size        = 0;
         size_t   mip_levels        = 0;
         size_t   memory_size       = 0;
         uint32_t component_mapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;

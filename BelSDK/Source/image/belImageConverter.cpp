@@ -45,10 +45,10 @@ Image Converter::ConvertFormat(const Image& input, gfx::TextureFormat format)
         init_arg.width      = input.getWidth();
         init_arg.height     = input.getHeight();
         init_arg.mip_levels = input.getMipLevels();
-        init_arg.array_size = input.getArraySize();
+        init_arg.depth      = input.getDepth();
         init_arg.format     = format;
         init_arg.component_mapping = input.getComponentMapping();
-        if (!output.initialize2D(init_arg))
+        if (!output.initialize(init_arg))
         {
             return Image();
         }
@@ -67,10 +67,10 @@ Image Converter::ConvertFormat(const Image& input, gfx::TextureFormat format)
         init_arg.width      = input.getWidth();
         init_arg.height     = input.getHeight();
         init_arg.mip_levels = input.getMipLevels();
-        init_arg.array_size = input.getArraySize();
+        init_arg.depth      = input.getDepth();
         init_arg.format     = format;
         init_arg.component_mapping = gfx::TextureFormatInfo::DefaultComponentMapping(format);
-        if (!output.initialize2D(init_arg))
+        if (!output.initialize(init_arg))
         {
             return Image();
         }

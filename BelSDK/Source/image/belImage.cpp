@@ -13,17 +13,41 @@ namespace bel {
 //-----------------------------------------------------------------------------
 // initialize
 //-----------------------------------------------------------------------------
-bool Image::initialize2D(const InitializeArg& arg)
+bool Image::initialize(const InitializeArg& arg)
 {
     // メタデータをコピー
     mMetadata.width      = arg.width;
     mMetadata.height     = arg.height;
-    mMetadata.array_size = arg.array_size;
     mMetadata.mip_levels = arg.mip_levels;
     mMetadata.format     = arg.format;
 
-    mMetadata.depth     = 1;
-    mMetadata.dimension = gfx::TextureDimension::c2D;
+    //
+    switch (arg.dimenstion)
+    {
+    case gfx::TextureDimension::c1D:
+    case gfx::TextureDimension::c2D:
+        mMetadata.depth      = 1;
+        mMetadata.dimension  = arg.dimenstion;
+        break;
+        
+    case gfx::TextureDimension::c1DArray:
+    case gfx::TextureDimension::c2DArray:
+    case gfx::TextureDimension::c3D:
+        mMetadata.depth      = arg.depth;
+        mMetadata.dimension  = arg.dimenstion;
+        break;
+        
+    case gfx::TextureDimension::cCube:
+        mMetadata.depth      = 6;
+        mMetadata.dimension  = arg.dimenstion;
+        break;
+
+    case gfx::TextureDimension::cCubeArray:
+        mMetadata.depth      = arg.depth * 6;
+        mMetadata.dimension  = arg.dimenstion;
+        break;
+    }
+
 
     mMetadata.component_mapping = arg.component_mapping;
 
@@ -62,6 +86,18 @@ size_t Image::computePixelSize_() const
         // 次のミップレベルのサイズを計算
         if (h > 1) { h >>= 1; }
         if (w > 1) { w >>= 1; }
+    }
+
+    // Array や 3D テクスチャーの場合は乗算
+    switch (mMetadata.dimension)
+    {
+    case gfx::TextureDimension::c1DArray:
+    case gfx::TextureDimension::c2DArray:
+    case gfx::TextureDimension::cCube:
+    case gfx::TextureDimension::cCubeArray:
+    case gfx::TextureDimension::c3D:
+        total_pixel_size *= mMetadata.depth;
+        break;
     }
 
     return total_pixel_size;

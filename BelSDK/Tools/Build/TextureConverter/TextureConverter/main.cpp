@@ -219,12 +219,13 @@ int belMain(int argc, const char** argv)
             bel::Image::InitializeArg init_arg;
             init_arg.width      = property.width;
             init_arg.height     = property.height;
-            init_arg.array_size = property.array_size;
+            init_arg.depth      = property.array_size;
             init_arg.mip_levels = property.mip_levels;
             init_arg.format     = property.format;
+            init_arg.dimenstion = property.dimension;
 
             // @TODO: いったん DIMENSION_2D のみ
-            if (!image.initialize2D(init_arg))
+            if (!image.initialize(init_arg))
             {
                 BEL_ERROR_LOG("画像の初期化に失敗しました\n");
                 return hr;
@@ -269,7 +270,13 @@ int belMain(int argc, const char** argv)
                 }
 
                 // コンバート
-                hr = p_converter->Initialize(p_frame.Get(), property.convert_guid, WICBitmapDitherTypeNone, nullptr, 0, WICBitmapPaletteTypeMedianCut);
+                hr = p_converter->Initialize(
+                    p_frame.Get(),
+                    property.convert_guid,
+                    WICBitmapDitherTypeNone,
+                    nullptr, 0,
+                    WICBitmapPaletteTypeMedianCut
+                );
                 if (FAILED(hr))
                 {
                     BEL_ERROR_LOG("コンバートに失敗しました\n");
@@ -297,6 +304,9 @@ int belMain(int argc, const char** argv)
             BEL_ERROR_LOG("フォーマットの変換に失敗しました\n");
             return -2;
         }
+
+        // ミップマップを生成する
+
 
         // 出力
         {
