@@ -136,7 +136,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE GlobalDescriptorRegistry::getDescriptorHandle(const 
     if (!handle.hasValue())
     {
         // エラー
-        BEL_PRINT("ハンドルが未登録なので動作が不安定です\n");
+        BEL_ERROR_LOG("ハンドルが未登録なので動作が不安定です\n");
         return mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
     }
 

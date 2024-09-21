@@ -50,7 +50,7 @@ bool GraphicsEngineD3D::initialize()
     Microsoft::WRL::ComPtr<IDXGIFactory7> p_factory;
     if (FAILED(CreateDXGIFactory2(dxgi_factory_flags, IID_PPV_ARGS(&p_factory))))
     {
-        BEL_ERROR("DXGIの生成に失敗しました\n");
+        BEL_ERROR_LOG("DXGIの生成に失敗しました\n");
         return false;
     }
 
@@ -100,7 +100,7 @@ bool GraphicsEngineD3D::initialize()
 
         if (!found_adapter)
         {
-            BEL_ERROR("DirectX のバージョンが不足しています\n");
+            BEL_ERROR_LOG("DirectX のバージョンが不足しています\n");
             return false;
         }
         mpDevice = std::move(p_device);
@@ -111,7 +111,7 @@ bool GraphicsEngineD3D::initialize()
         mpMainCommandQueue = std::make_unique<gfx::CommandQueue>();
         if (!mpMainCommandQueue->initialize(gfx::CommandType::cGraphics))
         {
-            BEL_ERROR("メインコマンドキューの生成に失敗しました\n");
+            BEL_ERROR_LOG("メインコマンドキューの生成に失敗しました\n");
             return false;
         }
     }
@@ -120,7 +120,7 @@ bool GraphicsEngineD3D::initialize()
     {
         if (!mpMainCommandLists[i_buffer].initialize(gfx::CommandType::cGraphics))
         {
-            BEL_ERROR("メインコマンドリストの生成に失敗しました\n");
+            BEL_ERROR_LOG("メインコマンドリストの生成に失敗しました\n");
             return false;
         }
     }
@@ -131,14 +131,14 @@ bool GraphicsEngineD3D::initialize()
         mWaitFenceHandle = CreateEvent(nullptr, FALSE, FALSE, nullptr);
         if (!mWaitFenceHandle)
         {
-            BEL_ERROR("フェンス用イベントの生成に失敗しました\n");
+            BEL_ERROR_LOG("フェンス用イベントの生成に失敗しました\n");
             return false;
         }
 
         // メインのキュー実行完了チェック用フェンス
         if (FAILED(mpDevice->CreateFence(1, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mpFence))))
         {
-            BEL_ERROR("メインキュー用のフェンス生成に失敗しました\n");
+            BEL_ERROR_LOG("メインキュー用のフェンス生成に失敗しました\n");
             return false;
         }
     }
@@ -146,14 +146,14 @@ bool GraphicsEngineD3D::initialize()
     // グローバルなデスクリプターを作る
     if (!gfx::GlobalDescriptorRegistry::GetInstance().initialize(cMaxTextureHandle))
     {
-        BEL_ERROR("グローバルデスクリプターヒープの作成に失敗しました\n");
+        BEL_ERROR_LOG("グローバルデスクリプターヒープの作成に失敗しました\n");
         return false;
     }
 
     // 動的確保を行うデスクリプターを作る
     if (!gfx::DynamicDescriptorHeap::GetInstance().initialize(cMaxDynamicDescriptorHandle))
     {
-        BEL_ERROR("ダイナミックデスクリプターヒープの作成に失敗しました\n");
+        BEL_ERROR_LOG("ダイナミックデスクリプターヒープの作成に失敗しました\n");
         return false;
     }
 
@@ -183,13 +183,13 @@ bool GraphicsEngineD3D::initialize()
             nullptr, &p_tmp_swap_chain
         )))
         {
-            BEL_ERROR("画面出力設定に失敗しました\n");
+            BEL_ERROR_LOG("画面出力設定に失敗しました\n");
             return false;
         }
 
         if (FAILED(p_tmp_swap_chain->QueryInterface(IID_PPV_ARGS(&mpSwapChain))))
         {
-            BEL_ERROR("画面出力のインターフェース取得に失敗しました\n");
+            BEL_ERROR_LOG("画面出力のインターフェース取得に失敗しました\n");
             return false;
         }
 
@@ -240,7 +240,7 @@ bool GraphicsEngineD3D::initialize()
             Microsoft::WRL::ComPtr<ID3D12Resource> p_resource;
             if (FAILED(mpSwapChain->GetBuffer(i_buffer, IID_PPV_ARGS(&p_resource))))
             {
-                BEL_ERROR("スワップチェーンのバッファー取得に失敗しました\n");
+                BEL_ERROR_LOG("スワップチェーンのバッファー取得に失敗しました\n");
                 return false;
             }
 
@@ -271,7 +271,7 @@ bool GraphicsEngineD3D::initialize()
         mpTextureCopyQueue = std::make_unique<gfx::TextureCopyQueue>();
         if (!mpTextureCopyQueue->initialize())
         {
-            BEL_ERROR("テクスチャーのコピーキューの生成に失敗しました\n");
+            BEL_ERROR_LOG("テクスチャーのコピーキューの生成に失敗しました\n");
             return false;
         }
     }

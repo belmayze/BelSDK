@@ -38,7 +38,7 @@ bool CommandQueue::initialize(CommandType type)
 
     if (FAILED(GraphicsEngine::GetInstance().getDevice().CreateCommandQueue(&desc, IID_PPV_ARGS(&p_command_queue))))
     {
-        BEL_PRINT("コマンドキューの生成に失敗しました\n");
+        BEL_ERROR_LOG("コマンドキューの生成に失敗しました\n");
         return false;
     }
 

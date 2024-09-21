@@ -27,7 +27,7 @@ bool DepthStencil::initialize(const Texture& texture)
         desc.NumDescriptors = 1;
         if (FAILED(GraphicsEngine::GetInstance().getDevice().CreateDescriptorHeap(&desc, IID_PPV_ARGS(&p_descriptor_heap))))
         {
-            BEL_PRINT("デプスステンシルのデスクリプターヒープの生成に失敗しました\n");
+            BEL_ERROR_LOG("デプスステンシルのデスクリプターヒープの生成に失敗しました\n");
             return false;
         }
     }

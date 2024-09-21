@@ -35,12 +35,12 @@ bool CommandList::initialize(CommandType type)
 
     if (FAILED(GraphicsEngine::GetInstance().getDevice().CreateCommandAllocator(command_type, IID_PPV_ARGS(&p_allocator))))
     {
-        BEL_PRINT("コマンドアロケーターの生成に失敗しました\n");
+        BEL_ERROR_LOG("コマンドアロケーターの生成に失敗しました\n");
         return false;
     }
     if (FAILED(GraphicsEngine::GetInstance().getDevice().CreateCommandList(1, command_type, p_allocator.Get(), nullptr, IID_PPV_ARGS(&p_command_list))))
     {
-        BEL_PRINT("コマンドリストの生成に失敗しました\n");
+        BEL_ERROR_LOG("コマンドリストの生成に失敗しました\n");
         return false;
     }
     p_command_list->Close();

@@ -29,7 +29,7 @@ bool TextureCopyQueue::initialize()
     mpCopyQueue = std::make_unique<CommandQueue>();
     if (!mpCopyQueue->initialize(CommandType::cCopy))
     {
-        BEL_ERROR("コピーキューの生成に失敗しました\n");
+        BEL_ERROR_LOG("コピーキューの生成に失敗しました\n");
         return false;
     }
 
@@ -37,7 +37,7 @@ bool TextureCopyQueue::initialize()
     mpCopyCommand = std::make_unique<CommandList>();
     if (!mpCopyCommand->initialize(CommandType::cCopy))
     {
-        BEL_ERROR("コピーコマンドの生成に失敗しました\n");
+        BEL_ERROR_LOG("コピーコマンドの生成に失敗しました\n");
         return false;
     }
 
@@ -45,14 +45,14 @@ bool TextureCopyQueue::initialize()
     mFenceHandle = CreateEvent(nullptr, FALSE, FALSE, nullptr);
     if (!mFenceHandle)
     {
-        BEL_ERROR("フェンス用イベントの生成に失敗しました\n");
+        BEL_ERROR_LOG("フェンス用イベントの生成に失敗しました\n");
         return false;
     }
 
     // フェンス
     if (FAILED(GraphicsEngine::GetInstance().getDevice().CreateFence(1, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mpFence))))
     {
-        BEL_ERROR("テクスチャーコピーキュー用のフェンス生成に失敗しました\n");
+        BEL_ERROR_LOG("テクスチャーコピーキュー用のフェンス生成に失敗しました\n");
         return false;
     }
 
@@ -103,7 +103,7 @@ bool TextureCopyQueue::executeCopy(Texture& texture, const res::Texture& resourc
             nullptr, IID_PPV_ARGS(&p_upload_resource)
         )))
         {
-            BEL_ERROR("テクスチャーアップロード用リソースの生成に失敗しました\n");
+            BEL_ERROR_LOG("テクスチャーアップロード用リソースの生成に失敗しました\n");
             return false;
         }
 

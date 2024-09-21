@@ -50,16 +50,16 @@ int belMain(int argc, const char** argv)
         // ヘルプが立ってる場合は出力
         if (parser.hasHelp())
         {
-            BEL_PRINT("--input  / -i    : 入力ファイルパス\n");
-            BEL_PRINT("--output / -o    : 出力ファイルパス\n");
-            BEL_PRINT("--format / -f    : 変換フォーマット\n");
-            BEL_PRINT("format list:\n");
-            BEL_PRINT("<< 8bit >>\n");
-            BEL_PRINT("\tr8_unorm, r8_snorm, a8_unorm\n");
-            BEL_PRINT("<< 16bit >>\n");
-            BEL_PRINT("\tr8g8_unorm, r8g8_snorm\n");
-            BEL_PRINT("<< 32bit >>\n");
-            BEL_PRINT("\tr8g8b8a8_unorm, r8g8b8a8_snorm, r8g8b8a8_srgb");
+            BEL_INFO_LOG("--input  / -i    : 入力ファイルパス\n");
+            BEL_INFO_LOG("--output / -o    : 出力ファイルパス\n");
+            BEL_INFO_LOG("--format / -f    : 変換フォーマット\n");
+            BEL_INFO_LOG("format list:\n");
+            BEL_INFO_LOG("<< 8bit >>\n");
+            BEL_INFO_LOG("\tr8_unorm, r8_snorm, a8_unorm\n");
+            BEL_INFO_LOG("<< 16bit >>\n");
+            BEL_INFO_LOG("\tr8g8_unorm, r8g8_snorm\n");
+            BEL_INFO_LOG("<< 32bit >>\n");
+            BEL_INFO_LOG("\tr8g8b8a8_unorm, r8g8b8a8_snorm, r8g8b8a8_srgb");
             return 0;
         }
 
@@ -88,7 +88,7 @@ int belMain(int argc, const char** argv)
     // 必須オプションの指定が無ければ終了
     if (input_filepath.empty() || output_filepath.empty() || format_name.empty())
     {
-        BEL_ERROR("必須オプションが指定されていません\n");
+        BEL_ERROR_LOG("必須オプションが指定されていません\n");
         return -1;
     }
 
@@ -107,7 +107,7 @@ int belMain(int argc, const char** argv)
     // 
     if (output_format == bel::gfx::TextureFormat::cUnknown)
     {
-        BEL_ERROR("非対応の変換フォーマットが指定されました\n");
+        BEL_ERROR_LOG("非対応の変換フォーマットが指定されました\n");
         return -1;
     }
 
@@ -124,7 +124,7 @@ int belMain(int argc, const char** argv)
     HRESULT hr = CoInitialize(nullptr);
     if (FAILED(hr))
     {
-        BEL_ERROR("COMの初期化に失敗しました\n");
+        BEL_ERROR_LOG("COMの初期化に失敗しました\n");
         return hr;
     }
 
@@ -139,7 +139,7 @@ int belMain(int argc, const char** argv)
         );
         if (FAILED(hr))
         {
-            BEL_ERROR("WICファクトリーの生成に失敗しました\n");
+            BEL_ERROR_LOG("WICファクトリーの生成に失敗しました\n");
             return hr;
         }
 
@@ -148,7 +148,7 @@ int belMain(int argc, const char** argv)
         hr = p_factory->CreateDecoderFromFilename(input_filepath_w.get(), nullptr, GENERIC_READ, WICDecodeMetadataCacheOnDemand, p_decoder.GetAddressOf());
         if (FAILED(hr))
         {
-            BEL_ERROR("画像の読み込みに失敗しました\n");
+            BEL_ERROR_LOG("画像の読み込みに失敗しました\n");
             return hr;
         }
 
@@ -157,7 +157,7 @@ int belMain(int argc, const char** argv)
         hr = p_decoder->GetFrame(0, p_frame.GetAddressOf());
         if (FAILED(hr))
         {
-            BEL_ERROR("画像の取得に失敗しました\n");
+            BEL_ERROR_LOG("画像の取得に失敗しました\n");
             return hr;
         }
 
@@ -170,7 +170,7 @@ int belMain(int argc, const char** argv)
                 hr = p_frame->GetSize(&w, &h);
                 if (FAILED(hr))
                 {
-                    BEL_ERROR("プロパティのアクセスに失敗しました\n");
+                    BEL_ERROR_LOG("プロパティのアクセスに失敗しました\n");
                     return hr;
                 }
                 property.width = w;
@@ -183,7 +183,7 @@ int belMain(int argc, const char** argv)
                 hr = p_frame->GetPixelFormat(&format);
                 if (FAILED(hr))
                 {
-                    BEL_ERROR("プロパティのアクセスに失敗しました\n");
+                    BEL_ERROR_LOG("プロパティのアクセスに失敗しました\n");
                     return hr;
                 }
 
@@ -226,7 +226,7 @@ int belMain(int argc, const char** argv)
             // @TODO: いったん DIMENSION_2D のみ
             if (!image.initialize2D(init_arg))
             {
-                BEL_ERROR("画像の初期化に失敗しました\n");
+                BEL_ERROR_LOG("画像の初期化に失敗しました\n");
                 return hr;
             }
 
@@ -245,7 +245,7 @@ int belMain(int argc, const char** argv)
                 );
                 if (FAILED(hr))
                 {
-                    BEL_ERROR("画像のコピーに失敗しました\n");
+                    BEL_ERROR_LOG("画像のコピーに失敗しました\n");
                     return hr;
                 }
             }
@@ -256,7 +256,7 @@ int belMain(int argc, const char** argv)
                 hr = p_factory->CreateFormatConverter(p_converter.GetAddressOf());
                 if (FAILED(hr))
                 {
-                    BEL_ERROR("画像コンバーターの生成に失敗しました\n");
+                    BEL_ERROR_LOG("画像コンバーターの生成に失敗しました\n");
                     return hr;
                 }
 
@@ -264,7 +264,7 @@ int belMain(int argc, const char** argv)
                 hr = p_converter->CanConvert(property.file_format, property.convert_guid, &can_convert);
                 if (FAILED(hr))
                 {
-                    BEL_ERROR("コンバートチェックに失敗しました\n");
+                    BEL_ERROR_LOG("コンバートチェックに失敗しました\n");
                     return hr;
                 }
 
@@ -272,7 +272,7 @@ int belMain(int argc, const char** argv)
                 hr = p_converter->Initialize(p_frame.Get(), property.convert_guid, WICBitmapDitherTypeNone, nullptr, 0, WICBitmapPaletteTypeMedianCut);
                 if (FAILED(hr))
                 {
-                    BEL_ERROR("コンバートに失敗しました\n");
+                    BEL_ERROR_LOG("コンバートに失敗しました\n");
                     return hr;
                 }
 
@@ -284,7 +284,7 @@ int belMain(int argc, const char** argv)
                 );
                 if (FAILED(hr))
                 {
-                    BEL_ERROR("画像のコピーに失敗しました\n");
+                    BEL_ERROR_LOG("画像のコピーに失敗しました\n");
                     return hr;
                 }
             }
@@ -294,7 +294,7 @@ int belMain(int argc, const char** argv)
         bel::Image output_image = bel::img::Converter::ConvertFormat(image, output_format);
         if (output_image.getFormat() == bel::gfx::TextureFormat::cUnknown)
         {
-            BEL_ERROR("フォーマットの変換に失敗しました\n");
+            BEL_ERROR_LOG("フォーマットの変換に失敗しました\n");
             return -2;
         }
 
@@ -303,14 +303,14 @@ int belMain(int argc, const char** argv)
             bel::res::Texture texture = bel::res::Texture::Create(output_image);
             if (!texture.isValid())
             {
-                BEL_ERROR("リソースの生成に失敗しました\n");
+                BEL_ERROR_LOG("リソースの生成に失敗しました\n");
                 return -2;
             }
 
             // 書き出し
             if (!bel::res::Loader::GetInstance().writeSync(output_filepath, texture))
             {
-                BEL_ERROR("出力に失敗しました\n");
+                BEL_ERROR_LOG("出力に失敗しました\n");
                 return -3;
             }
         }

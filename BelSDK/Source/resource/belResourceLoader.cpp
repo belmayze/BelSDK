@@ -21,7 +21,7 @@ Resource Loader::loadSync(const std::string& filepath)
     std::ifstream stream(filepath.c_str(), std::ios::binary);
     if (!stream)
     {
-        BEL_ERROR("ファイルが見つかりませんでした. [%s]\n", filepath.c_str());
+        BEL_ERROR_LOG("ファイルが見つかりませんでした. [%s]\n", filepath.c_str());
         return Resource();
     }
 
@@ -30,7 +30,7 @@ Resource Loader::loadSync(const std::string& filepath)
     std::streampos size = stream.tellg();
     if (size < 0)
     {
-        BEL_ERROR("ファイルサイズが取得できませんでした. [%s]\n", filepath.c_str());
+        BEL_ERROR_LOG("ファイルサイズが取得できませんでした. [%s]\n", filepath.c_str());
         return Resource();
     }
     stream.seekg(0, std::ios::beg);
@@ -45,7 +45,7 @@ Resource Loader::loadSync(const std::string& filepath)
     std::unique_ptr<uint8_t[]> buffer = std::make_unique<uint8_t[]>(size);
     if (!buffer)
     {
-        BEL_ERROR("メモリー不足でファイル読み込みに失敗しました. [%s]\n", filepath.c_str());
+        BEL_ERROR_LOG("メモリー不足でファイル読み込みに失敗しました. [%s]\n", filepath.c_str());
         return Resource();
     }
 
@@ -64,7 +64,7 @@ bool Loader::writeSync(const std::string& filepath, const Resource& resource)
     // 有効チェック
     if (!resource.isValid())
     {
-        BEL_ERROR("無効なリソースを出力しようとしたため中止しました. [%s]\n", filepath.c_str());
+        BEL_ERROR_LOG("無効なリソースを出力しようとしたため中止しました. [%s]\n", filepath.c_str());
         return false;
     }
 
@@ -72,7 +72,7 @@ bool Loader::writeSync(const std::string& filepath, const Resource& resource)
     std::ofstream stream(filepath.c_str(), std::ios::binary);
     if (!stream)
     {
-        BEL_ERROR("ファイルを開けませんでした. [%s]\n", filepath.c_str());
+        BEL_ERROR_LOG("ファイルを開けませんでした. [%s]\n", filepath.c_str());
         return false;
     }
 

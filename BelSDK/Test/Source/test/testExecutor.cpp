@@ -14,19 +14,21 @@ namespace app::test {
 //-----------------------------------------------------------------------------
 void Executor::execute()
 {
-    BEL_PRINT("=============================================\n");
-    BEL_PRINT("テストを実行します\n");
+#   if BEL_TARGET_IS_DEBUG()
+    BEL_DEBUG_LOG("=============================================\n");
+    BEL_DEBUG_LOG("テストを実行します\n");
     {
-        BEL_PRINT("--------------------\n");
-        BEL_PRINT("[Container] deque\n");
+        BEL_DEBUG_LOG("--------------------\n");
+        BEL_DEBUG_LOG("[Container] deque\n");
         Deque().test();
 
-        BEL_PRINT("--------------------\n");
-        BEL_PRINT("[Container] vector\n");
+        BEL_DEBUG_LOG("--------------------\n");
+        BEL_DEBUG_LOG("[Container] vector\n");
         Vector().test();
     }
-    BEL_PRINT("テストを終了します\n");
-    BEL_PRINT("=============================================\n");
+    BEL_DEBUG_LOG("テストを終了します\n");
+    BEL_DEBUG_LOG("=============================================\n");
+#   endif // BEL_TARGET_IS_DEBUG()
 }
 //-----------------------------------------------------------------------------
 }

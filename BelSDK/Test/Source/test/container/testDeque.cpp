@@ -61,20 +61,20 @@ void Deque::test()
     BEL_ASSERT(buffer.size() == 3);
 
     // イテレーター
-    BEL_PRINT("  iterator[");
+    BEL_DEBUG_LOG("  iterator[");
     for (auto& c : buffer)
     {
-        BEL_PRINT("%d, ", c);
+        BEL_DEBUG_LOG("%d, ", c);
     }
-    BEL_PRINT("] (size: %zu)\n", buffer.size());
+    BEL_DEBUG_LOG("] (size: %zu)\n", buffer.size());
 
     // イテレーター
-    BEL_PRINT("  reverse iterator[");
+    BEL_DEBUG_LOG("  reverse iterator[");
     for (auto it = buffer.crbegin(); it != buffer.crend(); ++it)
     {
-        BEL_PRINT("%d, ", *it);
+        BEL_DEBUG_LOG("%d, ", *it);
     }
-    BEL_PRINT("] (size: %zu)\n", buffer.size());
+    BEL_DEBUG_LOG("] (size: %zu)\n", buffer.size());
 
     // クリア
     buffer.clear();

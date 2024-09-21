@@ -15,7 +15,7 @@ void PerfTime::initialize()
 {
     // 理論コア数分確保する
     mThreadContexts = std::make_unique<ThreadContext[]>(Thread::GetNumThreads());
-    BEL_PRINT("[Bel][PerfTime] num of threads [%2d]\n", Thread::GetNumThreads());
+    BEL_DEBUG_LOG("[Bel][PerfTime] num of threads [%2d]\n", Thread::GetNumThreads());
 }
 //-----------------------------------------------------------------------------
 // process
@@ -43,7 +43,7 @@ void PerfTime::end()
     ctx.microsec = static_cast<uint32_t>(std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::system_clock::now() - ctx.start).count());
 
     // @TODO: いったん仮で文字出力する
-    BEL_PRINT("%u us. (%.2f fps)\n", ctx.microsec, (1000.f * 1000.f) / static_cast<float>(ctx.microsec));
+    BEL_DEBUG_LOG("%u us. (%.2f fps)\n", ctx.microsec, (1000.f * 1000.f) / static_cast<float>(ctx.microsec));
 }
 //-----------------------------------------------------------------------------
 }

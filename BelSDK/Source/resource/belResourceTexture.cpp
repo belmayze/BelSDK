@@ -23,10 +23,10 @@ Texture Texture::Create(const Image& image)
 
     // データチェック
     bool failed = false;
-    if (image.getWidth()     > std::numeric_limits<uint16_t>::max()) { BEL_ERROR("テクスチャーの横幅が上限を超えています"); failed = true; }
-    if (image.getHeight()    > std::numeric_limits<uint16_t>::max()) { BEL_ERROR("テクスチャーの高さが上限を超えています"); failed = true; }
-    if (image.getDepth()     > std::numeric_limits<uint16_t>::max()) { BEL_ERROR("テクスチャーの深さが上限を超えています"); failed = true; }
-    if (image.getMipLevels() > std::numeric_limits<uint8_t>::max())  { BEL_ERROR("テクスチャーのミップ数が上限を超えています"); failed = true; }
+    if (image.getWidth()     > std::numeric_limits<uint16_t>::max()) { BEL_ERROR_LOG("テクスチャーの横幅が上限を超えています"); failed = true; }
+    if (image.getHeight()    > std::numeric_limits<uint16_t>::max()) { BEL_ERROR_LOG("テクスチャーの高さが上限を超えています"); failed = true; }
+    if (image.getDepth()     > std::numeric_limits<uint16_t>::max()) { BEL_ERROR_LOG("テクスチャーの深さが上限を超えています"); failed = true; }
+    if (image.getMipLevels() > std::numeric_limits<uint8_t>::max())  { BEL_ERROR_LOG("テクスチャーのミップ数が上限を超えています"); failed = true; }
     if (failed) { return Texture(); }
 
     // ヘッダー初期化

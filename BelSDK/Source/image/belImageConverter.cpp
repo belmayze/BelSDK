@@ -111,7 +111,7 @@ Image Converter::ConvertFormat(const Image& input, gfx::TextureFormat format)
 
     }
 
-    BEL_ERROR("変換に対応していないフォーマットです");
+    BEL_ERROR_LOG("変換に対応していないフォーマットです");
     return Image();
 }
 //-----------------------------------------------------------------------------

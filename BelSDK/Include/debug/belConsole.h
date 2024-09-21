@@ -33,11 +33,15 @@ public:
 //-----------------------------------------------------------------------------
 // define
 //-----------------------------------------------------------------------------
-#if 1//BEL_TARGET_IS_DEBUG()
-#   define BEL_PRINT(...)   bel::debug::Console::Output(__VA_ARGS__)
-#   define BEL_ERROR(...)   bel::debug::Console::Error(__VA_ARGS__)
+//! 標準出力
+#define BEL_INFO_LOG(...) bel::debug::Console::Output(__VA_ARGS__)
+//! エラー出力
+#define BEL_ERROR_LOG(...) bel::debug::Console::Error(__VA_ARGS__)
+
+//! デバッグ出力
+#if BEL_TARGET_IS_DEBUG()
+#   define BEL_DEBUG_LOG(...) bel::debug::Console::Output(__VA_ARGS__)
 #else
-#   define BEL_PRINT(...)
-#   define BEL_ERROR(...)
+#   define BEL_DEBUG_LOG(...)
 #endif // BEL_TARGET_IS_DEBUG()
 //-----------------------------------------------------------------------------
