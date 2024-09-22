@@ -48,7 +48,6 @@
     <ClInclude Include="..\Include\graphics\internal\belGraphicsGlobalDescriptorRegistry.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsTextureCopyQueue.h" />
     <ClInclude Include="..\Include\image\belImage.h" />
-    <ClInclude Include="..\Include\image\belImageConverter.h" />
     <ClInclude Include="..\Include\math\belColor.h" />
     <ClInclude Include="..\Include\math\belColor.inl.h" />
     <ClInclude Include="..\Include\math\belDegree.h" />
@@ -102,7 +101,6 @@
     <ClCompile Include="..\Source\graphics\internal\belGraphicsGlobalDescriptorRegistry.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureCopyQueue.cpp" />
     <ClCompile Include="..\Source\image\belImage.cpp" />
-    <ClCompile Include="..\Source\image\belImageConverter.cpp" />
     <ClCompile Include="..\Source\math\belColor.cpp" />
     <ClCompile Include="..\Source\math\belDegree.cpp" />
     <ClCompile Include="..\Source\math\belRadian.cpp" />

@@ -17,6 +17,25 @@ class Image
 {
     //-------------------------------------------------------------------------
 public:
+    /*!
+     * サイズから最大ミップマップ数を計算する
+     * @param[in] width  横幅
+     * @param[in] height 高さ
+     */
+    static constexpr uint32_t CalcMaximumMipLevels(size_t width, size_t height)
+    {
+        uint32_t mip_levels = 1;
+        while (height > 1 || width > 1)
+        {
+            if (height > 1) { height >>= 1; }
+            if (width  > 1) { width  >>= 1; }
+            ++mip_levels;
+        }
+        return mip_levels;
+    }
+    
+    //-------------------------------------------------------------------------
+public:
     //! 初期化引数
     struct InitializeArg
     {

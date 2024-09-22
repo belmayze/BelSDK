@@ -53,6 +53,20 @@ public:
     // Convert
     //-------------------------------------------------------------------------
 public:
+    /*!
+     * 指定したフォーマットに変換します
+     * @param[out] output 出力画像
+     * @param[in]  input  入力画像
+     * @param[in]  format フォーマット
+     */
+    HRESULT convertFormat(Image& output, const Image& input, gfx::TextureFormat format);
+
+    /*!
+     * ミップマップを生成します
+     * @param[in,out] image      画像
+     * @param[in]     mip_levels 生成するミップレベル
+     */
+    HRESULT generateMipLevels(Image& image, uint32_t mip_levels);
 
     //-------------------------------------------------------------------------
 private:
@@ -72,6 +86,18 @@ private:
     //-------------------------------------------------------------------------
 private:
     Microsoft::WRL::ComPtr<IWICImagingFactory2> mpFactory;
+
+    //-------------------------------------------------------------------------
+    // internal
+    //-------------------------------------------------------------------------
+private:
+    /*!
+     * テクスチャーフォーマットから WIC のフォーマット GUID に変換する
+     * @param[out] guid
+     * @param[in]  format
+     * @return 失敗したら false を返します
+     */
+    static bool FormatToGuid_(WICPixelFormatGUID& guid, gfx::TextureFormat format);
 };
 //-----------------------------------------------------------------------------
 }

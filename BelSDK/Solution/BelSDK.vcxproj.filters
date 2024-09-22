@@ -276,9 +276,6 @@
     <ClInclude Include="..\Include\image\belImage.h">
       <Filter>ヘッダー ファイル\image</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\image\belImageConverter.h">
-      <Filter>ヘッダー ファイル\image</Filter>
-    </ClInclude>
     <ClInclude Include="..\Include\resource\belResourceTexture.h">
       <Filter>ヘッダー ファイル\resource</Filter>
     </ClInclude>
@@ -393,9 +390,6 @@
       <Filter>ソース ファイル\common</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\image\belImage.cpp">
-      <Filter>ソース ファイル\image</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Source\image\belImageConverter.cpp">
       <Filter>ソース ファイル\image</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\resource\belResourceTexture.cpp">

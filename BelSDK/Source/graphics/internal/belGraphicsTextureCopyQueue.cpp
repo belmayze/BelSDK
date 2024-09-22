@@ -63,15 +63,21 @@ bool TextureCopyQueue::initialize()
 //-----------------------------------------------------------------------------
 bool TextureCopyQueue::executeCopy(Texture& texture, const res::Texture& resource)
 {
+    //
+    using FootPrints     = std::unique_ptr<D3D12_PLACED_SUBRESOURCE_FOOTPRINT[]>;
+    using RowCounts      = std::unique_ptr<UINT[]>;
+    using RowSizeInBytes = std::unique_ptr<size_t[]>;
+
     // データアップロードに必要なサイズを取得します
-    D3D12_RESOURCE_DESC                resource_desc = texture.getResource().GetDesc();
-    D3D12_PLACED_SUBRESOURCE_FOOTPRINT layout;
-    UINT64                             row_size_in_bytes = 0;
-    UINT                               row_counts         = 0;
-    size_t                             resource_size      = 0;
+    uint32_t            num_subresource   = texture.getDepth() * texture.getMipLevels();
+    D3D12_RESOURCE_DESC resource_desc     = texture.getResource().GetDesc();
+    FootPrints          layouts           = std::make_unique<D3D12_PLACED_SUBRESOURCE_FOOTPRINT[]>(num_subresource);
+    RowCounts           row_counts        = std::make_unique<UINT[]>(num_subresource);
+    RowSizeInBytes      row_size_in_bytes = std::make_unique<size_t[]>(num_subresource);
+    size_t              resource_size;
     GraphicsEngine::GetInstance().getDevice().GetCopyableFootprints(
-        &resource_desc, 0, 1, 0,
-        &layout, &row_counts, &row_size_in_bytes, &resource_size
+        &resource_desc, 0, num_subresource, 0,
+        layouts.get(), row_counts.get(), row_size_in_bytes.get(), &resource_size
     );
 
     // アップロード用リソースを生成します
@@ -111,9 +117,10 @@ bool TextureCopyQueue::executeCopy(Texture& texture, const res::Texture& resourc
         uint8_t* memory_ptr = nullptr;
         p_upload_resource->Map(0, nullptr, reinterpret_cast<void**>(&memory_ptr));
         std::memcpy(
-            memory_ptr + layout.Offset,
+            memory_ptr + layouts[0].Offset,
             resource.getImageMemoryPtr(),
-            resource_size
+            resource.getImageMemorySize()//resource_size
+            // @TODO: 今は不正確なので、ミップマップ単位で正しくコピーする
         );
         p_upload_resource->Unmap(0, nullptr);
     }
@@ -121,6 +128,7 @@ bool TextureCopyQueue::executeCopy(Texture& texture, const res::Texture& resourc
     // コマンドリストを初期化
     gfx::CommandContext command(*mpCopyCommand);
     mpCopyCommand->begin();
+    for (uint32_t i_subresource = 0; i_subresource < num_subresource; ++i_subresource)
     {
         // コピーコマンドを積む
         D3D12_TEXTURE_COPY_LOCATION src;
@@ -128,11 +136,11 @@ bool TextureCopyQueue::executeCopy(Texture& texture, const res::Texture& resourc
 
         src.pResource       = p_upload_resource.Get();
         src.Type            = D3D12_TEXTURE_COPY_TYPE_PLACED_FOOTPRINT;
-        src.PlacedFootprint = layout;
+        src.PlacedFootprint = layouts[i_subresource];
 
         dst.pResource        = &texture.getResource();
         dst.Type             = D3D12_TEXTURE_COPY_TYPE_SUBRESOURCE_INDEX;
-        dst.SubresourceIndex = 0;
+        dst.SubresourceIndex = i_subresource;
 
         mpCopyCommand->getCommandList().CopyTextureRegion(
             &dst, 0, 0, 0, &src, nullptr

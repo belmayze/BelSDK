@@ -14,7 +14,6 @@
 #include "common/belOptionParser.h"
 #include "graphics/common/belGraphicsTextureType.h"
 #include "image/belImage.h"
-#include "image/belImageConverter.h"
 #include "resource/belResourceTexture.h"
 
 #include "belTextureConverter.h"
@@ -44,6 +43,7 @@ int belMain(int argc, const char** argv)
     std::string input_filepath;
     std::string output_filepath;
     std::string format_name;
+    uint32_t mip_levels = bel::Image::CalcMaximumMipLevels(16384, 16384);
 
     {
         bel::OptionParser parser;
@@ -83,6 +83,11 @@ int belMain(int argc, const char** argv)
             {
                 format_name = option.second;
                 std::transform(format_name.begin(), format_name.end(), format_name.begin(), std::tolower);
+            }
+            else if (std::strcmp(option.first.c_str(), "--mip") == 0 ||
+                     std::strcmp(option.first.c_str(), "-m") == 0)
+            {
+                mip_levels = atoi(option.second.c_str());
             }
         }
     }
@@ -137,20 +142,21 @@ int belMain(int argc, const char** argv)
         if (FAILED(hr)) { return hr; }
 
         // 画像ファイルの読み込み
-        bel::Image image;
-        hr = converter.readFile(image, input_filepath);
+        bel::Image input_image;
+        hr = converter.readFile(input_image, input_filepath);
         if (FAILED(hr)) { return hr; }
 
-        // フォーマット変換
-        bel::Image output_image = bel::img::Converter::ConvertFormat(image, output_format);
-        if (output_image.getFormat() == bel::gfx::TextureFormat::cUnknown)
+        // ミップマップを生成する
+        if (mip_levels > 1)
         {
-            BEL_ERROR_LOG("フォーマットの変換に失敗しました\n");
-            return -2;
+            hr = converter.generateMipLevels(input_image, mip_levels);
+            if (FAILED(hr)) { return hr; }
         }
 
-        // ミップマップを生成する
-
+        // フォーマット変換
+        bel::Image output_image;
+        hr = converter.convertFormat(output_image, input_image, output_format);
+        if (FAILED(hr)) { return hr; }
 
         // 出力
         {
