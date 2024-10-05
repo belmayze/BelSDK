@@ -7,6 +7,7 @@
  */
 // bel
 #include "graphics/common/belGraphicsDynamicDescriptorHeap.h"
+#include "graphics/dev/belGraphicsDevMeshHolder.h"
 #include "graphics/belGraphicsEngine.h"
 #include "resource/belResourceLoader.h"
 // app
@@ -16,11 +17,6 @@ namespace app::test {
 //-----------------------------------------------------------------------------
 void Application::initialize()
 {
-    // メッシュ保持
-    {
-        mMeshHolder.initialize();
-    }
-
     // スクリーン用メッシュ生成
     {
         bel::gfx::Mesh::InitializeArg init_arg;
@@ -81,7 +77,7 @@ void Application::initialize()
 
     // パイプライン生成
     {
-        mResShaderResource = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderResource>("Shader/Sample.bsh");
+        auto resource = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderResource>("Shader/Sample.bsh");
 
         bel::gfx::Pipeline::InitializeArg init_arg;
         init_arg.num_render_target        = 1;
@@ -92,24 +88,21 @@ void Application::initialize()
         init_arg.depth_config.depth_enable = true;
         init_arg.depth_config.depth_write  = true;
 
-        mPipeline.initialize(init_arg, mResShaderResource);
+        mPipeline.initialize(init_arg, resource);
     }
     {
-        mResToneMappingShaderResource = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderResource>("Shader/ToneMapping.bsh");
+        auto resource = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderResource>("Shader/ToneMapping.bsh");
 
         bel::gfx::Pipeline::InitializeArg init_arg;
-        init_arg.num_render_target = 1;
+        init_arg.num_render_target        = 1;
         init_arg.render_target_formats[0] = bel::gfx::TextureFormat::cR8G8B8A8_sRGB;
-        init_arg.num_texture             = 1;
+        init_arg.num_texture              = 1;
         init_arg.num_constant_buffer      = 1;
 
-        mToneMappingPipeline.initialize(init_arg, mResToneMappingShaderResource);
+        mToneMappingPipeline.initialize(init_arg, resource);
     }
-
-    // テクスチャーリソース
     {
-        auto resource = bel::res::Loader::GetInstance().loadSyncAs<bel::res::Texture>("Texture/jis_font.btex");
-        mTexture.initialize(resource);
+        mDebugTextRender.initialize(1024);
     }
 }
 //-----------------------------------------------------------------------------
@@ -119,7 +112,8 @@ void Application::onCalc()
 {
     // カメラ更新
     {
-        ModelCB cb;
+        mModelCB.swapBuffer();
+        ModelCB& cb = mModelCB.getStruct<ModelCB>();
 
         // ワールド行列は固定
         cb.world_matrix.makeIdentity();
@@ -150,9 +144,6 @@ void Application::onCalc()
             );
             cb.view_projection_matrix.setMul(proj_matrix, view_matrix);
         }
-
-        mModelCB.swapBuffer();
-        mModelCB.copyStruct(cb);
     }
 
     // 定数バッファーのカラー更新
@@ -162,30 +153,30 @@ void Application::onCalc()
         if (sFrameCount >= 3.f) { sFrameCount = 0.f; }
 
         bel::Color color = bel::Color::cWhite();
-        if (sFrameCount < 1.f)
-        {
-            // R -> G
-            float range = bel::Math::EaseInOutSine(sFrameCount);
-            color.r() = 1.f - range;
-            color.g() = range;
-            color.b() = 0.f;
-        }
-        else if (sFrameCount < 2.f)
-        {
-            // G -> B
-            float range = bel::Math::EaseInOutSine(sFrameCount - 1.f);
-            color.r() = 0.f;
-            color.g() = 1.f - range;
-            color.b() = range;
-        }
-        else if (sFrameCount < 3.f)
-        {
-            // B -> R
-            float range = bel::Math::EaseInOutSine(sFrameCount - 2.f);
-            color.r() = range;
-            color.g() = 0.f;
-            color.b() = 1.f - range;
-        }
+        //if (sFrameCount < 1.f)
+        //{
+        //    // R -> G
+        //    float range = bel::Math::EaseInOutSine(sFrameCount);
+        //    color.r() = 1.f - range;
+        //    color.g() = range;
+        //    color.b() = 0.f;
+        //}
+        //else if (sFrameCount < 2.f)
+        //{
+        //    // G -> B
+        //    float range = bel::Math::EaseInOutSine(sFrameCount - 1.f);
+        //    color.r() = 0.f;
+        //    color.g() = 1.f - range;
+        //    color.b() = range;
+        //}
+        //else if (sFrameCount < 3.f)
+        //{
+        //    // B -> R
+        //    float range = bel::Math::EaseInOutSine(sFrameCount - 2.f);
+        //    color.r() = range;
+        //    color.g() = 0.f;
+        //    color.b() = 1.f - range;
+        //}
 
         // sRGB -> linear
         color = color.convertToLinearGamut();
@@ -199,6 +190,7 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
 {
     // クラス
     bel::gfx::DynamicDescriptorHeap& descriptor_heap = bel::gfx::DynamicDescriptorHeap::GetInstance();
+    bel::gfx::dev::MeshHolder& mesh_holder = bel::gfx::dev::MeshHolder::GetInstance();
 
     // レンダーバッファー切り替え
     mColorTexture.barrierTransition(command, bel::gfx::ResourceState::cRenderTarget);
@@ -215,7 +207,12 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
         mPipeline.activateConstantBuffer(handle, 0, mModelCB);
         mPipeline.setPipeline(command);
         descriptor_heap.setDescriptorHeap(handle, command);
-        mMeshHolder.getMesh(bel::gfx::dev::MeshHolder::Type::cCube).drawIndexedInstanced(command);
+        mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cCube).drawIndexedInstanced(command);
+    }
+
+    // 文字列描画
+    {
+        mDebugTextRender.draw(command, "Hello", bel::Vector2(), 1.f);
     }
 
     // バリア
@@ -226,8 +223,7 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
         bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mToneMappingPipeline.getNumDescriptor());
 
         bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().bind(command);
-        //mToneMappingPipeline.activateTexture(handle, 0, mColorTexture);
-        mToneMappingPipeline.activateTexture(handle, 0, mTexture);
+        mToneMappingPipeline.activateTexture(handle, 0, mColorTexture);
         mToneMappingPipeline.activateConstantBuffer(handle, 0, mToneMappingCB);
         mToneMappingPipeline.setPipeline(command);
         descriptor_heap.setDescriptorHeap(handle, command);

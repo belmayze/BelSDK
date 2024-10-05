@@ -145,7 +145,7 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
                 desc.SampleDesc.Count = 1;
 
                 // 頂点シェーダーを使う場合は頂点レイアウトを作る (仮)
-                std::array<D3D12_INPUT_ELEMENT_DESC, 2> input_elements;
+                std::array<D3D12_INPUT_ELEMENT_DESC, 3> input_elements;
                 if (mShaderType == res::ShaderResource::ShaderType::VertexPixel || mShaderType == res::ShaderResource::ShaderType::VertexGeometryPixel ||
                     mShaderType == res::ShaderResource::ShaderType::Tessellation || mShaderType == res::ShaderResource::ShaderType::TessellationGeometry)
                 {
@@ -164,6 +164,14 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
                     input_elements[1].InstanceDataStepRate = 0;
                     input_elements[1].SemanticIndex        = 0;
                     input_elements[1].SemanticName         = "NORMAL";
+                
+                    input_elements[2].AlignedByteOffset    = 24; // vec3 + vec3
+                    input_elements[2].Format               = DXGI_FORMAT_R32G32_FLOAT;
+                    input_elements[2].InputSlot            = 0;
+                    input_elements[2].InputSlotClass       = D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA;
+                    input_elements[2].InstanceDataStepRate = 0;
+                    input_elements[2].SemanticIndex        = 0;
+                    input_elements[2].SemanticName         = "TEXCOORD";
 
                     desc.InputLayout.pInputElementDescs = input_elements.data();
                     desc.InputLayout.NumElements        = static_cast<uint32_t>(input_elements.size());

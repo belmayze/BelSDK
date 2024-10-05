@@ -97,6 +97,12 @@
     <Filter Include="ヘッダー ファイル\image">
       <UniqueIdentifier>{b3ed5cce-dead-41bb-82ee-9d084406f505}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\debug\text">
+      <UniqueIdentifier>{48a9251e-7f6d-4407-a4d9-a825c6004ca2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\debug\text">
+      <UniqueIdentifier>{ee26823b-734f-4f52-bb92-efbd4a4f32c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\belMain.h">
@@ -282,6 +288,9 @@
     <ClInclude Include="..\Include\graphics\internal\belGraphicsTextureCopyQueue.h">
       <Filter>ヘッダー ファイル\graphics\internal</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\debug\text\belDebugTextRender.h">
+      <Filter>ヘッダー ファイル\debug\text</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -397,6 +406,9 @@
     </ClCompile>
     <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureCopyQueue.cpp">
       <Filter>ソース ファイル\graphics\internal</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\debug\text\belDebugTextRender.cpp">
+      <Filter>ソース ファイル\debug\text</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

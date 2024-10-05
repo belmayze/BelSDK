@@ -53,7 +53,8 @@ public:
 
     /*!
      * 構造体でバッファー転送
-     * @param[in] data 構造体
+     * @param[in] data   構造体
+     * @param[in] offset オフセット
      */
     template <typename T>
     void copyStruct(T& data, size_t offset = 0) { copyStructs(&data, 1, offset); }
@@ -62,6 +63,7 @@ public:
      * 複数の構造体でバッファー転送
      * @param[in] data      構造体
      * @param[in] num_array 配列数
+     * @param[in] offset    オフセット
      */
     template <typename T>
     void copyStructs(T* data, size_t num_array, size_t offset = 0) { copyBuffer(data, sizeof(T) * num_array, offset); }
@@ -72,6 +74,19 @@ public:
 public:
      //! デスクリプターハンドルを取得
     const GlobalDescriptorHandle& getCurrentDescriptorHandle() const { return mDescriptorHandles[mBufferIndex]; }
+
+    /*!
+     * メモリーを取得します
+     * @param[in] offset オフセット
+     */
+    void* getMemory(size_t offset = 0) { return mBufferPtrs[mBufferIndex] + offset; }
+
+    /*!
+     * 構造体でバッファーを取得します
+     * @param[in] offset オフセット
+     */
+    template <typename T>
+    T& getStruct(size_t offset = 0) { return *reinterpret_cast<T*>(getMemory(offset)); }
 
     //-------------------------------------------------------------------------
 private:

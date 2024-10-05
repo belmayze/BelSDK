@@ -8,12 +8,13 @@
 #pragma once
 // bel
 #include "graphics/common/belGraphicsMesh.h"
+#include "memory/belSingleton.h"
 
 namespace bel::gfx::dev {
 //-----------------------------------------------------------------------------
 // 開発用の基礎メッシュを保持するクラス
 //-----------------------------------------------------------------------------
-class MeshHolder
+class MeshHolder : public Singleton<MeshHolder>
 {
     //-------------------------------------------------------------------------
 public:

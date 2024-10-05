@@ -14,6 +14,7 @@
 #include "graphics/common/belGraphicsRenderBuffer.h"
 #include "graphics/common/belGraphicsRenderTarget.h"
 #include "graphics/common/belGraphicsTexture.h"
+#include "graphics/dev/belGraphicsDevMeshHolder.h"
 #include "graphics/internal/belGraphicsGlobalDescriptorRegistry.h"
 #include "graphics/internal/belGraphicsTextureCopyQueue.h"
 #include "graphics/belGraphicsEngineD3D.h"
@@ -272,6 +273,15 @@ bool GraphicsEngineD3D::initialize()
         if (!mpTextureCopyQueue->initialize())
         {
             BEL_ERROR_LOG("テクスチャーのコピーキューの生成に失敗しました\n");
+            return false;
+        }
+    }
+
+    // メッシュホルダー
+    {
+        if (!gfx::dev::MeshHolder::GetInstance().initialize())
+        {
+            BEL_ERROR_LOG("基本形状メッシュの生成に失敗しました\n");
             return false;
         }
     }

@@ -8,6 +8,7 @@
 #pragma once
 // bel
 #include "base/belIApplicationCallback.h"
+#include "debug/text/belDebugTextRender.h"
 #include "graphics/common/belGraphicsConstantBuffer.h"
 #include "graphics/common/belGraphicsDepthStencil.h"
 #include "graphics/common/belGraphicsMesh.h"
@@ -15,7 +16,6 @@
 #include "graphics/common/belGraphicsRenderBuffer.h"
 #include "graphics/common/belGraphicsRenderTarget.h"
 #include "graphics/common/belGraphicsTexture.h"
-#include "graphics/dev/belGraphicsDevMeshHolder.h"
 #include "resource/belResourceShaderResource.h"
 #include "resource/belResourceTexture.h"
 
@@ -56,8 +56,6 @@ private:
 
     //-------------------------------------------------------------------------
 private:
-    bel::res::ShaderResource mResShaderResource;
-    bel::res::ShaderResource mResToneMappingShaderResource;
     bel::gfx::Pipeline       mPipeline;
     bel::gfx::Pipeline       mToneMappingPipeline;
     bel::gfx::Mesh           mScreenMesh;
@@ -71,9 +69,7 @@ private:
     bel::gfx::DepthStencil mDepthStencil;
     bel::gfx::RenderBuffer mRenderBuffer;
 
-    bel::gfx::dev::MeshHolder mMeshHolder;
-
-    bel::gfx::Texture mTexture;
+    bel::debug::TextRender mDebugTextRender;
 };
 //-----------------------------------------------------------------------------
 }

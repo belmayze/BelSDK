@@ -15,6 +15,11 @@
             "Name": "ToneMapping",
             "VertexShader": "tone_mapping.hlsl",
             "PixelShader": "tone_mapping.hlsl"
+        },
+        {
+            "Name": "DebugText",
+            "VertexShader": "debug_text.hlsl",
+            "PixelShader": "debug_text.hlsl"
         }
     ]
 }
