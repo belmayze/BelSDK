@@ -27,7 +27,7 @@ struct InstanceProperty
     float2 position;
     float2 uv_offset;
     float2 uv_scale;
-    float2 padding_;
+    float2 size;
 };
 cbuffer InstanceConstantBuffer : register(b0)
 {
@@ -42,13 +42,13 @@ cbuffer InstanceConstantBuffer : register(b0)
 //! main
 PS_INPUT main(VS_INPUT input)
 {
-    // 四角形ポリゴンをサイズに合わせる
-    float2 position_local;
-    position_local.x = input.position.x * (9.0 / 16.0) * cScale;
-    position_local.y = input.position.y * cScale;
-    
     // property
     InstanceProperty property = cInstanceProperties[input.instance_id];
+
+    // 四角形ポリゴンをサイズに合わせる
+    float2 position_local;
+    position_local.x = input.position.x * (9.0 / 16.0) * cScale * property.size.x;
+    position_local.y = input.position.y * cScale * property.size.y;
 
     // Vertex output
     PS_INPUT output;

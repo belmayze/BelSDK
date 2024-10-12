@@ -212,7 +212,7 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
 
     // 文字列描画
     {
-        mDebugTextRender.draw(command, "Hello", bel::Vector2(), 1.f);
+        mDebugTextRender.draw(command, "かがやき", bel::Vector2(), 1.f);
     }
 
     // バリア
