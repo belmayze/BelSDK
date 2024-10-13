@@ -50,16 +50,18 @@ void TextRender::initialize(uint32_t max_length)
 //-----------------------------------------------------------------------------
 void TextRender::draw(gfx::CommandContext& command, const char* text, const Vector2& position, float size) const
 {
-    // @todo: レイアウトサイズは仮で 1920 x 1080
-    constexpr Vector2 cLayoutSizeInv(1.f / 1920.f, 1.f / 1080.f);
+    // @todo: レイアウトサイズは仮で 1280 x 720
+    constexpr Vector2 cLayoutSizeInv(2.f / 1280.f, 2.f / 720.f);
+
+    // サイズベース
+    Vector2 size_base = size * cLayoutSizeInv;
 
     // @todo: このタイミングはまずいけどひとまず定数バッファー更新
     uint32_t num_instance = 0;
-    Vector2 offset;
+    Vector2 offset = Vector2(-1.f + position.x() * cLayoutSizeInv.x(), 1.f - position.y() * cLayoutSizeInv.y());
     {
         mConstantBuffer.swapBuffer();
         InstancesCB& cb = mConstantBuffer.getStruct<InstancesCB>();
-        cb.size = size * 0.16f;
 
         // ASCII
         size_t text_buffer_index = 0;
@@ -74,8 +76,8 @@ void TextRender::draw(gfx::CommandContext& command, const char* text, const Vect
             if (c == 0x0A)
             {
                 // \n
-                offset.x() = 0.f;
-                offset.y() -= 0.16f;
+                offset.x() = -1.f + position.x() * cLayoutSizeInv.x();
+                offset.y() -= size_base.y();
                 not_supported = true;
             }
             else if (c < 0x20)
@@ -197,16 +199,16 @@ void TextRender::draw(gfx::CommandContext& command, const char* text, const Vect
 
             // UBO 計算
             InstanceCB& instance = cb.instances[num_instance++];
-            instance.position = position + offset;
+            instance.position = offset;
             instance.uv_scale.x()  = font_scale / 64.f;
             instance.uv_scale.y()  = 1.f / 128.f;
             instance.uv_offset.x() = x * instance.uv_scale.x();
             instance.uv_offset.y() = y * instance.uv_scale.y();
-            instance.size.x() = font_scale;
-            instance.size.y() = 1.f;
+            instance.size.x() = font_scale * size_base.x();
+            instance.size.y() = size_base.y();
 
             // カーソル位置
-            offset.x() += 0.1f * font_scale;
+            offset.x() += font_scale * size_base.x();
         }
     }
 

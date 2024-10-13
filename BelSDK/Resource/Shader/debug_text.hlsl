@@ -31,7 +31,6 @@ struct InstanceProperty
 };
 cbuffer InstanceConstantBuffer : register(b0)
 {
-    float cScale;
     InstanceProperty cInstanceProperties[1024];
 };
 
@@ -47,8 +46,8 @@ PS_INPUT main(VS_INPUT input)
 
     // 四角形ポリゴンをサイズに合わせる
     float2 position_local;
-    position_local.x = input.position.x * (9.0 / 16.0) * cScale * property.size.x;
-    position_local.y = input.position.y * cScale * property.size.y;
+    position_local.x = (input.position.x + 0.5) * property.size.x;
+    position_local.y = (input.position.y - 0.5) * property.size.y;
 
     // Vertex output
     PS_INPUT output;

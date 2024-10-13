@@ -51,8 +51,6 @@ private:
     };
     struct InstancesCB
     {
-        float size;
-        float padding_[3];
         InstanceCB instances[1024];
     };
 
