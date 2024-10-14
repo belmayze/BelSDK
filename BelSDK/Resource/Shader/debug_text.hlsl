@@ -71,11 +71,11 @@ SamplerState      gSampler : register(s0);
 float4 main(PS_INPUT input) : SV_TARGET
 {
     float color = gTexture.Sample(gSampler, input.texcoord).r;
-    if (color > 0.5)
+    if (color > 0.95)
     {
         discard;
     }
-    return float4(1.0, 1.0, 1.0, 1.0);
+    return float4(1.0, 1.0, 1.0, 1.0 - color);
 }
 
 #endif // BEL_***_SHADER

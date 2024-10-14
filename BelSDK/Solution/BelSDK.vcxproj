@@ -28,6 +28,7 @@
     <ClInclude Include="..\Include\graphics\belGraphicsDefine.h" />
     <ClInclude Include="..\Include\graphics\belGraphicsEngine.h" />
     <ClInclude Include="..\Include\graphics\belGraphicsEngineD3D.h" />
+    <ClInclude Include="..\Include\graphics\common\belGraphicsBlendType.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsCommandContext.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsCommandList.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsCommandQueue.h" />

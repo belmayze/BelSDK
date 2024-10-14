@@ -7,6 +7,7 @@
  */
 #pragma once
 // bel
+#include "graphics/common/belGraphicsBlendType.h"
 #include "graphics/common/belGraphicsTextureType.h"
 #include "resource/belResourceShaderResource.h"
 
@@ -28,11 +29,23 @@ public:
         bool depth_enable = false;
         bool depth_write  = false;
     };
+    //! ブレンド処理
+    struct BlendConfig
+    {
+        bool        blend_enable     = false;
+        BlendType   src_blend        = BlendType::cSrcAlpha;
+        BlendType   dest_blend       = BlendType::cInvSrcAlpha;
+        BlendOpType blend_op         = BlendOpType::cAdd;
+        BlendType   src_blend_alpha  = BlendType::cOne;
+        BlendType   dest_blend_alpha = BlendType::cOne;
+        BlendOpType blend_op_alpha   = BlendOpType::cAdd;
+    };
     //! 初期化引数
     struct InitializeArg
     {
         uint32_t                                     num_render_target     = 0;
         std::array<TextureFormat, cMaxRenderTargets> render_target_formats = {};
+        std::array<BlendConfig, cMaxRenderTargets>   blend_configs         = {};
         TextureFormat                                depth_stencil_format  = TextureFormat::cUnknown;
 
         DepthConfig depth_config;

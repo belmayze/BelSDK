@@ -120,8 +120,17 @@ bool Pipeline::initialize(const InitializeArg& arg, const res::ShaderResource& s
                 desc.RasterizerState.DepthClipEnable       = true;
 
                 // ブレンダー
-                desc.BlendState.RenderTarget[0].BlendEnable           = false;
-                desc.BlendState.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+                for (uint32_t i = 0; i < arg.num_render_target; ++i)
+                {
+                    desc.BlendState.RenderTarget[i].BlendEnable           = arg.blend_configs[i].blend_enable;
+                    desc.BlendState.RenderTarget[i].SrcBlend              = to_native(arg.blend_configs[i].src_blend);
+                    desc.BlendState.RenderTarget[i].DestBlend             = to_native(arg.blend_configs[i].dest_blend);
+                    desc.BlendState.RenderTarget[i].BlendOp               = to_native(arg.blend_configs[i].blend_op);
+                    desc.BlendState.RenderTarget[i].SrcBlendAlpha         = to_native(arg.blend_configs[i].src_blend_alpha);
+                    desc.BlendState.RenderTarget[i].DestBlendAlpha        = to_native(arg.blend_configs[i].dest_blend_alpha);
+                    desc.BlendState.RenderTarget[i].BlendOpAlpha          = to_native(arg.blend_configs[i].blend_op_alpha);
+                    desc.BlendState.RenderTarget[i].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+                }
 
                 // デプス
                 desc.DepthStencilState.DepthEnable    = arg.depth_config.depth_enable;

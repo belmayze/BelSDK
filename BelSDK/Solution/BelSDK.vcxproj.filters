@@ -291,6 +291,9 @@
     <ClInclude Include="..\Include\debug\text\belDebugTextRender.h">
       <Filter>ヘッダー ファイル\debug\text</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\graphics\common\belGraphicsBlendType.h">
+      <Filter>ヘッダー ファイル\graphics\common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
