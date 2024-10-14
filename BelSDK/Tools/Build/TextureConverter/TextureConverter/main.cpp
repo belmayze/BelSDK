@@ -144,7 +144,7 @@ int belMain(int argc, const char** argv)
 
         // 画像ファイルの読み込み
         bel::Image input_image;
-        hr = converter.readFile(input_image, input_filepath);
+        hr = converter.readFile(input_image, input_filepath, mip_levels);
         if (FAILED(hr)) { return hr; }
 
         // ミップマップを生成する
@@ -153,6 +153,7 @@ int belMain(int argc, const char** argv)
             hr = converter.generateMipLevels(input_image, mip_levels);
             if (FAILED(hr)) { return hr; }
         }
+        // ミップレベル設定
 
         // フォーマット変換
         bel::Image output_image;

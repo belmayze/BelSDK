@@ -44,10 +44,11 @@ public:
 public:
     /*!
      * 画像ファイルを読み込みます
-     * @param[out] image    読み込んだ画像ファイル
-     * @param[in]  filepath 読み込みファイルパス
+     * @param[out] image      読み込んだ画像ファイル
+     * @param[in]  filepath   読み込みファイルパス
+     * @param[in]  mip_levels ミップレベル
      */
-    HRESULT readFile(Image& image, const std::string& filepath);
+    HRESULT readFile(Image& image, const std::string& filepath, size_t mip_levels);
 
     //-------------------------------------------------------------------------
     // Convert

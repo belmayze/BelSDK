@@ -40,7 +40,7 @@ HRESULT TextureConverter::initialize()
 //-----------------------------------------------------------------------------
 // read / write
 //-----------------------------------------------------------------------------
-HRESULT TextureConverter::readFile(Image& image, const std::string& filepath)
+HRESULT TextureConverter::readFile(Image& image, const std::string& filepath, size_t mip_levels)
 {
     // ファイルパスを wchar に変換
     std::unique_ptr<WCHAR[]> filepath_w = std::make_unique<WCHAR[]>(MAX_PATH);
@@ -147,7 +147,7 @@ HRESULT TextureConverter::readFile(Image& image, const std::string& filepath)
         // その他のフォーマットはいったん固定
         image_property.depth      = 1;
         image_property.array_size = 1;
-        image_property.mip_levels = Image::CalcMaximumMipLevels(image_property.width, image_property.height);
+        image_property.mip_levels = Math::Min<size_t>(mip_levels, Image::CalcMaximumMipLevels(image_property.width, image_property.height));
         image_property.dimension  = gfx::TextureDimension::c2D;
     }
 
