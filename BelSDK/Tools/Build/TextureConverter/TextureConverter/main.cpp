@@ -55,6 +55,7 @@ int belMain(int argc, const char** argv)
             BEL_INFO_LOG("--input  / -i    : 入力ファイルパス\n");
             BEL_INFO_LOG("--output / -o    : 出力ファイルパス\n");
             BEL_INFO_LOG("--format / -f    : 変換フォーマット\n");
+            BEL_INFO_LOG("--mip    / -m    : 生成するミップマップレベル\n");
             BEL_INFO_LOG("format list:\n");
             BEL_INFO_LOG("<< 8bit >>\n");
             BEL_INFO_LOG("\tr8_unorm, r8_snorm, a8_unorm\n");
