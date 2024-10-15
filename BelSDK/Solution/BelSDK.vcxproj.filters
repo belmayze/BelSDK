@@ -294,6 +294,9 @@
     <ClInclude Include="..\Include\graphics\common\belGraphicsBlendType.h">
       <Filter>ヘッダー ファイル\graphics\common</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\resource\belSystemResourceHolder.h">
+      <Filter>ヘッダー ファイル\resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -412,6 +415,9 @@
     </ClCompile>
     <ClCompile Include="..\Source\debug\text\belDebugTextRender.cpp">
       <Filter>ソース ファイル\debug\text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\resource\belSystemResourceHolder.cpp">
+      <Filter>ソース ファイル\resource</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

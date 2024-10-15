@@ -26,8 +26,20 @@ Application::Application() {}
 //-----------------------------------------------------------------------------
 Application::~Application() {}
 //-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
 bool Application::initialize(const InitializeArg& arg)
+{
+    // コンテントルートを設定
+    ApplicationWindow::GetInstance().setContentRoot(arg.content_root ? arg.content_root : "");
+
+    return true;
+}
+//-----------------------------------------------------------------------------
+bool Application::loadSystemResource(const std::string& filepath)
+{
+    return mSystemResourceHolder.loadSync(filepath);
+}
+//-----------------------------------------------------------------------------
+bool Application::createWindow(const CreateWindowArg& arg)
 {
     // ウィンドウメッセージ処理スレッドを初期化
     mpWindowMessageThread = std::make_unique<Thread>(
@@ -56,13 +68,13 @@ bool Application::initialize(const InitializeArg& arg)
         return false;
     }
 
-    // コールバック登録
-    mpCallback = arg.p_callback;
+    // グラフィックス生成が終わったらシステムリソースを生成する
+    if (!mSystemResourceHolder.createGraphicsResource()) { return false; }
 
     return true;
 }
 //-----------------------------------------------------------------------------
-int Application::enterLoop()
+int Application::enterLoop(IApplicationCallback* p_callback)
 {
     // 終了するまで待機
     while (!mIsQuit.load(std::memory_order_acquire))
@@ -87,7 +99,7 @@ int Application::enterLoop()
         GraphicsEngine::GetInstance().present();
 
         // 計算処理
-        if (mpCallback) { mpCallback->onCalc(); }
+        if (p_callback) { p_callback->onCalc(); }
         
         // コマンドの生成
         {
@@ -114,7 +126,7 @@ int Application::enterLoop()
                 gfx::Viewport(default_render_buffer).setCommand(command);
 
                 // コールバック
-                if (mpCallback) { mpCallback->onMakeCommand(command); }
+                if (p_callback) { p_callback->onMakeCommand(command); }
 
                 // RENDER_TARGET -> PRESENT
                 default_render_target.getTexture().barrierTransition(command, gfx::ResourceState::cPresent);
@@ -129,6 +141,7 @@ int Application::enterLoop()
     }
 
     // ウィンドウを閉じる前にグラフィックスの後処理
+    mSystemResourceHolder = res::SystemResourceHolder();
     GraphicsEngine::GetInstance().finalize();
 
     // 終了をシグナルして終了を待機
@@ -140,7 +153,7 @@ int Application::enterLoop()
 //-----------------------------------------------------------------------------
 // callback
 //-----------------------------------------------------------------------------
-int Application::onInvokeWindowMessage(const Thread& thread, const InitializeArg& arg)
+int Application::onInvokeWindowMessage(const Thread& thread, const CreateWindowArg& arg)
 {
     // ウィンドウ生成
     // 生成したスレッドでしかメッセージ処理できないのでここでやる
@@ -151,9 +164,6 @@ int Application::onInvokeWindowMessage(const Thread& thread, const InitializeArg
         mIsQuit.store(true, std::memory_order_release);
         return -1;
     }
-
-    // コンテントルートを設定
-    ApplicationWindow::GetInstance().setContentRoot(arg.content_root ? arg.content_root : "");
 
     // ウィンドウ生成が終わったらシグナル
     mInitializedEvent.signal();

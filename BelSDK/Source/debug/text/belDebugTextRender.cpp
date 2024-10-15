@@ -6,11 +6,10 @@
  * Copyright (c) belmayze. All rights reserved.
  */
 // bel
+#include "base/belApplication.h"
 #include "debug/text/belDebugTextRender.h"
 #include "graphics/common/belGraphicsDynamicDescriptorHeap.h"
 #include "graphics/dev/belGraphicsDevMeshHolder.h"
-#include "resource/belResourceLoader.h"
-#include "resource/belResourceTexture.h"
 
 namespace bel::debug {
 //-----------------------------------------------------------------------------
@@ -18,16 +17,8 @@ namespace bel::debug {
 //-----------------------------------------------------------------------------
 void TextRender::initialize(uint32_t max_length)
 {
-    // @todo: 本当は共用なので ResourceHolder 的な所に置く
+    // シェーダー
     {
-        auto resource = res::Loader::GetInstance().loadSyncAs<bel::res::Texture>("Texture/jis_font.btex");
-        mTexture.initialize(resource);
-    }
-
-    // @todo: シェーダーも共用
-    {
-        auto resource = res::Loader::GetInstance().loadSyncAs<bel::res::ShaderResource>("Shader/DebugText.bsh");
-
         // @debug: 暫定) パイプライン
         gfx::Pipeline::InitializeArg init_arg;
         init_arg.num_render_target        = 1;
@@ -35,7 +26,7 @@ void TextRender::initialize(uint32_t max_length)
         init_arg.blend_configs[0].blend_enable = true;
         init_arg.num_texture              = 1;
         init_arg.num_constant_buffer      = 1;
-        mPipeline.initialize(init_arg, resource);
+        mPipeline.initialize(init_arg, Application::GetInstance().getSystemResource().getDebugTextShaderResource());
     }
 
     // @todo: 定数バッファー
@@ -221,7 +212,7 @@ void TextRender::draw(gfx::CommandContext& command, const char* text, const Vect
         gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mPipeline.getNumDescriptor());
 
         mPipeline.activateConstantBuffer(handle, 0, mConstantBuffer);
-        mPipeline.activateTexture(handle, 0, mTexture);
+        mPipeline.activateTexture(handle, 0, Application::GetInstance().getSystemResource().getDebugTextTexture());
         mPipeline.setPipeline(command);
         descriptor_heap.setDescriptorHeap(handle, command);
         gfx::dev::MeshHolder::GetInstance().getMesh(gfx::dev::MeshHolder::Type::cQuad).drawIndexedInstanced(command, num_instance);

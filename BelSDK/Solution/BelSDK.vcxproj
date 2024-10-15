@@ -71,6 +71,7 @@
     <ClInclude Include="..\Include\resource\belResourceLoader.h" />
     <ClInclude Include="..\Include\resource\belResourceShaderResource.h" />
     <ClInclude Include="..\Include\resource\belResourceTexture.h" />
+    <ClInclude Include="..\Include\resource\belSystemResourceHolder.h" />
     <ClInclude Include="..\Include\thread\belEvent.h" />
     <ClInclude Include="..\Include\thread\belThread.h" />
     <ClInclude Include="..\Include\util\belUtilEnum.h" />
@@ -113,6 +114,7 @@
     <ClCompile Include="..\Source\resource\belResourceLoader.cpp" />
     <ClCompile Include="..\Source\resource\belResourceShaderResource.cpp" />
     <ClCompile Include="..\Source\resource\belResourceTexture.cpp" />
+    <ClCompile Include="..\Source\resource\belSystemResourceHolder.cpp" />
     <ClCompile Include="..\Source\thread\belEvent.cpp" />
     <ClCompile Include="..\Source\thread\belThread.cpp" />
   </ItemGroup>

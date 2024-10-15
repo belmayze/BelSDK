@@ -86,8 +86,7 @@ private:
 
     //-------------------------------------------------------------------------
 private:
-    static FileHeader sInvalidFileHeader;
-    const FileHeader& mFileHeader = sInvalidFileHeader;
+    FileHeader mFileHeader;
 
     //-------------------------------------------------------------------------
 private:

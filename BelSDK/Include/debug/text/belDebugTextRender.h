@@ -56,8 +56,7 @@ private:
 
     //-------------------------------------------------------------------------
 private:
-    gfx::Texture        mTexture; //!< @todo: 本当は共用なので ResourceHolder 的な所に置く
-    gfx::Pipeline       mPipeline;
+    gfx::Pipeline               mPipeline;
     mutable gfx::ConstantBuffer mConstantBuffer;
 };
 //-----------------------------------------------------------------------------

@@ -38,19 +38,28 @@ int belMain(int argc, const char** argv)
     // 初期化
     {
         bel::Application::InitializeArg init_arg;
-        init_arg.width             = 1280;
-        init_arg.height            = 720;
-        init_arg.title             = "BelTest";
-        init_arg.window_class_name = "belmayze";
-        init_arg.content_root      = p_content;
-        init_arg.p_callback        = &application;
+        init_arg.content_root = p_content;
 
         if (!bel::Application::GetInstance().initialize(init_arg)) { return -1; }
+    }
+
+    // ファイル読み込み
+    if (!bel::Application::GetInstance().loadSystemResource("")) { return -1; }
+
+    // ウィンドウ生成
+    {
+        bel::Application::CreateWindowArg create_window_arg;
+        create_window_arg.width             = 1280;
+        create_window_arg.height            = 720;
+        create_window_arg.title             = "BelTest";
+        create_window_arg.window_class_name = "belmayze";
+
+        if (!bel::Application::GetInstance().createWindow(create_window_arg)) { return -1; }
     }
 
     // 初期化
     application.initialize();
 
     // ゲームループ開始
-    return bel::Application::GetInstance().enterLoop();
+    return bel::Application::GetInstance().enterLoop(&application);
 }
