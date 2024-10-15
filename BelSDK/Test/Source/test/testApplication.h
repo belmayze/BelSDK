@@ -68,8 +68,6 @@ private:
     bel::gfx::RenderTarget mRenderTarget;
     bel::gfx::DepthStencil mDepthStencil;
     bel::gfx::RenderBuffer mRenderBuffer;
-
-    bel::debug::TextRender mDebugTextRender;
 };
 //-----------------------------------------------------------------------------
 }

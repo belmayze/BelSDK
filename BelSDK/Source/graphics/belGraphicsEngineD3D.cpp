@@ -342,6 +342,16 @@ gfx::RenderBuffer& GraphicsEngineD3D::getDefaultRenderBuffer() const
     return mSwapChainRenderBuffers[mSwapChainBufferIndex];
 }
 //-----------------------------------------------------------------------------
+uint64_t GraphicsEngineD3D::getTimestampFrequency() const
+{
+    uint64_t frequency;
+    if (FAILED(mpMainCommandQueue->getCommandQueue().GetTimestampFrequency(&frequency)))
+    {
+        return 1;
+    }
+    return frequency;
+}
+//-----------------------------------------------------------------------------
 // Accessor
 //-----------------------------------------------------------------------------
 gfx::CommandQueue& GraphicsEngineD3D::ApplicationAccessor::getMainCommandQueue()

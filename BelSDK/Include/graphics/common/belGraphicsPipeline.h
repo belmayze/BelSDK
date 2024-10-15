@@ -9,8 +9,10 @@
 // bel
 #include "graphics/common/belGraphicsBlendType.h"
 #include "graphics/common/belGraphicsTextureType.h"
+#include "graphics/belGraphicsDefine.h"
 #include "resource/belResourceShaderResource.h"
 
+namespace bel::gfx { class CommandContext; }
 namespace bel::gfx { class ConstantBuffer; }
 namespace bel::gfx { class DynamicDescriptorHandle; }
 namespace bel::gfx { class Texture; }

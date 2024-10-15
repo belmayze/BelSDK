@@ -7,6 +7,7 @@
  */
 #pragma once
 // bel
+#include "debug/text/belDebugTextRender.h"
 #include "memory/belSingleton.h"
 
 namespace bel::debug {
@@ -18,41 +19,82 @@ public:
     /*!
      * 初期化
      */
-    void initialize();
+    bool initialize();
+
+    /*!
+     * 破棄
+     */
+    void finalize();
+
+    //-------------------------------------------------------------------------
+    // main
+    //-------------------------------------------------------------------------
+public:
+    /*!
+     * CPU メインスレッド処理の計測
+     */
+    void startMainCPU();
+    void endMainCPU();
+
+    /*!
+     * GPU メインスレッド処理の計測
+     * @param[in] command コマンド
+     */
+    void startMainGPU(gfx::CommandContext& command);
+    void endMainGPU(gfx::CommandContext& command);
+
+    /*!
+     * GPU のタイムスタンプを集計する
+     */
+    void resolveGPUTimestamp();
 
     //-------------------------------------------------------------------------
     // process
     //-------------------------------------------------------------------------
 public:
     /*!
-     * リセットします
+     * バッファー切り替え
      */
-    void reset();
+    void swapBuffer();
 
+    //-------------------------------------------------------------------------
+    // draw
+    //-------------------------------------------------------------------------
+public:
     /*!
-     * 処理の開始を記録します
-     * @param[in] name 処理名
+     * 描画
+     * @param[in] command コマンド
      */
-    void start(const std::string& name);
-
-    /*!
-     * 処理の終了を記録します
-     */
-    void end();
+    void drawDebugText(gfx::CommandContext& command) const;
 
     //-------------------------------------------------------------------------
 private:
-    //! スレッドコンテキスト
-    struct ThreadContext
+    //! メインスレッド処理
+    struct MainThreadContext
     {
-        // 入れ子にできるようにする
-        std::chrono::system_clock::time_point start;
-        uint32_t microsec = 0;
+        std::chrono::system_clock::time_point cpu_start;
+        uint32_t cpu_microsec = 0;
+
+        uint32_t gpu_microsec = 0;
     };
 
+    //! バッファー
+    struct BufferContext
+    {
+        MainThreadContext main_thread_context;
+        std::chrono::system_clock::time_point base_time;
+    };
+    using BufferContexts = std::array<BufferContext, 2>;
+
     //-------------------------------------------------------------------------
 private:
-    std::unique_ptr<ThreadContext[]> mThreadContexts;
+    uint32_t       mBufferIndex = 0;
+    BufferContexts mBufferContexts;
+    TextRender     mTextRender;
+
+    // クエリとそのリソース
+    Microsoft::WRL::ComPtr<ID3D12QueryHeap> mpQuery;
+    Microsoft::WRL::ComPtr<ID3D12Resource>  mpQueryResource;
 };
 //-----------------------------------------------------------------------------
 }

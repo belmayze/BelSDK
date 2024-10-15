@@ -28,7 +28,6 @@ static void PreMain()
 
     // 使用するインスタンスはここで初期化
     bel::Application::GetInstance();
-    bel::debug::PerfTime::GetInstance().initialize();
     bel::GraphicsEngine::GetInstance();
     bel::res::Loader::GetInstance();
 }

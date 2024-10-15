@@ -15,14 +15,14 @@ namespace bel::debug {
 //-----------------------------------------------------------------------------
 // initialize
 //-----------------------------------------------------------------------------
-void TextRender::initialize(uint32_t max_length)
+void TextRender::initialize(uint32_t max_length, gfx::TextureFormat output_format)
 {
     // シェーダー
     {
         // @debug: 暫定) パイプライン
         gfx::Pipeline::InitializeArg init_arg;
         init_arg.num_render_target        = 1;
-        init_arg.render_target_formats[0] = bel::gfx::TextureFormat::cR16G16B16A16_Float; // @todo: 暫定
+        init_arg.render_target_formats[0] = output_format;
         init_arg.blend_configs[0].blend_enable = true;
         init_arg.num_texture              = 1;
         init_arg.num_constant_buffer      = 1;

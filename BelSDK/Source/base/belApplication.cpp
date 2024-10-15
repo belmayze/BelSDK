@@ -71,6 +71,9 @@ bool Application::createWindow(const CreateWindowArg& arg)
     // グラフィックス生成が終わったらシステムリソースを生成する
     if (!mSystemResourceHolder.createGraphicsResource()) { return false; }
 
+    // ここで計測初期化
+    bel::debug::PerfTime::GetInstance().initialize();
+
     return true;
 }
 //-----------------------------------------------------------------------------
@@ -80,8 +83,8 @@ int Application::enterLoop(IApplicationCallback* p_callback)
     while (!mIsQuit.load(std::memory_order_acquire))
     {
         // 計測リセット
-        debug::PerfTime::GetInstance().reset();
-        //debug::PerfTime::GetInstance().start("GPU");
+        debug::PerfTime::GetInstance().swapBuffer();
+        debug::PerfTime::GetInstance().startMainCPU();
 
         // Command Queue
         //  -> [ExecuteCommand]
@@ -113,20 +116,28 @@ int Application::enterLoop(IApplicationCallback* p_callback)
                 gfx::RenderTarget& default_render_target = GraphicsEngine::GetInstance().getDefaultRenderTarget();
                 gfx::RenderBuffer& default_render_buffer = GraphicsEngine::GetInstance().getDefaultRenderBuffer();
 
-                // PRESENT -> RENDER_TARGET
-                default_render_target.getTexture().barrierTransition(command, gfx::ResourceState::cRenderTarget);
+                // GPU 計測
+                debug::PerfTime::GetInstance().startMainGPU(command);
+                {
+                    // PRESENT -> RENDER_TARGET
+                    default_render_target.getTexture().barrierTransition(command, gfx::ResourceState::cRenderTarget);
 
-                // クリアする
-                default_render_buffer.clear(command, Color::cGray(), 1.f, 0, gfx::EClearType::cColor);
+                    // クリアする
+                    default_render_buffer.clear(command, Color::cGray(), 1.f, 0, gfx::EClearType::cColor);
 
-                // レンダーバッファーセット
-                default_render_buffer.bind(command);
+                    // レンダーバッファーセット
+                    default_render_buffer.bind(command);
 
-                // ビューポート
-                gfx::Viewport(default_render_buffer).setCommand(command);
+                    // ビューポート
+                    gfx::Viewport(default_render_buffer).setCommand(command);
 
-                // コールバック
-                if (p_callback) { p_callback->onMakeCommand(command); }
+                    // コールバック
+                    if (p_callback) { p_callback->onMakeCommand(command); }
+                }
+                debug::PerfTime::GetInstance().endMainGPU(command);
+
+                // デバッグ描画
+                debug::PerfTime::GetInstance().drawDebugText(command);
 
                 // RENDER_TARGET -> PRESENT
                 default_render_target.getTexture().barrierTransition(command, gfx::ResourceState::cPresent);
@@ -134,13 +145,18 @@ int Application::enterLoop(IApplicationCallback* p_callback)
             accessor.getMainCommandList().end();
         }
 
+        // 計測終了
+        debug::PerfTime::GetInstance().endMainCPU();
+
         // コマンド実行と VSync 待ち
         GraphicsEngine::GetInstance().waitCommandQueue();
 
-        //debug::PerfTime::GetInstance().end();
+        // ここでコマンド実行が終わるので計測結果を読み込む
+        debug::PerfTime::GetInstance().resolveGPUTimestamp();
     }
 
     // ウィンドウを閉じる前にグラフィックスの後処理
+    bel::debug::PerfTime::GetInstance().finalize();
     mSystemResourceHolder = res::SystemResourceHolder();
     GraphicsEngine::GetInstance().finalize();
 

@@ -12,6 +12,8 @@
 #include "graphics/common/belGraphicsPipeline.h"
 #include "graphics/common/belGraphicsTexture.h"
 
+namespace bel::gfx { class CommandContext; }
+
 namespace bel::debug {
 //-----------------------------------------------------------------------------
 class TextRender
@@ -22,9 +24,10 @@ class TextRender
 public:
     /*!
      * 初期化
-     * @param[in] max_length 最大文字数
+     * @param[in] max_length    最大文字数
+     * @param[in] output_format 出力先フォーマット
      */
-    void initialize(uint32_t max_length);
+    void initialize(uint32_t max_length, gfx::TextureFormat output_format);
 
     //-------------------------------------------------------------------------
     // render

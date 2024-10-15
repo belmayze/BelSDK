@@ -83,6 +83,9 @@ public:
     //! テクスチャーコピーキューを取得
     gfx::TextureCopyQueue& getTextureCopyQueue() { BEL_ASSERT(mpTextureCopyQueue.get()); return *mpTextureCopyQueue.get(); }
 
+    //! タイムスタンプ用の周波数を取得
+    uint64_t getTimestampFrequency() const;
+
     //-------------------------------------------------------------------------
 public:
     //! アプリケーションクラスから取得できる関数

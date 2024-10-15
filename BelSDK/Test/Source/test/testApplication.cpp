@@ -101,9 +101,6 @@ void Application::initialize()
 
         mToneMappingPipeline.initialize(init_arg, resource);
     }
-    {
-        mDebugTextRender.initialize(1024);
-    }
 }
 //-----------------------------------------------------------------------------
 // callback
@@ -208,11 +205,6 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
         mPipeline.setPipeline(command);
         descriptor_heap.setDescriptorHeap(handle, command);
         mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cCube).drawIndexedInstanced(command);
-    }
-
-    // 文字列描画
-    {
-        mDebugTextRender.draw(command, "Hello World", bel::Vector2(0.f, 360.f), 32.f);
     }
 
     // バリア

@@ -10,6 +10,7 @@
 #include "graphics/common/belGraphicsTextureType.h"
 #include "graphics/internal/belGraphicsGlobalDescriptorHandle.h"
 
+namespace bel::gfx { class CommandContext; }
 namespace bel::res { class Texture; }
 
 namespace bel::gfx {
