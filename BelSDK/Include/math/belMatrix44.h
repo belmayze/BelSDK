@@ -13,14 +13,14 @@
 
 namespace bel {
 //-----------------------------------------------------------------------------
-class Matrix44
+class alignas(16) Matrix44
 {
     //-------------------------------------------------------------------------
     // constructor
     //-------------------------------------------------------------------------
 public:
     //! 単位行列で初期化するコンストラクター
-    constexpr Matrix44() {}
+    constexpr Matrix44() : mV{ {1.f, 0.f, 0.f, 0.f}, {0.f, 1.f, 0.f, 0.f}, {0.f, 0.f, 1.f, 0.f}, {0.f, 0.f, 0.f, 1.f} } {}
     //! 直接初期化するコンストラクター
     constexpr Matrix44(const Vector4& v0, const Vector4& v1, const Vector4& v2, const Vector4& v3)
         : mV{ v0, v1, v2, v3 } {}
@@ -118,11 +118,17 @@ public:
 
     //-------------------------------------------------------------------------
 private:
-    Vector4 mV[4] = {
-        Vector4(1.f, 0.f, 0.f, 0.f),
-        Vector4(0.f, 1.f, 0.f, 0.f),
-        Vector4(0.f, 0.f, 1.f, 0.f),
-        Vector4(0.f, 0.f, 0.f, 1.f)
+    union
+    {
+        struct
+        {
+            float mM00, mM01, mM02, mM03;
+            float mM10, mM11, mM12, mM13;
+            float mM20, mM21, mM22, mM23;
+            float mM30, mM31, mM32, mM33;
+        };
+        Vector4 mV[4];
+        float   mF[16];
     };
 };
 //-----------------------------------------------------------------------------

@@ -12,14 +12,14 @@ namespace bel { class Vector3; }
 
 namespace bel {
 //-----------------------------------------------------------------------------
-class Vector4
+class alignas(16) Vector4
 {
     //-------------------------------------------------------------------------
     // constructor
     //-------------------------------------------------------------------------
 public:
     //! 0で初期化するコンストラクター
-    constexpr Vector4() {}
+    constexpr Vector4() : mX(0.f), mY(0.f), mZ(0.f), mW(0.f) {}
     //! すべて同じ数値で初期化するコンストラクター
     constexpr Vector4(float f) : mX(f), mY(f), mZ(f), mW(f) {}
     //! 任意の数値で初期化するコンストラクター
@@ -62,8 +62,8 @@ public:
     //-------------------------------------------------------------------------
 public:
     //! 配列キャスト
-    constexpr operator       float* ()       { return &mX; }
-    constexpr operator const float* () const { return &mX; }
+    constexpr operator       float* ()       { return mF; }
+    constexpr operator const float* () const { return mF; }
 
     //-------------------------------------------------------------------------
     // assignment operators
@@ -99,10 +99,14 @@ public:
 
     //-------------------------------------------------------------------------
 private:
-    float mX = 0.f;
-    float mY = 0.f;
-    float mZ = 0.f;
-    float mW = 0.f;
+    union
+    {
+        struct
+        {
+            float mX, mY, mZ, mW;
+        };
+        float mF[4];
+    };
 };
 //-----------------------------------------------------------------------------
 } // bel::
