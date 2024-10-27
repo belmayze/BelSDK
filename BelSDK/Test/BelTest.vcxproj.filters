@@ -19,6 +19,9 @@
     <Filter Include="ソース ファイル\test\container">
       <UniqueIdentifier>{251101ea-4fe1-491d-b7ec-de67644b1dea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\test\math">
+      <UniqueIdentifier>{c5ee3714-7e60-47b5-9b4e-9cf344e35ddd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\main.cpp">
@@ -36,6 +39,9 @@
     <ClCompile Include="Source\test\testApplication.cpp">
       <Filter>ソース ファイル\test</Filter>
     </ClCompile>
+    <ClCompile Include="Source\test\math\testMatrix.cpp">
+      <Filter>ソース ファイル\test\math</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\test\test.h">
@@ -52,6 +58,9 @@
     </ClInclude>
     <ClInclude Include="Source\test\testApplication.h">
       <Filter>ソース ファイル\test</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\test\math\testMatrix.h">
+      <Filter>ソース ファイル\test\math</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

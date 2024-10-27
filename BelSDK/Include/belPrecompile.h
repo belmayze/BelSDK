@@ -31,6 +31,12 @@
 #   include <wrl/client.h> // ComPtr
 #endif // BEL_PLATFORM_IS_WIN()
 
+// SIMD
+#include <intrin.h>
+#if BEL_SIMD_USE_AVX2()
+#   include <immintrin.h>
+#endif // BEL_SIMD_USE_AVX2()
+
 // graphics
 #if BEL_GRAPHICS_IS_D3D()
 #   include <d3d12.h>

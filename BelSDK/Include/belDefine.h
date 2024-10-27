@@ -20,6 +20,10 @@
 #define BEL_PLATFORM_IS_WIN() (BEL_PLATFORM == BEL_PLATFORM_WIN)
 
 //-----------------------------------------------------------------------------
+// SIMD
+#define BEL_SIMD_USE_AVX2() (1 || defined(__AVX2__))
+
+//-----------------------------------------------------------------------------
 // library
 #define BEL_GRAPHICS_D3D (0)
 

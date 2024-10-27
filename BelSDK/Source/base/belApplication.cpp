@@ -31,6 +31,24 @@ bool Application::initialize(const InitializeArg& arg)
     // コンテントルートを設定
     ApplicationWindow::GetInstance().setContentRoot(arg.content_root ? arg.content_root : "");
 
+    // CPU チェック
+    {
+        int cpu_info[8];
+        int cpu_info_ex[4];
+        __cpuid(&cpu_info[0], 0);
+        __cpuid(&cpu_info[4], 1);
+        __cpuidex(&cpu_info_ex[0], 7, 0);
+
+        // AVX2
+#       if BEL_SIMD_USE_AVX2()
+        if (cpu_info[0] < 7 || (cpu_info[6] & 0x38081001) != 0x38081001 || (cpu_info_ex[1] & 0x20) != 0x20)
+        {
+            BEL_ERROR_LOG("AVX2 の命令に対応していません");
+            return false;
+        }
+#       endif // BEL_SIMD_USE_AVX2()
+    }
+
     return true;
 }
 //-----------------------------------------------------------------------------

@@ -119,6 +119,50 @@ Matrix44& Matrix44::setMul(const Matrix44& m1, const Matrix34& m2)
 //-----------------------------------------------------------------------------
 Matrix44& Matrix44::mul(Matrix44& out, const Matrix44& m) const
 {
+#   if BEL_SIMD_USE_AVX2()
+    __m256 t0 = _mm256_castps128_ps256(mR[0]);
+    t0 = _mm256_insertf128_ps(t0, mR[1], 1);
+    __m256 t1 = _mm256_castps128_ps256(mR[2]);
+    t1 = _mm256_insertf128_ps(t1, mR[3], 1);
+
+    __m256 u0 = _mm256_castps128_ps256(m.mR[0]);
+    u0 = _mm256_insertf128_ps(u0, m.mR[1], 1);
+    __m256 u1 = _mm256_castps128_ps256(m.mR[2]);
+    u1 = _mm256_insertf128_ps(u1, m.mR[3], 1);
+
+    __m256 a0 = _mm256_shuffle_ps(t0, t0, _MM_SHUFFLE(0, 0, 0, 0));
+    __m256 a1 = _mm256_shuffle_ps(t1, t1, _MM_SHUFFLE(0, 0, 0, 0));
+    __m256 b0 = _mm256_permute2f128_ps(u0, u0, 0);
+    __m256 c0 = _mm256_mul_ps(a0, b0);
+    __m256 c1 = _mm256_mul_ps(a1, b0);
+
+    a0 = _mm256_shuffle_ps(t0, t0, _MM_SHUFFLE(1, 1, 1, 1));
+    a1 = _mm256_shuffle_ps(t1, t1, _MM_SHUFFLE(1, 1, 1, 1));
+    b0 = _mm256_permute2f128_ps(u0, u0, 0x11);
+    __m256 c2 = _mm256_fmadd_ps(a0, b0, c0);
+    __m256 c3 = _mm256_fmadd_ps(a1, b0, c1);
+
+    a0 = _mm256_shuffle_ps(t0, t0, _MM_SHUFFLE(2, 2, 2, 2));
+    a1 = _mm256_shuffle_ps(t1, t1, _MM_SHUFFLE(2, 2, 2, 2));
+    __m256 b1 = _mm256_permute2f128_ps(u1, u1, 0);
+    __m256 c4 = _mm256_mul_ps(a0, b1);
+    __m256 c5 = _mm256_mul_ps(a1, b1);
+
+    a0 = _mm256_shuffle_ps(t0, t0, _MM_SHUFFLE(3, 3, 3, 3));
+    a1 = _mm256_shuffle_ps(t1, t1, _MM_SHUFFLE(3, 3, 3, 3));
+    b1 = _mm256_permute2f128_ps(u1, u1, 0x11);
+    __m256 c6 = _mm256_fmadd_ps(a0, b1, c4);
+    __m256 c7 = _mm256_fmadd_ps(a1, b1, c5);
+
+    t0 = _mm256_add_ps(c2, c6);
+    t1 = _mm256_add_ps(c3, c7);
+
+    out.mR[0] = _mm256_castps256_ps128(t0);
+    out.mR[1] = _mm256_extractf128_ps(t0, 1);
+    out.mR[2] = _mm256_castps256_ps128(t1);
+    out.mR[3] = _mm256_extractf128_ps(t1, 1);
+
+#   else
     out.mV[0][0] = mV[0][0] * m.mV[0][0] + mV[0][1] * m.mV[1][0] + mV[0][2] * m.mV[2][0] + mV[0][3] * m.mV[3][0];
     out.mV[0][1] = mV[0][0] * m.mV[0][1] + mV[0][1] * m.mV[1][1] + mV[0][2] * m.mV[2][1] + mV[0][3] * m.mV[3][1];
     out.mV[0][2] = mV[0][0] * m.mV[0][2] + mV[0][1] * m.mV[1][2] + mV[0][2] * m.mV[2][2] + mV[0][3] * m.mV[3][2];
@@ -138,6 +182,7 @@ Matrix44& Matrix44::mul(Matrix44& out, const Matrix44& m) const
     out.mV[3][1] = mV[3][0] * m.mV[0][1] + mV[3][1] * m.mV[1][1] + mV[3][2] * m.mV[2][1] + mV[3][3] * m.mV[3][1];
     out.mV[3][2] = mV[3][0] * m.mV[0][2] + mV[3][1] * m.mV[1][2] + mV[3][2] * m.mV[2][2] + mV[3][3] * m.mV[3][2];
     out.mV[3][3] = mV[3][0] * m.mV[0][3] + mV[3][1] * m.mV[1][3] + mV[3][2] * m.mV[2][3] + mV[3][3] * m.mV[3][3];
+#   endif // BEL_SIMD_USE_AVX2()
     return out;
 }
 //-----------------------------------------------------------------------------

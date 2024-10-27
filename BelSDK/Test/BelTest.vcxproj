@@ -14,12 +14,14 @@
     <ClCompile Include="Source\main.cpp" />
     <ClCompile Include="Source\test\container\testDeque.cpp" />
     <ClCompile Include="Source\test\container\testVector.cpp" />
+    <ClCompile Include="Source\test\math\testMatrix.cpp" />
     <ClCompile Include="Source\test\testApplication.cpp" />
     <ClCompile Include="Source\test\testExecutor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\test\container\testDeque.h" />
     <ClInclude Include="Source\test\container\testVector.h" />
+    <ClInclude Include="Source\test\math\testMatrix.h" />
     <ClInclude Include="Source\test\test.h" />
     <ClInclude Include="Source\test\testApplication.h" />
     <ClInclude Include="Source\test\testExecutor.h" />
