@@ -44,4 +44,15 @@ public:
 #else
 #   define BEL_DEBUG_LOG(...)
 #endif // BEL_TARGET_IS_DEBUG()
+
+//-----------------------------------------------------------------------------
+// assert
+#if BEL_TARGET_IS_DEBUG()
+#   define BEL_ASSERT(cond)                   { assert(cond); }
+#   define BEL_ASSERT_MSG(cond, ...) { if (!(cond)) { BEL_ERROR_LOG(__VA_ARGS__); assert(cond); } }
+#else
+#   define BEL_ASSERT(cond)
+#   define BEL_ASSERT_MSG(cond, ...)
+#endif // BEL_TARGET_IS_DEBUG()
+
 //-----------------------------------------------------------------------------

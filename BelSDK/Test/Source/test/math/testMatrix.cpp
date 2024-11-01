@@ -12,6 +12,7 @@ namespace app::test {
 //-----------------------------------------------------------------------------
 void Matrix::test()
 {
+#   if 0
     // 計測
     auto start_time = std::chrono::system_clock::now();
     bel::Matrix44 m;
@@ -52,6 +53,24 @@ void Matrix::test()
     BEL_INFO_LOG("       [1]: %f %f %f %f\n", m.m(1, 0), m.m(1, 1), m.m(1, 2), m.m(1, 3));
     BEL_INFO_LOG("       [2]: %f %f %f %f\n", m.m(2, 0), m.m(2, 1), m.m(2, 2), m.m(2, 3));
     BEL_INFO_LOG("       [3]: %f %f %f %f\n", m.m(3, 0), m.m(3, 1), m.m(3, 2), m.m(3, 3));
+#   elif 0
+    // 逆行列テスト
+    bel::Matrix44 m(
+        2.0f, 0.5f, 0.2f, 0.1f,
+        0.1f, 1.5f, 0.6f, 0.7f,
+        0.9f, 0.8f, 2.2f, 0.5f,
+        0.1f, 0.5f, 0.3f, 2.f
+    );
+    bel::Matrix44 m_inv;
+    m.inverse(m_inv);
+    bel::Matrix44 c;
+    m.mul(c, m_inv);
+
+    BEL_INFO_LOG("Matrix [0]: %f %f %f %f\n", c.m(0, 0), c.m(0, 1), c.m(0, 2), c.m(0, 3));
+    BEL_INFO_LOG("       [1]: %f %f %f %f\n", c.m(1, 0), c.m(1, 1), c.m(1, 2), c.m(1, 3));
+    BEL_INFO_LOG("       [2]: %f %f %f %f\n", c.m(2, 0), c.m(2, 1), c.m(2, 2), c.m(2, 3));
+    BEL_INFO_LOG("       [3]: %f %f %f %f\n", c.m(3, 0), c.m(3, 1), c.m(3, 2), c.m(3, 3));
+#   endif
 }
 //-----------------------------------------------------------------------------
 }

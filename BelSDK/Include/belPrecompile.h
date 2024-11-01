@@ -22,6 +22,7 @@
 
 // bel base
 #include "belDefine.h"
+#include "debug/belConsole.h"
 
 // platforms
 #if BEL_PLATFORM_IS_WIN()
@@ -46,7 +47,6 @@
 // bel
 #include "util/belUtilEnum.h"
 #include "debug/performance/belPerfTime.h"
-#include "debug/belConsole.h"
 // bel/*define
 #include "graphics/belGraphicsDefine.h"
 // bel/common

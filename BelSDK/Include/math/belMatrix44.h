@@ -30,7 +30,7 @@ public:
         float m10, float m11, float m12, float m13,
         float m20, float m21, float m22, float m23,
         float m30, float m31, float m32, float m33
-    ) : mV{ (m00, m01, m02, m03), (m10, m11, m12, m13), (m20, m21, m22, m23), (m30, m31, m32, m33) } {}
+    ) : mV{ Vector4(m00, m01, m02, m03), Vector4(m10, m11, m12, m13), Vector4(m20, m21, m22, m23), Vector4(m30, m31, m32, m33) } {}
 
     //-------------------------------------------------------------------------
     // getter / setter
@@ -117,6 +117,16 @@ public:
     inline Vector4& mul(Vector4& out, const Vector4& v) const;
 
     //-------------------------------------------------------------------------
+    // transpose / inverse
+    //-------------------------------------------------------------------------
+public:
+    //! 倒置行列を求めます
+    inline Matrix44& transpose(Matrix44& out) const;
+
+    //! 逆行列を求めます
+    inline Matrix44& inverse(Matrix44& out) const;
+
+    //-------------------------------------------------------------------------
 private:
     union
     {
@@ -129,9 +139,6 @@ private:
         };
         Vector4 mV[4];
         float   mF[16];
-#       if BEL_SIMD_USE_AVX2()
-        __m128  mR[4];
-#       endif // BEL_SIMD_USE_AVX2()
     };
 };
 //-----------------------------------------------------------------------------

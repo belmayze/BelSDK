@@ -21,7 +21,8 @@
 
 //-----------------------------------------------------------------------------
 // SIMD
-#define BEL_SIMD_USE_AVX2() (1 || defined(__AVX2__))
+#define BEL_SIMD_USE_AVX()  (1)
+#define BEL_SIMD_USE_AVX2() (1 && BEL_SIMD_USE_AVX())
 
 //-----------------------------------------------------------------------------
 // library
@@ -48,13 +49,3 @@
 
 #define BEL_TARGET_IS_DEBUG()   (BEL_TARGET == BEL_TARGET_DEBUG)
 #define BEL_TARGET_IS_RELEASE() (BEL_TARGET == BEL_TARGET_RELEASE)
-
-
-//-----------------------------------------------------------------------------
-//-----------------------------------------------------------------------------
-// assert
-#if BEL_TARGET_IS_DEBUG()
-#   define BEL_ASSERT(cond)     { assert(cond); }
-#else
-#   define BEL_ASSERT(cond)
-#endif // BEL_TARGET_IS_DEBUG()
