@@ -7,22 +7,28 @@
  */
 #pragma once
 
-namespace bel::con {
+namespace bel::hid {
 //-----------------------------------------------------------------------------
 enum class ButtonType : uint8_t
 {
-    cButtonA,
-    cButtonB,
-    cButtonX,
-    cButtonY,
-    cButtonL1,
-    cButtonR1,
-    cButtonL2,
-    cButtonR2,
-    cButtonL3,
-    cButtonR3,
+    cA,
+    cB,
+    cX,
+    cY,
+    cDPadUp,
+    cDPadDown,
+    cDPadLeft,
+    cDPadRight,
+    cStart,
+    cBack,
+    cL1,
+    cR1,
+    cL2,
+    cR2,
+    cL3,
+    cR3,
 
     cNum
 };
 //-----------------------------------------------------------------------------
-} // bel::con::
+} // bel::hid::

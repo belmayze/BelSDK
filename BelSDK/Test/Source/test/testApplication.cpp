@@ -9,7 +9,10 @@
 #include "graphics/common/belGraphicsDynamicDescriptorHeap.h"
 #include "graphics/dev/belGraphicsDevMeshHolder.h"
 #include "graphics/belGraphicsEngine.h"
+#include "hid/belController.h"
 #include "resource/belResourceLoader.h"
+// bel/modules
+#include "hid/belHidModule.h"
 // app
 #include "test/testApplication.h"
 
@@ -17,6 +20,15 @@ namespace app::test {
 //-----------------------------------------------------------------------------
 void Application::initialize()
 {
+    // モジュール初期化
+    {
+        {
+            auto p_module = std::make_unique<bel::hid::HidModule>();
+            p_module->initialize();
+            mModules[cModuleTypeController] = std::move(p_module);
+        }
+    }
+
     // スクリーン用メッシュ生成
     {
         bel::gfx::Mesh::InitializeArg init_arg;
@@ -101,12 +113,98 @@ void Application::initialize()
 
         mToneMappingPipeline.initialize(init_arg, resource);
     }
+
+    // デバッグ文字列
+    {
+        mTextRender.initialize(1024, mColorTexture.getFormat());
+    }
 }
 //-----------------------------------------------------------------------------
 // callback
 //-----------------------------------------------------------------------------
 void Application::onCalc()
 {
+    // モジュールの更新
+    for (auto& module : mModules)
+    {
+        module->update();
+    }
+
+    // コントローラーの状況を文字列描画
+    {
+        bel::hid::HidModule& hid_module = *static_cast<bel::hid::HidModule*>(mModules[cModuleTypeController].get());
+        const bel::hid::Controller& controller = hid_module.getController(0);
+
+        char text[1024];
+        snprintf(
+            text, 1024,
+            "CTRL[0] [%s] Press   : %s%s%s%s%s%s%s%s | %s %s %s %s %s %s | %s %s\n"
+            "             Trigger : %s%s%s%s%s%s%s%s | %s %s %s %s %s %s | %s %s\n"
+            "             Release : %s%s%s%s%s%s%s%s | %s %s %s %s %s %s | %s %s\n"
+            "             Stick   : LX[%+.2f] LY[%+.2f] | RX[%+.2f] RY[%+.2f]\n"
+            "             Trigger : L[%.2f] R[%.2f]",
+            controller.isConnected() ? "OK" : "NG",
+            controller.isPress(bel::hid::ButtonType::cA) ? "A" : "-",
+            controller.isPress(bel::hid::ButtonType::cB) ? "B" : "-",
+            controller.isPress(bel::hid::ButtonType::cX) ? "X" : "-",
+            controller.isPress(bel::hid::ButtonType::cY) ? "Y" : "-",
+            controller.isPress(bel::hid::ButtonType::cDPadUp)    ? "U" : "-",
+            controller.isPress(bel::hid::ButtonType::cDPadDown)  ? "D" : "-",
+            controller.isPress(bel::hid::ButtonType::cDPadLeft)  ? "L" : "-",
+            controller.isPress(bel::hid::ButtonType::cDPadRight) ? "R" : "-",
+            controller.isPress(bel::hid::ButtonType::cL1) ? "L1" : " -",
+            controller.isPress(bel::hid::ButtonType::cR1) ? "R1" : " -",
+            controller.isPress(bel::hid::ButtonType::cL2) ? "L2" : " -",
+            controller.isPress(bel::hid::ButtonType::cR2) ? "R2" : " -",
+            controller.isPress(bel::hid::ButtonType::cL3) ? "L3" : " -",
+            controller.isPress(bel::hid::ButtonType::cR3) ? "R3" : " -",
+            controller.isPress(bel::hid::ButtonType::cStart) ? "ST" : " -",
+            controller.isPress(bel::hid::ButtonType::cBack)  ? "BK" : " -",
+
+            controller.isTrigger(bel::hid::ButtonType::cA) ? "A" : "-",
+            controller.isTrigger(bel::hid::ButtonType::cB) ? "B" : "-",
+            controller.isTrigger(bel::hid::ButtonType::cX) ? "X" : "-",
+            controller.isTrigger(bel::hid::ButtonType::cY) ? "Y" : "-",
+            controller.isTrigger(bel::hid::ButtonType::cDPadUp)    ? "U" : "-",
+            controller.isTrigger(bel::hid::ButtonType::cDPadDown)  ? "D" : "-",
+            controller.isTrigger(bel::hid::ButtonType::cDPadLeft)  ? "L" : "-",
+            controller.isTrigger(bel::hid::ButtonType::cDPadRight) ? "R" : "-",
+            controller.isTrigger(bel::hid::ButtonType::cL1) ? "L1" : " -",
+            controller.isTrigger(bel::hid::ButtonType::cR1) ? "R1" : " -",
+            controller.isTrigger(bel::hid::ButtonType::cL2) ? "L2" : " -",
+            controller.isTrigger(bel::hid::ButtonType::cR2) ? "R2" : " -",
+            controller.isTrigger(bel::hid::ButtonType::cL3) ? "L3" : " -",
+            controller.isTrigger(bel::hid::ButtonType::cR3) ? "R3" : " -",
+            controller.isTrigger(bel::hid::ButtonType::cStart) ? "ST" : " -",
+            controller.isTrigger(bel::hid::ButtonType::cBack)  ? "BK" : " -",
+
+            controller.isRelease(bel::hid::ButtonType::cA) ? "A" : "-",
+            controller.isRelease(bel::hid::ButtonType::cB) ? "B" : "-",
+            controller.isRelease(bel::hid::ButtonType::cX) ? "X" : "-",
+            controller.isRelease(bel::hid::ButtonType::cY) ? "Y" : "-",
+            controller.isRelease(bel::hid::ButtonType::cDPadUp)    ? "U" : "-",
+            controller.isRelease(bel::hid::ButtonType::cDPadDown)  ? "D" : "-",
+            controller.isRelease(bel::hid::ButtonType::cDPadLeft)  ? "L" : "-",
+            controller.isRelease(bel::hid::ButtonType::cDPadRight) ? "R" : "-",
+            controller.isRelease(bel::hid::ButtonType::cL1) ? "L1" : " -",
+            controller.isRelease(bel::hid::ButtonType::cR1) ? "R1" : " -",
+            controller.isRelease(bel::hid::ButtonType::cL2) ? "L2" : " -",
+            controller.isRelease(bel::hid::ButtonType::cR2) ? "R2" : " -",
+            controller.isRelease(bel::hid::ButtonType::cL3) ? "L3" : " -",
+            controller.isRelease(bel::hid::ButtonType::cR3) ? "R3" : " -",
+            controller.isRelease(bel::hid::ButtonType::cStart) ? "ST" : " -",
+            controller.isRelease(bel::hid::ButtonType::cBack)  ? "BK" : " -",
+            
+            controller.getLeftStick().x(),
+            controller.getLeftStick().y(),
+            controller.getRightStick().x(),
+            controller.getRightStick().y(),
+            controller.getLeftTrigger(),
+            controller.getRightTrigger()
+            );
+        mTextRender.calcText(text, bel::Vector2(0.f, 0.f), 16.f);
+    }
+
     // カメラ更新
     {
         mModelCB.swapBuffer();
@@ -206,6 +304,9 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
         descriptor_heap.setDescriptorHeap(handle, command);
         mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cCube).drawIndexedInstanced(command);
     }
+
+    // 文字列描画
+    mTextRender.draw(command);
 
     // バリア
     mColorTexture.barrierTransition(command, bel::gfx::ResourceState::cGenericRead);

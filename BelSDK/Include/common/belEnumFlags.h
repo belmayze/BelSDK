@@ -13,7 +13,7 @@ namespace bel {
 //-----------------------------------------------------------------------------
 // 列挙フラグ
 //-----------------------------------------------------------------------------
-template <typename T>
+template <typename T, size_t N = static_cast<size_t>(T::cNum)>
 class EnumFlags
 {
     // enum のみ許可
@@ -58,6 +58,13 @@ public:
         return *this;
     }
 
+    //! すべてのビットを反転する
+    constexpr EnumFlags& flip()
+    {
+        mBits.flip();
+        return *this;
+    }
+
     //-------------------------------------------------------------------------
     // getter
     //-------------------------------------------------------------------------
@@ -96,12 +103,31 @@ public:
     //! 1になっているビットの数を取得する
     constexpr size_t count() const { return mBits.count(); }
 
+    //-------------------------------------------------------------------------
+    // operator
+    //-------------------------------------------------------------------------
+public:
     //! 任意の位置のビットにアクセスする
     constexpr bool operator[](T e) const { return mBits[static_cast<BaseT>(e)]; }
 
+    //! ビット演算
+    constexpr EnumFlags operator~() const { EnumFlags temp = *this; temp.flip(); return temp; }
+
+    constexpr EnumFlags& operator&=(const EnumFlags& rhs) { mBits &= rhs.mBits; return *this; }
+    constexpr EnumFlags& operator|=(const EnumFlags& rhs) { mBits |= rhs.mBits; return *this; }
+    constexpr EnumFlags& operator^=(const EnumFlags& rhs) { mBits ^= rhs.mBits; return *this; }
+    constexpr EnumFlags& operator<<=(size_t pos) { mBits <<= pos; return *this; }
+    constexpr EnumFlags& operator>>=(size_t pos) { mBits >>= pos; return *this; }
+
+    constexpr EnumFlags operator&(const EnumFlags& rhs) const { EnumFlags temp = *this; temp &= rhs; return temp; }
+    constexpr EnumFlags operator|(const EnumFlags& rhs) const { EnumFlags temp = *this; temp |= rhs; return temp; }
+    constexpr EnumFlags operator^(const EnumFlags& rhs) const { EnumFlags temp = *this; temp ^= rhs; return temp; }
+    constexpr EnumFlags operator<<(size_t pos) const { EnumFlags temp = *this; temp <<= pos; return temp; }
+    constexpr EnumFlags operator>>(size_t pos) const { EnumFlags temp = *this; temp >>= pos; return temp; }
+
     //-------------------------------------------------------------------------
 private:
-    std::bitset<static_cast<BaseT>(T::cNum)> mBits;
+    std::bitset<static_cast<BaseT>(N)> mBits;
 
     //-------------------------------------------------------------------------
 private:
@@ -120,5 +146,6 @@ private:
     constexpr bool testAll() const { return true; }
     constexpr bool testAny() const { return false; }
 };
+
 //-----------------------------------------------------------------------------
 }

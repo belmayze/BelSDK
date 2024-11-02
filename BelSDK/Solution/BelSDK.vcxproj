@@ -19,11 +19,10 @@
     <ClInclude Include="..\Include\belMain.h" />
     <ClInclude Include="..\Include\belPrecompile.h" />
     <ClInclude Include="..\Include\common\belEnumFlags.h" />
+    <ClInclude Include="..\Include\common\belIModule.h" />
     <ClInclude Include="..\Include\common\belOptionParser.h" />
     <ClInclude Include="..\Include\container\belDeque.h" />
     <ClInclude Include="..\Include\container\belVector.h" />
-    <ClInclude Include="..\Include\controller\belController.h" />
-    <ClInclude Include="..\Include\controller\belControllerButtonType.h" />
     <ClInclude Include="..\Include\debug\belConsole.h" />
     <ClInclude Include="..\Include\debug\performance\belPerfTime.h" />
     <ClInclude Include="..\Include\debug\text\belDebugTextRender.h" />
@@ -51,6 +50,9 @@
     <ClInclude Include="..\Include\graphics\internal\belGraphicsGlobalDescriptorHandle.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsGlobalDescriptorRegistry.h" />
     <ClInclude Include="..\Include\graphics\internal\belGraphicsTextureCopyQueue.h" />
+    <ClInclude Include="..\Include\hid\belController.h" />
+    <ClInclude Include="..\Include\hid\belControllerButtonType.h" />
+    <ClInclude Include="..\Include\hid\belHidModule.h" />
     <ClInclude Include="..\Include\image\belImage.h" />
     <ClInclude Include="..\Include\math\belColor.h" />
     <ClInclude Include="..\Include\math\belColor.inl.h" />
@@ -84,7 +86,6 @@
     <ClCompile Include="..\Source\base\belApplicationWindowWin.cpp" />
     <ClCompile Include="..\Source\belMain.cpp" />
     <ClCompile Include="..\Source\common\belOptionParser.cpp" />
-    <ClCompile Include="..\Source\controller\belController.cpp" />
     <ClCompile Include="..\Source\debug\belConsole.cpp" />
     <ClCompile Include="..\Source\debug\performance\belPerfTime.cpp" />
     <ClCompile Include="..\Source\debug\text\belDebugTextRender.cpp" />
@@ -107,6 +108,8 @@
     <ClCompile Include="..\Source\graphics\internal\belGraphicsGlobalDescriptorHandle.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsGlobalDescriptorRegistry.cpp" />
     <ClCompile Include="..\Source\graphics\internal\belGraphicsTextureCopyQueue.cpp" />
+    <ClCompile Include="..\Source\hid\belController.cpp" />
+    <ClCompile Include="..\Source\hid\belHidModule.cpp" />
     <ClCompile Include="..\Source\image\belImage.cpp" />
     <ClCompile Include="..\Source\math\belColor.cpp" />
     <ClCompile Include="..\Source\math\belDegree.cpp" />

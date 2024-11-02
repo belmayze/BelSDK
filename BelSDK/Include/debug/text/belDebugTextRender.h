@@ -34,13 +34,18 @@ public:
     //-------------------------------------------------------------------------
 public:
     /*!
-     * 文字列を描画します
-     * @param[in] command  コマンド
+     * 文字列を計算します
      * @param[in] text     テキスト
      * @param[in] position 描画座標
      * @param[in] size     フォントサイズ
      */
-    void draw(gfx::CommandContext& command, const char* text, const Vector2& position, float size) const;
+    void calcText(const char* text, const Vector2& position, float size);
+
+    /*!
+     * 文字列を描画します
+     * @param[in] command コマンド
+     */
+    void draw(gfx::CommandContext& command) const;
 
     //-------------------------------------------------------------------------
 private:
@@ -59,8 +64,9 @@ private:
 
     //-------------------------------------------------------------------------
 private:
-    gfx::Pipeline               mPipeline;
-    mutable gfx::ConstantBuffer mConstantBuffer;
+    uint32_t            mNumInstance = 0;
+    gfx::Pipeline       mPipeline;
+    gfx::ConstantBuffer mConstantBuffer;
 };
 //-----------------------------------------------------------------------------
 }

@@ -30,6 +30,7 @@
 #   define NOMINMAX
 #   include <Windows.h>    // Windows
 #   include <wrl/client.h> // ComPtr
+#   include <Xinput.h>     // XInput
 #endif // BEL_PLATFORM_IS_WIN()
 
 // SIMD

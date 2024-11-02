@@ -40,7 +40,7 @@ void TextRender::initialize(uint32_t max_length, gfx::TextureFormat output_forma
 //-----------------------------------------------------------------------------
 // process
 //-----------------------------------------------------------------------------
-void TextRender::draw(gfx::CommandContext& command, const char* text, const Vector2& position, float size) const
+void TextRender::calcText(const char* text, const Vector2& position, float size)
 {
     // @todo: レイアウトサイズは仮で 1280 x 720
     constexpr Vector2 cLayoutSizeInv(2.f / 1280.f, 2.f / 720.f);
@@ -48,8 +48,8 @@ void TextRender::draw(gfx::CommandContext& command, const char* text, const Vect
     // サイズベース
     Vector2 size_base = size * cLayoutSizeInv;
 
-    // @todo: このタイミングはまずいけどひとまず定数バッファー更新
-    uint32_t num_instance = 0;
+    // 定数バッファー更新
+    mNumInstance = 0;
     Vector2 offset = Vector2(-1.f + position.x() * cLayoutSizeInv.x(), 1.f - position.y() * cLayoutSizeInv.y());
     {
         mConstantBuffer.swapBuffer();
@@ -190,7 +190,7 @@ void TextRender::draw(gfx::CommandContext& command, const char* text, const Vect
             if (not_supported) { continue; }
 
             // UBO 計算
-            InstanceCB& instance = cb.instances[num_instance++];
+            InstanceCB& instance = cb.instances[mNumInstance++];
             instance.position = offset;
             instance.uv_scale.x()  = font_scale / 64.f;
             instance.uv_scale.y()  = 1.f / 128.f;
@@ -203,11 +203,15 @@ void TextRender::draw(gfx::CommandContext& command, const char* text, const Vect
             offset.x() += font_scale * size_base.x();
         }
     }
-
+}
+//-----------------------------------------------------------------------------
+void TextRender::draw(gfx::CommandContext& command) const
+{
     // クラス
     bel::gfx::DynamicDescriptorHeap& descriptor_heap = bel::gfx::DynamicDescriptorHeap::GetInstance();
 
     // 描画
+    if (mNumInstance > 0)
     {
         gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mPipeline.getNumDescriptor());
 
@@ -215,7 +219,7 @@ void TextRender::draw(gfx::CommandContext& command, const char* text, const Vect
         mPipeline.activateTexture(handle, 0, Application::GetInstance().getSystemResource().getDebugTextTexture());
         mPipeline.setPipeline(command);
         descriptor_heap.setDescriptorHeap(handle, command);
-        gfx::dev::MeshHolder::GetInstance().getMesh(gfx::dev::MeshHolder::Type::cQuad).drawIndexedInstanced(command, num_instance);
+        gfx::dev::MeshHolder::GetInstance().getMesh(gfx::dev::MeshHolder::Type::cQuad).drawIndexedInstanced(command, mNumInstance);
     }
 }
 //-----------------------------------------------------------------------------

@@ -8,6 +8,7 @@
 #pragma once
 // bel
 #include "base/belIApplicationCallback.h"
+#include "common/belIModule.h"
 #include "debug/text/belDebugTextRender.h"
 #include "graphics/common/belGraphicsConstantBuffer.h"
 #include "graphics/common/belGraphicsDepthStencil.h"
@@ -54,6 +55,13 @@ private:
         bel::Matrix44 view_projection_matrix;
     };
 
+    //! モジュール
+    enum ModuleType
+    {
+        cModuleTypeController,
+        cModuleTypeNum
+    };
+
     //-------------------------------------------------------------------------
 private:
     bel::gfx::Pipeline       mPipeline;
@@ -68,6 +76,10 @@ private:
     bel::gfx::RenderTarget mRenderTarget;
     bel::gfx::DepthStencil mDepthStencil;
     bel::gfx::RenderBuffer mRenderBuffer;
+
+    bel::debug::TextRender mTextRender;
+
+    std::array<std::unique_ptr<bel::IModule>, cModuleTypeNum> mModules;
 };
 //-----------------------------------------------------------------------------
 }

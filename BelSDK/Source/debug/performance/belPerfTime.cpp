@@ -118,6 +118,15 @@ void PerfTime::resolveGPUTimestamp()
     uint64_t* data = reinterpret_cast<uint64_t*>(ptr);
     context.main_thread_context.gpu_microsec = static_cast<uint32_t>((data[1] - data[0]) * 1000.f * 1000.f / gpu_frequency);
     mpQueryResource->Unmap(0, nullptr);
+
+    // 文字列生成
+    {
+        // @todo: format で初期化できる文字列クラスがほしい
+        char str[1024];
+        snprintf(str, 1024, "CPU:%6.2f%%\nGPU:%6.2f%%", context.main_thread_context.cpu_microsec / 166.6666f, context.main_thread_context.gpu_microsec / 166.6666f);
+
+        mTextRender.calcText(str, Vector2(0.f, 720.f - 32.f), 16);
+    }
 }
 //-----------------------------------------------------------------------------
 // process
@@ -134,17 +143,8 @@ void PerfTime::swapBuffer()
 //-----------------------------------------------------------------------------
 void PerfTime::drawDebugText(gfx::CommandContext& command) const
 {
-    // 前のバッファーの計測結果を取得
-    const MainThreadContext& context = mBufferContexts[1 - mBufferIndex].main_thread_context;
-
     // 計測結果を出力
-    {
-        // @todo: format で初期化できる文字列クラスがほしい
-        char str[1024];
-        snprintf(str, 1024, "CPU:%6.2f%%\nGPU:%6.2f%%", context.cpu_microsec / 166.6666f, context.gpu_microsec / 166.6666f);
-
-        mTextRender.draw(command, str, Vector2(0.f, 720.f - 32.f), 16);
-    }
+    mTextRender.draw(command);
 }
 //-----------------------------------------------------------------------------
 }

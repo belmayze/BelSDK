@@ -103,11 +103,11 @@
     <Filter Include="ヘッダー ファイル\debug\text">
       <UniqueIdentifier>{ee26823b-734f-4f52-bb92-efbd4a4f32c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\controller">
-      <UniqueIdentifier>{b7239569-2f0a-447c-8930-48eeb07e1ae0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ヘッダー ファイル\controller">
+    <Filter Include="ヘッダー ファイル\hid">
       <UniqueIdentifier>{f56c389c-025a-4c13-823d-54afa5b4c7e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\hid">
+      <UniqueIdentifier>{b7239569-2f0a-447c-8930-48eeb07e1ae0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -303,11 +303,17 @@
     <ClInclude Include="..\Include\resource\belSystemResourceHolder.h">
       <Filter>ヘッダー ファイル\resource</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\controller\belController.h">
-      <Filter>ヘッダー ファイル\controller</Filter>
+    <ClInclude Include="..\Include\hid\belController.h">
+      <Filter>ヘッダー ファイル\hid</Filter>
     </ClInclude>
-    <ClInclude Include="..\Include\controller\belControllerButtonType.h">
-      <Filter>ヘッダー ファイル\controller</Filter>
+    <ClInclude Include="..\Include\hid\belControllerButtonType.h">
+      <Filter>ヘッダー ファイル\hid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\common\belIModule.h">
+      <Filter>ヘッダー ファイル\common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\hid\belHidModule.h">
+      <Filter>ヘッダー ファイル\hid</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -431,8 +437,11 @@
     <ClCompile Include="..\Source\resource\belSystemResourceHolder.cpp">
       <Filter>ソース ファイル\resource</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\controller\belController.cpp">
-      <Filter>ソース ファイル\controller</Filter>
+    <ClCompile Include="..\Source\hid\belController.cpp">
+      <Filter>ソース ファイル\hid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\hid\belHidModule.cpp">
+      <Filter>ソース ファイル\hid</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
