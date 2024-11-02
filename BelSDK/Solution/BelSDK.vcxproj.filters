@@ -103,6 +103,12 @@
     <Filter Include="ヘッダー ファイル\debug\text">
       <UniqueIdentifier>{ee26823b-734f-4f52-bb92-efbd4a4f32c5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\controller">
+      <UniqueIdentifier>{b7239569-2f0a-447c-8930-48eeb07e1ae0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\controller">
+      <UniqueIdentifier>{f56c389c-025a-4c13-823d-54afa5b4c7e4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Include\belMain.h">
@@ -297,6 +303,12 @@
     <ClInclude Include="..\Include\resource\belSystemResourceHolder.h">
       <Filter>ヘッダー ファイル\resource</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\controller\belController.h">
+      <Filter>ヘッダー ファイル\controller</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\controller\belControllerButtonType.h">
+      <Filter>ヘッダー ファイル\controller</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -418,6 +430,9 @@
     </ClCompile>
     <ClCompile Include="..\Source\resource\belSystemResourceHolder.cpp">
       <Filter>ソース ファイル\resource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\controller\belController.cpp">
+      <Filter>ソース ファイル\controller</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

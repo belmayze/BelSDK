@@ -22,6 +22,8 @@
     <ClInclude Include="..\Include\common\belOptionParser.h" />
     <ClInclude Include="..\Include\container\belDeque.h" />
     <ClInclude Include="..\Include\container\belVector.h" />
+    <ClInclude Include="..\Include\controller\belController.h" />
+    <ClInclude Include="..\Include\controller\belControllerButtonType.h" />
     <ClInclude Include="..\Include\debug\belConsole.h" />
     <ClInclude Include="..\Include\debug\performance\belPerfTime.h" />
     <ClInclude Include="..\Include\debug\text\belDebugTextRender.h" />
@@ -82,6 +84,7 @@
     <ClCompile Include="..\Source\base\belApplicationWindowWin.cpp" />
     <ClCompile Include="..\Source\belMain.cpp" />
     <ClCompile Include="..\Source\common\belOptionParser.cpp" />
+    <ClCompile Include="..\Source\controller\belController.cpp" />
     <ClCompile Include="..\Source\debug\belConsole.cpp" />
     <ClCompile Include="..\Source\debug\performance\belPerfTime.cpp" />
     <ClCompile Include="..\Source\debug\text\belDebugTextRender.cpp" />
