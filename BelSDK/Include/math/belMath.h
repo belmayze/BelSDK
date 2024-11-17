@@ -16,7 +16,11 @@ class Math
     //-------------------------------------------------------------------------
 public:
     //! 円周率
-    static constexpr float cPi = 3.1415927f;
+    static constexpr float cPi   = 3.1415927f;
+    //! 円周率 * 2
+    static constexpr float c2Pi  = 6.2831853f;
+    //! 円周率 / 2
+    static constexpr float cPi_2 = 1.5707963f;
 
     //-------------------------------------------------------------------------
     // 関数

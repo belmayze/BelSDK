@@ -24,6 +24,8 @@ public:
         cTriangle,
         cQuad,
         cCube,
+        cSphere,
+        cSphereIcosahedron,
         cNum
     };
 
@@ -46,6 +48,16 @@ public:
      * @param[in] type 種別
      */
     const Mesh& getMesh(Type type) const { return mMeshes[to_underlying(type)]; }
+
+    //-------------------------------------------------------------------------
+private:
+    //
+    struct Vertex
+    {
+        Vector3 position;
+        Vector3 normal;
+        Vector2 texcoord;
+    };
 
      //-------------------------------------------------------------------------
 private:
