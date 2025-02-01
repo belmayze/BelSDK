@@ -305,9 +305,6 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
         mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cCube).drawIndexedInstanced(command);
     }
 
-    // 文字列描画
-    mTextRender.draw(command);
-
     // バリア
     mColorTexture.barrierTransition(command, bel::gfx::ResourceState::cGenericRead);
 
@@ -322,6 +319,9 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
         descriptor_heap.setDescriptorHeap(handle, command);
         mScreenMesh.drawInstanced(command);
     }
+
+    // 文字列描画
+    mTextRender.draw(command);
 }
 //-----------------------------------------------------------------------------
 }
