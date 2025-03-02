@@ -29,13 +29,6 @@ void Application::initialize()
         }
     }
 
-    // スクリーン用メッシュ生成
-    {
-        bel::gfx::Mesh::InitializeArg init_arg;
-        init_arg.index_buffer_size = sizeof(uint16_t) * 3;
-        mScreenMesh.initialize(init_arg);
-    }
-    
     // 定数バッファー（モデル）
     {
         bel::gfx::ConstantBuffer::InitializeArg init_arg;
@@ -295,7 +288,7 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
     // クリア
     mRenderBuffer.clear(command, bel::Color::cBlack(), 1.f, 0, { bel::gfx::EClearType::cColor, bel::gfx::EClearType::cDepth });
 
-    // 三角形描画
+    // キューブ描画
     {
         bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mPipeline.getNumDescriptor());
 
@@ -303,6 +296,7 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
         mPipeline.setPipeline(command);
         descriptor_heap.setDescriptorHeap(handle, command);
         mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cCube).drawIndexedInstanced(command);
+        //mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cSphere).drawIndexedInstanced(command);
     }
 
     // バリア
@@ -317,7 +311,7 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
         mToneMappingPipeline.activateConstantBuffer(handle, 0, mToneMappingCB);
         mToneMappingPipeline.setPipeline(command);
         descriptor_heap.setDescriptorHeap(handle, command);
-        mScreenMesh.drawInstanced(command);
+        mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cQuadTriangle).drawInstanced(command);
     }
 
     // 文字列描画

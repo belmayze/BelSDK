@@ -66,7 +66,6 @@ private:
 private:
     bel::gfx::Pipeline       mPipeline;
     bel::gfx::Pipeline       mToneMappingPipeline;
-    bel::gfx::Mesh           mScreenMesh;
 
     bel::gfx::ConstantBuffer mModelCB;
     bel::gfx::ConstantBuffer mToneMappingCB;

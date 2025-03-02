@@ -21,11 +21,11 @@ public:
     //! メッシュの種別
     enum class Type
     {
-        cTriangle,
-        cQuad,
-        cCube,
-        cSphere,
-        cSphereIcosahedron,
+        cTriangle,     //!< 三角形
+        cQuadTriangle, //!< 3点で矩形（オフスクリーンなどで使用する）
+        cQuad,         //!< 四角形
+        cCube,         //!< キューブ
+        cSphere,       //!< スフィア
         cNum
     };
 

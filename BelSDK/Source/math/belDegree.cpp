@@ -14,9 +14,4 @@ namespace bel {
 Degree::Degree(const Radian& radian)
     : mDegree(radian.getValue() * (180.f / Math::cPi)) {}
 //-----------------------------------------------------------------------------
-constexpr Degree::operator const float() const
-{
-    return Radian(*this);
-}
-//-----------------------------------------------------------------------------
 } // bel
