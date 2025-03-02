@@ -67,7 +67,8 @@ private:
     bel::gfx::Pipeline       mPipeline;
     bel::gfx::Pipeline       mToneMappingPipeline;
 
-    bel::gfx::ConstantBuffer mModelCB;
+    bel::gfx::ConstantBuffer mCubeModelCB;
+    bel::gfx::ConstantBuffer mSphereModelCB;
     bel::gfx::ConstantBuffer mToneMappingCB;
 
     bel::gfx::Texture      mColorTexture;

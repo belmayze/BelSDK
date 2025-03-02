@@ -34,12 +34,14 @@ void Application::initialize()
         bel::gfx::ConstantBuffer::InitializeArg init_arg;
         init_arg.num_buffer  = 2;
         init_arg.buffer_size = sizeof(ModelCB);
-        mModelCB.initialize(init_arg);
+        mCubeModelCB.initialize(init_arg);
+        mSphereModelCB.initialize(init_arg);
 
         ModelCB cb;
         cb.world_matrix.makeIdentity();
         cb.view_projection_matrix.makeIdentity();
-        mModelCB.copyStruct(cb);
+        mCubeModelCB.copyStruct(cb);
+        mSphereModelCB.copyStruct(cb);
     }
 
     // 定数バッファー（トーンマッピング）
@@ -100,7 +102,7 @@ void Application::initialize()
 
         bel::gfx::Pipeline::InitializeArg init_arg;
         init_arg.num_render_target        = 1;
-        init_arg.render_target_formats[0] = bel::gfx::TextureFormat::cR8G8B8A8_sRGB;
+        init_arg.render_target_formats[0] = bel::GraphicsEngine::GetInstance().getDefaultRenderTarget().getTexture().getFormat();
         init_arg.num_texture              = 1;
         init_arg.num_constant_buffer      = 1;
 
@@ -109,7 +111,7 @@ void Application::initialize()
 
     // デバッグ文字列
     {
-        mTextRender.initialize(1024, mColorTexture.getFormat());
+        mTextRender.initialize(1024, bel::GraphicsEngine::GetInstance().getDefaultRenderTarget().getTexture().getFormat());
     }
 }
 //-----------------------------------------------------------------------------
@@ -200,10 +202,8 @@ void Application::onCalc()
 
     // カメラ更新
     {
-        mModelCB.swapBuffer();
-        ModelCB& cb = mModelCB.getStruct<ModelCB>();
-
-        // ワールド行列は固定
+        //
+        ModelCB cb;
         cb.world_matrix.makeIdentity();
 
         // ビュープロジェクション行列
@@ -215,7 +215,7 @@ void Application::onCalc()
             // カメラ行列
             bel::Matrix34 view_matrix;
             view_matrix.makeLookAtRH(
-                bel::Vector3(std::sin(bel::Radian(bel::Degree(sFrameCount))) * 2.f, 1.f, std::cos(bel::Radian(bel::Degree(sFrameCount))) * 2.f),
+                bel::Vector3(std::sin(bel::Radian(bel::Degree(sFrameCount))) * 4.f, 1.f, std::cos(bel::Radian(bel::Degree(sFrameCount))) * 4.f),
                 bel::Vector3(0.f, 0.f, 0.f),
                 bel::Vector3(0.f, 1.f, 0.f)
             );
@@ -232,6 +232,16 @@ void Application::onCalc()
             );
             cb.view_projection_matrix.setMul(proj_matrix, view_matrix);
         }
+
+        // キューブUBO
+        mCubeModelCB.swapBuffer();
+        cb.world_matrix.makeTranslate(bel::Vector3(0.75f, 0.f, 0.f));
+        mCubeModelCB.getStruct<ModelCB>() = cb;
+
+        // スフィアUBO
+        mSphereModelCB.swapBuffer();
+        cb.world_matrix.makeTranslate(bel::Vector3(-0.75f, 0.f, 0.f));
+        mSphereModelCB.getStruct<ModelCB>() = cb;
     }
 
     // 定数バッファーのカラー更新
@@ -292,11 +302,19 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
     {
         bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mPipeline.getNumDescriptor());
 
-        mPipeline.activateConstantBuffer(handle, 0, mModelCB);
+        mPipeline.activateConstantBuffer(handle, 0, mCubeModelCB);
         mPipeline.setPipeline(command);
         descriptor_heap.setDescriptorHeap(handle, command);
         mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cCube).drawIndexedInstanced(command);
-        //mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cSphere).drawIndexedInstanced(command);
+    }
+    // スフィア描画
+    {
+        bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mPipeline.getNumDescriptor());
+        
+        mPipeline.activateConstantBuffer(handle, 0, mSphereModelCB);
+        mPipeline.setPipeline(command);
+        descriptor_heap.setDescriptorHeap(handle, command);
+        mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cSphere).drawIndexedInstanced(command);
     }
 
     // バリア
