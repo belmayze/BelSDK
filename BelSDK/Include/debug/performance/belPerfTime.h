@@ -6,6 +6,8 @@
  * Copyright (c) belmayze. All rights reserved.
  */
 #pragma once
+// std
+#include <chrono>
 // bel
 #include "debug/text/belDebugTextRender.h"
 #include "memory/belSingleton.h"
