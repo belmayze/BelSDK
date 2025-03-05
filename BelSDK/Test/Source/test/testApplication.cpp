@@ -48,11 +48,11 @@ void Application::initialize()
     {
         bel::gfx::ConstantBuffer::InitializeArg init_arg;
         init_arg.num_buffer = 2;
-        init_arg.buffer_size = sizeof(bel::Color);
+        init_arg.buffer_size = sizeof(uint32_t);
         mToneMappingCB.initialize(init_arg);
 
-        bel::Color color = bel::Color::cRed();
-        mToneMappingCB.copyStruct(color);
+        uint32_t display_mapping_type = 0;
+        mToneMappingCB.copyStruct(display_mapping_type);
     }
 
     // 出力バッファー生成
@@ -246,41 +246,10 @@ void Application::onCalc()
 
     // 定数バッファーのカラー更新
     {
-        static float sFrameCount = 0.f;
-        sFrameCount += 0.01f;
-        if (sFrameCount >= 3.f) { sFrameCount = 0.f; }
-
-        bel::Color color = bel::Color::cWhite();
-        //if (sFrameCount < 1.f)
-        //{
-        //    // R -> G
-        //    float range = bel::Math::EaseInOutSine(sFrameCount);
-        //    color.r() = 1.f - range;
-        //    color.g() = range;
-        //    color.b() = 0.f;
-        //}
-        //else if (sFrameCount < 2.f)
-        //{
-        //    // G -> B
-        //    float range = bel::Math::EaseInOutSine(sFrameCount - 1.f);
-        //    color.r() = 0.f;
-        //    color.g() = 1.f - range;
-        //    color.b() = range;
-        //}
-        //else if (sFrameCount < 3.f)
-        //{
-        //    // B -> R
-        //    float range = bel::Math::EaseInOutSine(sFrameCount - 2.f);
-        //    color.r() = range;
-        //    color.g() = 0.f;
-        //    color.b() = 1.f - range;
-        //}
-
-        // sRGB -> linear
-        color = color.convertToLinearGamut();
+        uint32_t display_mapping_type = bel::GraphicsEngine::GetInstance().isHdrEnabled() ? 1 : 0;
 
         mToneMappingCB.swapBuffer();
-        mToneMappingCB.copyStruct(color);
+        mToneMappingCB.copyStruct(display_mapping_type);
     }
 }
 //-----------------------------------------------------------------------------

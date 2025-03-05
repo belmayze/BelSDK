@@ -39,8 +39,10 @@ SamplerState      gSampler : register(s0);
 //! Constant Buffer
 cbuffer Buffer0 : register(b0)
 {
-    float4 cColor;
+    uint cDisplayMappingType;
 };
+#define DISPLAY_MAPPING_TYPE_SRGB   ( 0 )
+#define DISPLAY_MAPPING_TYPE_ST2084 ( 1 )
 
 //! カラースペース変換
 float3 srgbTorec2020( float3 srgb )
@@ -85,38 +87,26 @@ float reinhard( float x, float paper_white, float max_luminance )
     return k * x / ( k + x );
 }
 
+//! ST2084
+float3 linearToSt2084( float3 color )
+{
+    const float cM1 = 2610.0 / 4096.0 / 4.0;
+    const float cM2 = 2523.0 / 4096.0 * 128.0;
+    const float cC1 = 3424.0 / 4096.0;
+    const float cC2 = 2413.0 / 4096.0 * 32.0;
+    const float cC3 = 2392.0 / 4096.0 * 32.0;
+    const float cLuminanceMax = 10000.0;
+
+    float3 np = pow( color / cLuminanceMax, cM1 );
+    float3 numerator   = cC1 + cC2 * np;
+    float3 denominator = 1.0 + cC3 * np;
+    return pow( numerator / denominator, cM2 );
+}
+
 //! main
 float4 main(PS_INPUT input) : SV_TARGET
 {
     float4 input_color = gTexture.Sample(gSampler, input.texcoord);
-
-    // 仮
-#if 0
-    {
-        float val = input.texcoord.x;
-
-        if      ( input.texcoord.y < 0.05 ) { input_color.rgb = float3( val, 0.0, 0.0 ); }
-        else if ( input.texcoord.y < 0.10 ) { input_color.rgb = float3( val * 10.0, 0.0, 0.0 ); }
-        else if ( input.texcoord.y < 0.15 ) { input_color.rgb = float3( 0.0, val, 0.0 ); }
-        else if ( input.texcoord.y < 0.20 ) { input_color.rgb = float3( 0.0, val * 10.0, 0.0 ); }
-        else if ( input.texcoord.y < 0.25 ) { input_color.rgb = float3( 0.0, 0.0, val ); }
-        else if ( input.texcoord.y < 0.30 ) { input_color.rgb = float3( 0.0, 0.0, val * 10.0 ); }
-        else if ( input.texcoord.y < 0.35 ) { input_color.rgb = float3( val, val, 0.0 ); }
-        else if ( input.texcoord.y < 0.40 ) { input_color.rgb = float3( val * 10.0, val * 10.0, 0.0 ); }
-        else if ( input.texcoord.y < 0.45 ) { input_color.rgb = float3( 0.0, val, val ); }
-        else if ( input.texcoord.y < 0.50 ) { input_color.rgb = float3( 0.0, val * 10.0, val * 10.0 ); }
-        else if ( input.texcoord.y < 0.55 ) { input_color.rgb = float3( val, 0.0, val ); }
-        else if ( input.texcoord.y < 0.60 ) { input_color.rgb = float3( val * 10.0, 0.0, val * 10.0 ); }
-        else if ( input.texcoord.y < 0.65 ) { input_color.rgb = float3( val, val * 0.5, val * 0.25 ); }
-        else if ( input.texcoord.y < 0.70 ) { input_color.rgb = float3( val * 10.0, val * 5.0, val * 2.5 ); }
-        else if ( input.texcoord.y < 0.75 ) { input_color.rgb = float3( val * 0.25, val, val * 0.5 ); }
-        else if ( input.texcoord.y < 0.80 ) { input_color.rgb = float3( val * 2.5, val * 10.0, val * 5.0 ); }
-        else if ( input.texcoord.y < 0.85 ) { input_color.rgb = float3( val * 0.5, val * 0.25, val ); }
-        else if ( input.texcoord.y < 0.90 ) { input_color.rgb = float3( val * 5.0, val * 2.5, val * 10.0 ); }
-        else if ( input.texcoord.y < 0.95 ) { input_color.rgb = float3( val, val, val ); }
-        else if ( input.texcoord.y < 1.00 ) { input_color.rgb = float3( val * 10.0, val * 10.0, val * 10.0 ); }
-    }
-#endif
 
     // カラー拡張
     float3 pre_tonemapped_color = srgbTorec2020( input_color.rgb );
@@ -131,8 +121,18 @@ float4 main(PS_INPUT input) : SV_TARGET
         tonemapped_color = tonemapped_color * tone_scale / luminance;
     }
 
+    if ( cDisplayMappingType == DISPLAY_MAPPING_TYPE_SRGB )
+    {
+        return float4( rec2020Tosrgb( tonemapped_color ), input_color.a );
+    }
+    else
+    {
+        float paper_white = 80.0;
+        return float4( linearToSt2084( tonemapped_color * paper_white ), input_color.a );
+    }
+
     //
-    return float4( rec2020Tosrgb( tonemapped_color ), input_color.a );
+    return float4( 0.0, 0.0, 0.0, 1.0 );
 }
 
 #endif // BEL_***_SHADER

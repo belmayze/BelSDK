@@ -86,6 +86,9 @@ public:
     //! タイムスタンプ用の周波数を取得
     uint64_t getTimestampFrequency() const;
 
+    //! trueの場合、HDR出力されている
+    bool isHdrEnabled() const { return mIsSupportedHDR; }
+
     //-------------------------------------------------------------------------
 public:
     //! アプリケーションクラスから取得できる関数
