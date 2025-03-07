@@ -87,7 +87,7 @@ public:
     uint64_t getTimestampFrequency() const;
 
     //! trueの場合、HDR出力されている
-    bool isHdrEnabled() const { return mIsSupportedHDR; }
+    bool isHDREnabled() const { return mIsSupportedHDR; }
 
     //-------------------------------------------------------------------------
 public:

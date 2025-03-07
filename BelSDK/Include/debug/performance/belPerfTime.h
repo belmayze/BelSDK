@@ -20,8 +20,9 @@ class PerfTime : public Singleton<PerfTime>
 public:
     /*!
      * 初期化
+     * @param[in] render_texture_format デバッグ描画先のフォーマット
      */
-    bool initialize();
+    bool initialize(gfx::TextureFormat render_texture_format);
 
     /*!
      * 破棄
@@ -90,6 +91,7 @@ private:
 
     //-------------------------------------------------------------------------
 private:
+    bool           mInitialized = false;
     uint32_t       mBufferIndex = 0;
     BufferContexts mBufferContexts;
     TextRender     mTextRender;

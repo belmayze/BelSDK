@@ -39,10 +39,15 @@ SamplerState      gSampler : register(s0);
 //! Constant Buffer
 cbuffer Buffer0 : register(b0)
 {
-    uint cDisplayMappingType;
+    uint  cDisplayMappingType;
+    uint  cToneMappingType;
+    float cHDRPaperWhite;
 };
 #define DISPLAY_MAPPING_TYPE_SRGB   ( 0 )
 #define DISPLAY_MAPPING_TYPE_ST2084 ( 1 )
+
+#define TONE_MAPPING_TYPE_LINEAR ( 0 )
+#define TONE_MAPPING_TYPE_FILMIC ( 1 )
 
 //! カラースペース変換
 float3 srgbTorec2020( float3 srgb )
@@ -106,29 +111,35 @@ float3 linearToSt2084( float3 color )
 //! main
 float4 main(PS_INPUT input) : SV_TARGET
 {
-    float4 input_color = gTexture.Sample(gSampler, input.texcoord);
+    float4 row_color = gTexture.Sample(gSampler, input.texcoord);
 
-    // カラー拡張
-    float3 pre_tonemapped_color = srgbTorec2020( input_color.rgb );
+    // 色域拡張
+    float3 input_color = srgbTorec2020( row_color.rgb );
     
     // RRT (Reference Rendering Transform)
-    float3 tonemapped_color = acesFilm( pre_tonemapped_color );
-
-    // ODT (Output Device Transform)
+    float3 tone_mapped_color;
+    switch (cToneMappingType)
     {
-        float luminance = calcLuminanceRec2020( tonemapped_color );
-        float tone_scale = reinhard( luminance, 80.0, 80.0 );
-        tonemapped_color = tonemapped_color * tone_scale / luminance;
+        case TONE_MAPPING_TYPE_LINEAR:
+            tone_mapped_color = input_color;
+            break;
+
+        case TONE_MAPPING_TYPE_FILMIC:
+            tone_mapped_color = acesFilm(input_color);
+            break;
     }
 
+    // ODT (Output Device Transform)
     if ( cDisplayMappingType == DISPLAY_MAPPING_TYPE_SRGB )
     {
-        return float4( rec2020Tosrgb( tonemapped_color ), input_color.a );
+        // sRGB なら色域を sRGB に戻す
+        // 出力バッファーが sRGB ガンマ想定なので、ガンマはリニアで出力
+        return float4( rec2020Tosrgb( tone_mapped_color ), row_color.a );
     }
     else
     {
-        float paper_white = 80.0;
-        return float4( linearToSt2084( tonemapped_color * paper_white ), input_color.a );
+        // HDR なら色域を Rec.2020 のまま InvEOTF[PQ] のガンマ変換を掛ける
+        return float4( linearToSt2084( tone_mapped_color * cHDRPaperWhite ), row_color.a );
     }
 
     //

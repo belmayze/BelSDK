@@ -13,12 +13,12 @@
 
 namespace bel::debug {
 //-----------------------------------------------------------------------------
-bool PerfTime::initialize()
+bool PerfTime::initialize(gfx::TextureFormat render_texture_format)
 {
     BEL_DEBUG_LOG("[Bel][PerfTime] num of threads [%2d]\n", Thread::GetNumThreads());
 
     // 文字描画初期化
-    mTextRender.initialize(1024, gfx::TextureFormat::cR8G8B8A8_sRGB);
+    mTextRender.initialize(1024, render_texture_format);
 
     // クエリ初期化
     {
@@ -52,6 +52,9 @@ bool PerfTime::initialize()
         }
     }
 
+    // 初期化完了フラグ
+    mInitialized = true;
+
     return true;
 }
 //-----------------------------------------------------------------------------
@@ -64,12 +67,16 @@ void PerfTime::finalize()
 //-----------------------------------------------------------------------------
 void PerfTime::startMainCPU()
 {
+    if (!mInitialized) { return; }
+
     // 計測開始
     mBufferContexts[mBufferIndex].main_thread_context.cpu_start = std::chrono::system_clock::now();
 }
 //-----------------------------------------------------------------------------
 void PerfTime::endMainCPU()
 {
+    if (!mInitialized) { return; }
+
     // 計測終了
     MainThreadContext& context = mBufferContexts[mBufferIndex].main_thread_context;
 
@@ -83,6 +90,8 @@ void PerfTime::endMainCPU()
 //-----------------------------------------------------------------------------
 void PerfTime::startMainGPU(gfx::CommandContext& command)
 {
+    if (!mInitialized) { return; }
+
     // 開始タイムスタンプ記録
     uint32_t base_offset = mBufferIndex * 2;
     command.getCommandList().EndQuery(mpQuery.Get(), D3D12_QUERY_TYPE_TIMESTAMP, base_offset);
@@ -90,6 +99,8 @@ void PerfTime::startMainGPU(gfx::CommandContext& command)
 //-----------------------------------------------------------------------------
 void PerfTime::endMainGPU(gfx::CommandContext& command)
 {
+    if (!mInitialized) { return; }
+
     // 終了タイムスタンプ記録
     uint32_t base_offset = mBufferIndex * 2;
     command.getCommandList().EndQuery(mpQuery.Get(), D3D12_QUERY_TYPE_TIMESTAMP, base_offset + 1);
@@ -100,6 +111,8 @@ void PerfTime::endMainGPU(gfx::CommandContext& command)
 //-----------------------------------------------------------------------------
 void PerfTime::resolveGPUTimestamp()
 {
+    if (!mInitialized) { return; }
+
     // GPU の周波数を取得
     uint64_t gpu_frequency = GraphicsEngine::GetInstance().getTimestampFrequency();
 
@@ -116,7 +129,10 @@ void PerfTime::resolveGPUTimestamp()
     void* ptr;
     mpQueryResource->Map(0, &range, &ptr);
     uint64_t* data = reinterpret_cast<uint64_t*>(ptr);
-    context.main_thread_context.gpu_microsec = static_cast<uint32_t>((data[1] - data[0]) * 1000.f * 1000.f / gpu_frequency);
+    if (data)
+    {
+        context.main_thread_context.gpu_microsec = static_cast<uint32_t>((data[1] - data[0]) * 1000.f * 1000.f / gpu_frequency);
+    }
     mpQueryResource->Unmap(0, nullptr);
 
     // 文字列生成
@@ -133,6 +149,8 @@ void PerfTime::resolveGPUTimestamp()
 //-----------------------------------------------------------------------------
 void PerfTime::swapBuffer()
 {
+    if (!mInitialized) { return; }
+
     mBufferIndex = 1 - mBufferIndex;
 
     // ここを起点の時間とする
@@ -143,6 +161,8 @@ void PerfTime::swapBuffer()
 //-----------------------------------------------------------------------------
 void PerfTime::drawDebugText(gfx::CommandContext& command) const
 {
+    if (!mInitialized) { return; }
+
     // 計測結果を出力
     mTextRender.draw(command);
 }

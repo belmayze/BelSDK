@@ -54,6 +54,14 @@ private:
         bel::Matrix34 world_matrix;
         bel::Matrix44 view_projection_matrix;
     };
+    //! トーンマッピング構造体
+    struct ToneMappingCB
+    {
+        uint32_t display_mapping_type;
+        uint32_t tone_mapping_type;
+        float    hdr_paper_white;
+        float padding_;
+    };
 
     //! モジュール
     enum ModuleType
@@ -62,20 +70,28 @@ private:
         cModuleTypeNum
     };
 
+    //! レイヤー
+    struct Layer
+    {
+        bel::gfx::Texture      color_texture;
+        bel::gfx::Texture      depth_texture;
+        bel::gfx::RenderTarget render_target;
+        bel::gfx::DepthStencil depth_stencil;
+        bel::gfx::RenderBuffer render_buffer;
+    };
+
     //-------------------------------------------------------------------------
 private:
     bel::gfx::Pipeline       mPipeline;
     bel::gfx::Pipeline       mToneMappingPipeline;
+    bel::gfx::Pipeline       mUIComposePipeline;
 
     bel::gfx::ConstantBuffer mCubeModelCB;
     bel::gfx::ConstantBuffer mSphereModelCB;
     bel::gfx::ConstantBuffer mToneMappingCB;
 
-    bel::gfx::Texture      mColorTexture;
-    bel::gfx::Texture      mDepthTexture;
-    bel::gfx::RenderTarget mRenderTarget;
-    bel::gfx::DepthStencil mDepthStencil;
-    bel::gfx::RenderBuffer mRenderBuffer;
+    Layer m3DLayer;
+    Layer mUILayer;
 
     bel::debug::TextRender mTextRender;
 

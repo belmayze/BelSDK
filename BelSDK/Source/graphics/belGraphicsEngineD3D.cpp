@@ -107,6 +107,42 @@ bool GraphicsEngineD3D::initialize()
         mpDevice = std::move(p_device);
     }
 
+    // デバッグレイヤーフィルター
+#   if BEL_TARGET_IS_DEBUG()
+    {
+        // デバッグレイヤーの特定の警告は無効にする
+        Microsoft::WRL::ComPtr<ID3D12InfoQueue> p_info_queue;
+        if (SUCCEEDED(mpDevice.As(&p_info_queue)))
+        {
+            // Infoはデフォルトで表示されないので登録
+            D3D12_MESSAGE_SEVERITY severities[] =
+            {
+                D3D12_MESSAGE_SEVERITY_INFO
+            };
+
+            // 無効にするメッセージID
+            D3D12_MESSAGE_ID deny_messages[] =
+            {
+                // 登録されている clear value と異なるため、クリア処理が遅くなるという警告
+                // 使わないといけないケースもあるので無効にしている
+                D3D12_MESSAGE_ID_CLEARRENDERTARGETVIEW_MISMATCHINGCLEARVALUE
+            };
+
+            // フィルターを作って登録
+            D3D12_INFO_QUEUE_FILTER filter = {};
+            filter.DenyList.NumSeverities = std::size(severities);
+            filter.DenyList.pSeverityList = severities;
+            filter.DenyList.NumIDs = std::size(deny_messages);
+            filter.DenyList.pIDList = deny_messages;
+            if (FAILED(p_info_queue->PushStorageFilter(&filter)))
+            {
+                // このエラーは終了せず継続
+                BEL_ERROR_LOG("デバッグレイヤーのフィルター登録に失敗しました");
+            }
+        }
+    }
+#   endif // BEL_TARGET_IS_DEBUG()
+
     // メインのコマンドキューとコマンドリストを作る
     {
         mpMainCommandQueue = std::make_unique<gfx::CommandQueue>();

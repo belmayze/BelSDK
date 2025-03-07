@@ -89,9 +89,6 @@ bool Application::createWindow(const CreateWindowArg& arg)
     // グラフィックス生成が終わったらシステムリソースを生成する
     if (!mSystemResourceHolder.createGraphicsResource()) { return false; }
 
-    // ここで計測初期化
-    bel::debug::PerfTime::GetInstance().initialize();
-
     return true;
 }
 //-----------------------------------------------------------------------------
@@ -153,9 +150,6 @@ int Application::enterLoop(IApplicationCallback* p_callback)
                     if (p_callback) { p_callback->onMakeCommand(command); }
                 }
                 debug::PerfTime::GetInstance().endMainGPU(command);
-
-                // デバッグ描画
-                debug::PerfTime::GetInstance().drawDebugText(command);
 
                 // RENDER_TARGET -> PRESENT
                 default_render_target.getTexture().barrierTransition(command, gfx::ResourceState::cPresent);

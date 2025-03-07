@@ -48,11 +48,14 @@ void Application::initialize()
     {
         bel::gfx::ConstantBuffer::InitializeArg init_arg;
         init_arg.num_buffer = 2;
-        init_arg.buffer_size = sizeof(uint32_t);
+        init_arg.buffer_size = sizeof(ToneMappingCB);
         mToneMappingCB.initialize(init_arg);
 
-        uint32_t display_mapping_type = 0;
-        mToneMappingCB.copyStruct(display_mapping_type);
+        ToneMappingCB cb;
+        cb.display_mapping_type = bel::GraphicsEngine::GetInstance().isHDREnabled() ? 1 : 0;
+        cb.tone_mapping_type = 0;
+        cb.hdr_paper_white = 0;
+        mToneMappingCB.copyStruct(cb);
     }
 
     // 出力バッファー生成
@@ -60,26 +63,47 @@ void Application::initialize()
         uint32_t render_width  = bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().getWidth();
         uint32_t render_height = bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().getHeight();
 
-        // カラーバッファー
-        bel::gfx::Texture::InitializeArg init_arg;
-        init_arg.width     = render_width;
-        init_arg.height    = render_height;
-        init_arg.dimension = bel::gfx::TextureDimension::c2D;
-        init_arg.format    = bel::gfx::TextureFormat::cR16G16B16A16_Float;
-        mColorTexture.initialize(init_arg);
+        // 3Dレイヤー
+        {
+            // カラーバッファー
+            bel::gfx::Texture::InitializeArg init_arg;
+            init_arg.width = render_width;
+            init_arg.height = render_height;
+            init_arg.dimension = bel::gfx::TextureDimension::c2D;
+            init_arg.format = bel::gfx::TextureFormat::cR16G16B16A16_Float;
+            m3DLayer.color_texture.initialize(init_arg);
 
-        // デプスバッファー
-        init_arg.format = bel::gfx::TextureFormat::cD32_Float;
-        mDepthTexture.initialize(init_arg);
+            // デプスバッファー
+            init_arg.format = bel::gfx::TextureFormat::cD32_Float;
+            m3DLayer.depth_texture.initialize(init_arg);
 
-        // レンダーターゲット
-        mRenderTarget.initialize(mColorTexture);
-        mDepthStencil.initialize(mDepthTexture);
+            // レンダーターゲット
+            m3DLayer.render_target.initialize(m3DLayer.color_texture);
+            m3DLayer.depth_stencil.initialize(m3DLayer.depth_texture);
 
-        // レンダーバッファー
-        mRenderBuffer.setRenderTarget(0, mRenderTarget);
-        mRenderBuffer.setDepthStencil(mDepthStencil);
-        mRenderBuffer.setResolution(render_width, render_height);
+            // レンダーバッファー
+            m3DLayer.render_buffer.setRenderTarget(0, m3DLayer.render_target);
+            m3DLayer.render_buffer.setDepthStencil(m3DLayer.depth_stencil);
+            m3DLayer.render_buffer.setResolution(render_width, render_height);
+        }
+
+        // UIレイヤー
+        {
+            // カラーバッファー
+            bel::gfx::Texture::InitializeArg init_arg;
+            init_arg.width = render_width;
+            init_arg.height = render_height;
+            init_arg.dimension = bel::gfx::TextureDimension::c2D;
+            init_arg.format = bel::gfx::TextureFormat::cR8G8B8A8_uNorm;
+            mUILayer.color_texture.initialize(init_arg);
+
+            // レンダーターゲット
+            mUILayer.render_target.initialize(mUILayer.color_texture);
+
+            // レンダーバッファー
+            mUILayer.render_buffer.setRenderTarget(0, mUILayer.render_target);
+            mUILayer.render_buffer.setResolution(render_width, render_height);
+        }
     }
 
     // パイプライン生成
@@ -88,8 +112,8 @@ void Application::initialize()
 
         bel::gfx::Pipeline::InitializeArg init_arg;
         init_arg.num_render_target        = 1;
-        init_arg.render_target_formats[0] = mColorTexture.getFormat();
-        init_arg.depth_stencil_format     = mDepthTexture.getFormat();
+        init_arg.render_target_formats[0] = m3DLayer.color_texture.getFormat();
+        init_arg.depth_stencil_format     = m3DLayer.depth_texture.getFormat();
         init_arg.num_constant_buffer      = 1;
 
         init_arg.depth_config.depth_enable = true;
@@ -100,19 +124,32 @@ void Application::initialize()
     {
         auto resource = bel::res::Loader::GetInstance().loadSyncAs<bel::res::ShaderResource>("Shader/ToneMapping.bsh");
 
-        bel::gfx::Pipeline::InitializeArg init_arg;
-        init_arg.num_render_target        = 1;
-        init_arg.render_target_formats[0] = bel::GraphicsEngine::GetInstance().getDefaultRenderTarget().getTexture().getFormat();
-        init_arg.num_texture              = 1;
-        init_arg.num_constant_buffer      = 1;
+        {
+            bel::gfx::Pipeline::InitializeArg init_arg;
+            init_arg.num_render_target        = 1;
+            init_arg.render_target_formats[0] = bel::GraphicsEngine::GetInstance().getDefaultRenderTarget().getTexture().getFormat();
+            init_arg.num_texture              = 1;
+            init_arg.num_constant_buffer      = 1;
 
-        mToneMappingPipeline.initialize(init_arg, resource);
+            mToneMappingPipeline.initialize(init_arg, resource);
+        }
+        {
+            bel::gfx::Pipeline::InitializeArg init_arg;
+            init_arg.num_render_target        = 1;
+            init_arg.render_target_formats[0] = bel::GraphicsEngine::GetInstance().getDefaultRenderTarget().getTexture().getFormat();
+            init_arg.blend_configs[0].blend_enable = true;
+            init_arg.num_texture              = 1;
+            init_arg.num_constant_buffer      = 1;
+
+            mUIComposePipeline.initialize(init_arg, resource);
+        }
     }
+
+    // 計測初期化
+    bel::debug::PerfTime::GetInstance().initialize(mUILayer.color_texture.getFormat());
 
     // デバッグ文字列
-    {
-        mTextRender.initialize(1024, bel::GraphicsEngine::GetInstance().getDefaultRenderTarget().getTexture().getFormat());
-    }
+    mTextRender.initialize(1024, mUILayer.color_texture.getFormat());
 }
 //-----------------------------------------------------------------------------
 // callback
@@ -246,10 +283,13 @@ void Application::onCalc()
 
     // 定数バッファーのカラー更新
     {
-        uint32_t display_mapping_type = bel::GraphicsEngine::GetInstance().isHdrEnabled() ? 1 : 0;
+        ToneMappingCB cb;
+        cb.display_mapping_type = bel::GraphicsEngine::GetInstance().isHDREnabled() ? 1 : 0;
+        cb.tone_mapping_type = 0;
+        cb.hdr_paper_white = 80.f;
 
         mToneMappingCB.swapBuffer();
-        mToneMappingCB.copyStruct(display_mapping_type);
+        mToneMappingCB.copyStruct(cb);
     }
 }
 //-----------------------------------------------------------------------------
@@ -259,50 +299,81 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
     bel::gfx::DynamicDescriptorHeap& descriptor_heap = bel::gfx::DynamicDescriptorHeap::GetInstance();
     bel::gfx::dev::MeshHolder& mesh_holder = bel::gfx::dev::MeshHolder::GetInstance();
 
-    // レンダーバッファー切り替え
-    mColorTexture.barrierTransition(command, bel::gfx::ResourceState::cRenderTarget);
-    mDepthTexture.barrierTransition(command, bel::gfx::ResourceState::cDepthWrite);
-    mRenderBuffer.bind(command);
-
-    // クリア
-    mRenderBuffer.clear(command, bel::Color::cBlack(), 1.f, 0, { bel::gfx::EClearType::cColor, bel::gfx::EClearType::cDepth });
-
-    // キューブ描画
+    // 3Dレイヤー
     {
-        bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mPipeline.getNumDescriptor());
+        // レンダーバッファー切り替え
+        m3DLayer.color_texture.barrierTransition(command, bel::gfx::ResourceState::cRenderTarget);
+        m3DLayer.depth_texture.barrierTransition(command, bel::gfx::ResourceState::cDepthWrite);
+        m3DLayer.render_buffer.bind(command);
 
-        mPipeline.activateConstantBuffer(handle, 0, mCubeModelCB);
-        mPipeline.setPipeline(command);
-        descriptor_heap.setDescriptorHeap(handle, command);
-        mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cCube).drawIndexedInstanced(command);
+        // クリア
+        m3DLayer.render_buffer.clear(command, bel::Color::cBlack(), 1.f, 0, { bel::gfx::EClearType::cColor, bel::gfx::EClearType::cDepth });
+
+        // キューブ描画
+        {
+            bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mPipeline.getNumDescriptor());
+
+            mPipeline.activateConstantBuffer(handle, 0, mCubeModelCB);
+            mPipeline.setPipeline(command);
+            descriptor_heap.setDescriptorHeap(handle, command);
+            mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cCube).drawIndexedInstanced(command);
+        }
+        // スフィア描画
+        {
+            bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mPipeline.getNumDescriptor());
+
+            mPipeline.activateConstantBuffer(handle, 0, mSphereModelCB);
+            mPipeline.setPipeline(command);
+            descriptor_heap.setDescriptorHeap(handle, command);
+            mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cSphere).drawIndexedInstanced(command);
+        }
+
+        // バリア
+        m3DLayer.color_texture.barrierTransition(command, bel::gfx::ResourceState::cGenericRead);
+
+        // オフスクリーンレンダリングのテクスチャーを設定して描画
+        {
+            bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mToneMappingPipeline.getNumDescriptor());
+
+            bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().bind(command);
+            mToneMappingPipeline.activateTexture(handle, 0, m3DLayer.color_texture);
+            mToneMappingPipeline.activateConstantBuffer(handle, 0, mToneMappingCB);
+            mToneMappingPipeline.setPipeline(command);
+            descriptor_heap.setDescriptorHeap(handle, command);
+            mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cQuadTriangle).drawInstanced(command);
+        }
     }
-    // スフィア描画
+
+    // UIレイヤー
     {
-        bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mPipeline.getNumDescriptor());
-        
-        mPipeline.activateConstantBuffer(handle, 0, mSphereModelCB);
-        mPipeline.setPipeline(command);
-        descriptor_heap.setDescriptorHeap(handle, command);
-        mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cSphere).drawIndexedInstanced(command);
+        // レンダーバッファー切り替え
+        mUILayer.color_texture.barrierTransition(command, bel::gfx::ResourceState::cRenderTarget);
+        mUILayer.render_buffer.bind(command);
+
+        // クリア
+        mUILayer.render_buffer.clear(command, bel::Color(0.f, 0.f, 0.f, 0.f), 1.f, 0, {bel::gfx::EClearType::cColor});
+
+        //// 文字列描画
+        mTextRender.draw(command);
+
+        //// デバッグ描画
+        bel::debug::PerfTime::GetInstance().drawDebugText(command);
+
+        // バリア
+        mUILayer.color_texture.barrierTransition(command, bel::gfx::ResourceState::cGenericRead);
+
+        // UI描画を合成
+        {
+            bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mUIComposePipeline.getNumDescriptor());
+
+            bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().bind(command);
+            mUIComposePipeline.activateTexture(handle, 0, mUILayer.color_texture);
+            mUIComposePipeline.activateConstantBuffer(handle, 0, mToneMappingCB);
+            mUIComposePipeline.setPipeline(command);
+            descriptor_heap.setDescriptorHeap(handle, command);
+            mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cQuadTriangle).drawInstanced(command);
+        }
     }
-
-    // バリア
-    mColorTexture.barrierTransition(command, bel::gfx::ResourceState::cGenericRead);
-
-    // オフスクリーンレンダリングのテクスチャーを設定して描画
-    {
-        bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mToneMappingPipeline.getNumDescriptor());
-
-        bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().bind(command);
-        mToneMappingPipeline.activateTexture(handle, 0, mColorTexture);
-        mToneMappingPipeline.activateConstantBuffer(handle, 0, mToneMappingCB);
-        mToneMappingPipeline.setPipeline(command);
-        descriptor_heap.setDescriptorHeap(handle, command);
-        mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cQuadTriangle).drawInstanced(command);
-    }
-
-    // 文字列描画
-    mTextRender.draw(command);
 }
 //-----------------------------------------------------------------------------
 }
