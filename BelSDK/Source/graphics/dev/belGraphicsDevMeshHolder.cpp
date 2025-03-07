@@ -174,8 +174,8 @@ bool MeshHolder::initialize()
                 {
                     uint16_t i0 =  i_y      * cDivR +   i_r;
                     uint16_t i1 = (i_y + 1) * cDivR +   i_r;
-                    uint16_t i2 = (i_y + 1) * cDivR + ((i_r + 1) % 30); // 最後の面は最初とつなげる
-                    uint16_t i3 =  i_y      * cDivR + ((i_r + 1) % 30);
+                    uint16_t i2 = (i_y + 1) * cDivR + ((i_r + 1) % cDivR); // 最後の面は最初とつなげる
+                    uint16_t i3 =  i_y      * cDivR + ((i_r + 1) % cDivR);
 
                     uint32_t i_index = i_y * cDivR + i_r;
                     indices[i_index * 6 + 0] = i0;
