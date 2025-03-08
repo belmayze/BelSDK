@@ -31,6 +31,11 @@ public:
     virtual void waitCommandQueue() = 0;
 
     /*!
+     * 更新
+     */
+    virtual void update() = 0;
+
+    /*!
      * 画面を反映する
      */
     virtual void present() = 0;

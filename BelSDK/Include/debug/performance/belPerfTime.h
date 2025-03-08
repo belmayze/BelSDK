@@ -96,6 +96,9 @@ private:
     BufferContexts mBufferContexts;
     TextRender     mTextRender;
 
+    std::chrono::system_clock::time_point mFrameTime;
+    float                                 mFramerate = 0.f;
+
     // クエリとそのリソース
     Microsoft::WRL::ComPtr<ID3D12QueryHeap> mpQuery;
     Microsoft::WRL::ComPtr<ID3D12Resource>  mpQueryResource;

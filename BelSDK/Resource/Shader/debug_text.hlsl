@@ -44,7 +44,7 @@ PS_INPUT main(VS_INPUT input)
     // property
     InstanceProperty property = cInstanceProperties[input.instance_id];
 
-    // 蝗幄ｧ貞ｽ｢繝昴Μ繧ｴ繝ｳ繧偵し繧､繧ｺ縺ｫ蜷医ｏ縺帙ｋ
+    // 四角形ポリゴンをサイズに合わせる
     float2 position_local;
     position_local.x = (input.position.x + 0.5) * property.size.x;
     position_local.y = (input.position.y - 0.5) * property.size.y;
@@ -75,7 +75,11 @@ float4 main(PS_INPUT input) : SV_TARGET
     {
         discard;
     }
-    return float4(1.0, 1.0, 1.0, 1.0 - color);
+
+    // 
+    float alpha = 1.0 - smoothstep(0.5, 0.95, color);
+
+    return float4(1.0, 1.0, 1.0, alpha);
 }
 
 #endif // BEL_***_SHADER

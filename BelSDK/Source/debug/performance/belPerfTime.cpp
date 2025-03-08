@@ -69,8 +69,18 @@ void PerfTime::startMainCPU()
 {
     if (!mInitialized) { return; }
 
+    // 時間
+    auto now = std::chrono::system_clock::now();
+
     // 計測開始
-    mBufferContexts[mBufferIndex].main_thread_context.cpu_start = std::chrono::system_clock::now();
+    mBufferContexts[mBufferIndex].main_thread_context.cpu_start = now;
+
+    // 前回のフレーム時間からフレームレートを計算
+    {
+        auto diff_us = std::chrono::duration_cast<std::chrono::microseconds>(now - mFrameTime).count();
+        mFramerate = 1000000.f / diff_us;
+        mFrameTime = now;
+    }
 }
 //-----------------------------------------------------------------------------
 void PerfTime::endMainCPU()
@@ -139,7 +149,13 @@ void PerfTime::resolveGPUTimestamp()
     {
         // @todo: format で初期化できる文字列クラスがほしい
         char str[1024];
-        snprintf(str, 1024, "CPU:%6.2f%%\nGPU:%6.2f%%", context.main_thread_context.cpu_microsec / 166.6666f, context.main_thread_context.gpu_microsec / 166.6666f);
+        snprintf(
+            str, 1024,
+            "CPU:%6.2f%%\nGPU:%6.2f%% (%.2f FPS)",
+            context.main_thread_context.cpu_microsec / 166.6666f,
+            context.main_thread_context.gpu_microsec / 166.6666f,
+            mFramerate
+        );
 
         mTextRender.calcText(str, Vector2(0.f, 720.f - 32.f), 16);
     }

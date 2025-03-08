@@ -286,7 +286,7 @@ void Application::onCalc()
         ToneMappingCB cb;
         cb.display_mapping_type = bel::GraphicsEngine::GetInstance().isHDREnabled() ? 1 : 0;
         cb.tone_mapping_type = 0;
-        cb.hdr_paper_white = 80.f;
+        cb.hdr_paper_white = bel::GraphicsEngine::GetInstance().getHDRPaperWhite();
 
         mToneMappingCB.swapBuffer();
         mToneMappingCB.copyStruct(cb);

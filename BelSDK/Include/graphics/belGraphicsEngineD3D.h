@@ -60,6 +60,11 @@ public:
     virtual void waitCommandQueue() override;
 
     /*!
+     * 更新
+     */
+    virtual void update() override;
+
+    /*!
      * 画面を反映する
      */
     virtual void present() override;
@@ -88,6 +93,9 @@ public:
 
     //! trueの場合、HDR出力されている
     bool isHDREnabled() const { return mIsSupportedHDR; }
+
+    //! HDR Paper White の情報を取得
+    float getHDRPaperWhite() const { return mHDRPaperWhite; }
 
     //-------------------------------------------------------------------------
 public:
@@ -143,8 +151,17 @@ private:
     uint32_t                                mCommandBufferIndex   = 0;
     HANDLE                                  mWaitFenceHandle = HANDLE();
 
-    bool mIsSupportedHDR = false;
+    bool  mIsSupportedHDR = false;
+    bool  mHDRPathInfoEnabled = false;
+    DISPLAYCONFIG_PATH_INFO mHDRPathInfo = {};
+    float mHDRPaperWhite  = 80.f;
 
+    //-------------------------------------------------------------------------
+private:
+    /*!
+     * ペーパーホワイトの情報を取得
+     */
+    void updateHDRPaperWhite_();
 };
 //-----------------------------------------------------------------------------
 }

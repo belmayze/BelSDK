@@ -96,6 +96,48 @@ bool GraphicsEngineD3D::initialize()
                 p_output->GetDesc1(&output_desc);
 
                 mIsSupportedHDR = (output_desc.ColorSpace == DXGI_COLOR_SPACE_RGB_FULL_G2084_NONE_P2020);
+
+                // HDR の場合は paper white を取得する
+                if (mIsSupportedHDR)
+                {
+                    auto get_path_func = [&output_desc](DISPLAYCONFIG_PATH_INFO& info)
+                        {
+                            // 情報の最大数を取得
+                            UINT32 num_path = 0;
+                            UINT32 num_mode = 0;
+                            if (FAILED(GetDisplayConfigBufferSizes(QDC_ONLY_ACTIVE_PATHS, &num_path, &num_mode))) { return false; }
+
+                            // 情報取得
+                            auto path_infos = std::make_unique<DISPLAYCONFIG_PATH_INFO[]>(num_path);
+                            auto mode_infos = std::make_unique<DISPLAYCONFIG_MODE_INFO[]>(num_mode);
+                            if (FAILED(QueryDisplayConfig(QDC_ONLY_ACTIVE_PATHS, &num_path, path_infos.get(), &num_mode, mode_infos.get(), nullptr))) { return false; }
+
+                            // 出力先と同じパス情報を列挙
+                            for (UINT32 i_path = 0; i_path < num_path; ++i_path)
+                            {
+                                DISPLAYCONFIG_SOURCE_DEVICE_NAME dn = {};
+                                dn.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME;
+                                dn.header.adapterId = path_infos[i_path].sourceInfo.adapterId;
+                                dn.header.id = path_infos[i_path].sourceInfo.id;
+                                dn.header.size = sizeof(dn);
+                                DisplayConfigGetDeviceInfo(&dn.header);
+
+                                // デバイス名が一致したら情報をコピーして終了
+                                if (wcscmp(dn.viewGdiDeviceName, output_desc.DeviceName) == 0)
+                                {
+                                    info = path_infos[i_path];
+                                    return true;
+                                }
+                            }
+                            return false;
+                        };
+
+                    if (get_path_func(mHDRPathInfo))
+                    {
+                        mHDRPathInfoEnabled = true;
+                        updateHDRPaperWhite_();
+                    }
+                }
             }
         }
 
@@ -349,6 +391,11 @@ void GraphicsEngineD3D::waitCommandQueue()
     }
 }
 //-----------------------------------------------------------------------------
+void GraphicsEngineD3D::update()
+{
+    updateHDRPaperWhite_();
+}
+//-----------------------------------------------------------------------------
 void GraphicsEngineD3D::present()
 {
     mpSwapChain->Present(1, 0);
@@ -386,6 +433,25 @@ uint64_t GraphicsEngineD3D::getTimestampFrequency() const
         return 1;
     }
     return frequency;
+}
+//-----------------------------------------------------------------------------
+// Internal
+//-----------------------------------------------------------------------------
+void GraphicsEngineD3D::updateHDRPaperWhite_()
+{
+    if (mHDRPathInfoEnabled)
+    {
+        // パス情報を使って paper white を取得
+        DISPLAYCONFIG_SDR_WHITE_LEVEL white_level = {};
+        white_level.header.type = DISPLAYCONFIG_DEVICE_INFO_GET_SDR_WHITE_LEVEL;
+        white_level.header.size = sizeof(white_level);
+        white_level.header.adapterId = mHDRPathInfo.targetInfo.adapterId;
+        white_level.header.id = mHDRPathInfo.targetInfo.id;
+        if (SUCCEEDED(DisplayConfigGetDeviceInfo(&white_level.header)))
+        {
+            mHDRPaperWhite = white_level.SDRWhiteLevel * 80.f / 1000.f;
+        }
+    }
 }
 //-----------------------------------------------------------------------------
 // Accessor

@@ -117,6 +117,7 @@ int Application::enterLoop(IApplicationCallback* p_callback)
         GraphicsEngine::GetInstance().present();
 
         // 計算処理
+        GraphicsEngine::GetInstance().update();
         if (p_callback) { p_callback->onCalc(); }
         
         // コマンドの生成
