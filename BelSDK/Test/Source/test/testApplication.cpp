@@ -352,7 +352,7 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
         mUILayer.render_buffer.bind(command);
 
         // クリア
-        mUILayer.render_buffer.clear(command, bel::Color(0.f, 0.f, 0.f, 0.f), 1.f, 0, {bel::gfx::EClearType::cColor});
+        mUILayer.render_buffer.clear(command, bel::Color::cZero(), 1.f, 0, {bel::gfx::EClearType::cColor});
 
         //// 文字列描画
         mTextRender.draw(command);
