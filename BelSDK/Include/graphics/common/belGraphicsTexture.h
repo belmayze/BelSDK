@@ -9,6 +9,7 @@
 // bel
 #include "graphics/common/belGraphicsTextureType.h"
 #include "graphics/internal/belGraphicsGlobalDescriptorHandle.h"
+#include "math/belColor.h"
 
 namespace bel::gfx { class CommandContext; }
 namespace bel::res { class Texture; }
@@ -31,6 +32,10 @@ public:
         uint32_t         component_mapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
         TextureFormat    format            = TextureFormat::cR8G8B8A8_uNorm;
         TextureDimension dimension         = TextureDimension::c2D;
+
+        Color   optimized_clear_color   = Color::cBlack();
+        float   optimized_clear_depth   = 1.f;
+        uint8_t optimized_clear_stencil = 0;
     };
 
     //-------------------------------------------------------------------------

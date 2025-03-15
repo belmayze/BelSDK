@@ -150,7 +150,8 @@ bool GraphicsEngineD3D::initialize()
     }
 
     // デバッグレイヤーフィルター
-#   if BEL_TARGET_IS_DEBUG()
+    // 今は使用していない
+#   if BEL_TARGET_IS_DEBUG() && 0
     {
         // デバッグレイヤーの特定の警告は無効にする
         Microsoft::WRL::ComPtr<ID3D12InfoQueue> p_info_queue;

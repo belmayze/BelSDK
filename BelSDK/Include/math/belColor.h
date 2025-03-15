@@ -18,6 +18,9 @@ class Color
     // 定数 (Rec.709 Color space / Linear gamma)
     //-------------------------------------------------------------------------
 public:
+    //! ゼロ
+    static constexpr Color cZero()        { return Color(0.f, 0.f, 0.f, 0.f); }
+
     //! 黒
     static constexpr Color cBlack()       { return Color(0.000f, 0.000f, 0.000f); }
     //! 18% グレー
@@ -125,11 +128,6 @@ private:
     float mB = 0.f;
     float mA = 1.f;
 };
-
-//-----------------------------------------------------------------------------
-// 定数
-//-----------------------------------------------------------------------------
-static constexpr Color cBlack(0.f, 0.f, 0.f);
 
 } // bel::
 

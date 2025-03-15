@@ -95,6 +95,7 @@ void Application::initialize()
             init_arg.height = render_height;
             init_arg.dimension = bel::gfx::TextureDimension::c2D;
             init_arg.format = bel::gfx::TextureFormat::cR8G8B8A8_uNorm;
+            init_arg.optimized_clear_color = bel::Color::cZero();
             mUILayer.color_texture.initialize(init_arg);
 
             // レンダーターゲット

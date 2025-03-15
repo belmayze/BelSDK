@@ -44,15 +44,15 @@ bool Texture::initialize(const InitializeArg& arg)
     clear_value.Format = desc.Format;
     if (TextureFormatInfo::IsDepth(arg.format))
     {
-        clear_value.DepthStencil.Depth   = 1.f;
-        clear_value.DepthStencil.Stencil = 0;
+        clear_value.DepthStencil.Depth   = arg.optimized_clear_depth;
+        clear_value.DepthStencil.Stencil = arg.optimized_clear_stencil;
     }
     else
     {
-        clear_value.Color[0] = 0.f;
-        clear_value.Color[1] = 0.f;
-        clear_value.Color[2] = 0.f;
-        clear_value.Color[3] = 1.f;
+        clear_value.Color[0] = arg.optimized_clear_color.r();
+        clear_value.Color[1] = arg.optimized_clear_color.g();
+        clear_value.Color[2] = arg.optimized_clear_color.b();
+        clear_value.Color[3] = arg.optimized_clear_color.a();
     }
 
     // リソース生成
