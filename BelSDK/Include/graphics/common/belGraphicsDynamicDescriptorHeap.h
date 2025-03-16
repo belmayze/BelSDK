@@ -21,7 +21,7 @@ class DynamicDescriptorHeap : public Singleton<DynamicDescriptorHeap>
     //-------------------------------------------------------------------------
 public:
     /*!
-     * テクスチャー用デスクリプターヒープの確保を行う
+     * 全体で使用するデスクリプターヒープの確保を行う
      * @param[in] num 最大デスクリプター数
      */
     bool initialize(uint32_t num);

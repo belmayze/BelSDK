@@ -38,6 +38,7 @@
     <ClInclude Include="..\Include\graphics\common\belGraphicsDepthStencil.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsDynamicDescriptorHandle.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsDynamicDescriptorHeap.h" />
+    <ClInclude Include="..\Include\graphics\common\belGraphicsDynamicTextureResource.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsMesh.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsPipeline.h" />
     <ClInclude Include="..\Include\graphics\common\belGraphicsRenderBuffer.h" />
@@ -98,6 +99,7 @@
     <ClCompile Include="..\Source\graphics\common\belGraphicsDepthStencil.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsDynamicDescriptorHandle.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsDynamicDescriptorHeap.cpp" />
+    <ClCompile Include="..\Source\graphics\common\belGraphicsDynamicTextureResource.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsMesh.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsPipeline.cpp" />
     <ClCompile Include="..\Source\graphics\common\belGraphicsRenderBuffer.cpp" />

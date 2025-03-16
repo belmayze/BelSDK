@@ -11,6 +11,7 @@
 #include "graphics/common/belGraphicsCommandList.h"
 #include "graphics/common/belGraphicsCommandQueue.h"
 #include "graphics/common/belGraphicsDynamicDescriptorHeap.h"
+#include "graphics/common/belGraphicsDynamicTextureResource.h"
 #include "graphics/common/belGraphicsRenderBuffer.h"
 #include "graphics/common/belGraphicsRenderTarget.h"
 #include "graphics/common/belGraphicsTexture.h"
@@ -234,6 +235,13 @@ bool GraphicsEngineD3D::initialize()
     if (!gfx::DynamicDescriptorHeap::GetInstance().initialize(cMaxDynamicDescriptorHandle))
     {
         BEL_ERROR_LOG("ダイナミックデスクリプターヒープの作成に失敗しました\n");
+        return false;
+    }
+
+    // 動的確保を行うテクスチャーリソースを作る
+    if (!gfx::DynamicTextureResource::GetInstance().initialize(cMaxDynamicTextureResourceSize))
+    {
+        BEL_ERROR_LOG("ダイナミックテクスチャーリソースの作成に失敗しました\n");
         return false;
     }
 

@@ -15,7 +15,7 @@ namespace bel::gfx {
 //-----------------------------------------------------------------------------
 bool DynamicDescriptorHeap::initialize(uint32_t num)
 {
-    // グローバルで大きなテクスチャー用デスクリプターヒープを作る
+    // グローバルで大きなデスクリプターヒープを作る
     {
         D3D12_DESCRIPTOR_HEAP_DESC desc = {};
         desc.Type           = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
