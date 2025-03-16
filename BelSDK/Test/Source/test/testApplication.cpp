@@ -7,6 +7,7 @@
  */
 // bel
 #include "graphics/common/belGraphicsDynamicDescriptorHeap.h"
+#include "graphics/common/belGraphicsDynamicTextureResource.h"
 #include "graphics/dev/belGraphicsDevMeshHolder.h"
 #include "graphics/belGraphicsEngine.h"
 #include "hid/belController.h"
@@ -71,7 +72,16 @@ void Application::initialize()
             init_arg.height = render_height;
             init_arg.dimension = bel::gfx::TextureDimension::c2D;
             init_arg.format = bel::gfx::TextureFormat::cR16G16B16A16_Float;
-            m3DLayer.color_texture.initialize(init_arg);
+            //m3DLayer.color_texture.initialize(init_arg);
+
+            // テクスチャー確保
+            {
+                bel::gfx::DynamicTextureResource::AllocateArg alloc_arg;
+                alloc_arg.width = bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().getWidth();
+                alloc_arg.height = bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().getHeight();
+                alloc_arg.format = bel::gfx::TextureFormat::cR16G16B16A16_Float;
+                m3DLayer.color_texture = bel::gfx::DynamicTextureResource::GetInstance().allocate(alloc_arg);
+            }
 
             // デプスバッファー
             init_arg.format = bel::gfx::TextureFormat::cD32_Float;
