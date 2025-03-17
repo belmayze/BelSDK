@@ -63,4 +63,7 @@
       <Filter>ソース ファイル\test\math</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

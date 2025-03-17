@@ -450,4 +450,7 @@
       <Filter>ソース ファイル\graphics\common</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

@@ -10,6 +10,10 @@
 #include "test/testApplication.h"
 #include "test/testExecutor.h"
 
+// DirectX 12 Agility SDK
+extern "C" { __declspec(dllexport) extern const UINT D3D12SDKVersion = 615; }
+extern "C" { __declspec(dllexport) extern const char8_t* D3D12SDKPath = u8".\\D3D12\\"; }
+
 /*!
  * エントリーポイント
  */
