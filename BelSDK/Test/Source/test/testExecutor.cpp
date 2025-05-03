@@ -7,6 +7,7 @@
  */
 // bel
 #include "test/container/testDeque.h"
+#include "test/container/testList.h"
 #include "test/container/testVector.h"
 #include "test/math/testMatrix.h"
 #include "test/testExecutor.h"
@@ -26,6 +27,10 @@ void Executor::execute()
         BEL_DEBUG_LOG("--------------------\n");
         BEL_DEBUG_LOG("[Container] vector\n");
         Vector().test();
+
+        BEL_DEBUG_LOG("--------------------\n");
+        BEL_DEBUG_LOG("[Container] list\n");
+        List().test();
 
         BEL_DEBUG_LOG("--------------------\n");
         BEL_DEBUG_LOG("[Math] matrix\n");

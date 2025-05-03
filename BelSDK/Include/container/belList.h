@@ -21,14 +21,14 @@ public:
     //! コンストラクター
     List() {}
     List(size_t num)
-        : mBuffer(std::make_unique<uint8_t[]>(sizeof(Container)* num))
+        : mBuffer(std::make_unique<uint8_t[]>(sizeof(list_node)* num))
         , mFreeBuffer(num)
         , mMaxSize(num)
     {
         // すべてフリーリストに入れる
         for (size_t i = 0; i < num; ++i)
         {
-            mFreeBuffer.push_back(get_(i));
+            mFreeBuffer.push_back(&get_(i));
         }
     }
 
@@ -38,6 +38,40 @@ public:
     //! コピー禁止
     List(const List&) = delete;
     List& operator=(const List&) = delete;
+
+    //-------------------------------------------------------------------------
+    // iterator
+    //-------------------------------------------------------------------------
+public:
+    //! node
+    struct list_node
+    {
+        list_node* next = nullptr;
+        list_node* prev = nullptr;
+        T          instance;
+    };
+
+    //! const_iterator
+    class const_iterator
+    {
+        friend class List<T>;
+
+    public:
+        using value_type = T;
+
+    public:
+        const_iterator(list_node* p_node, const List<T>* p_instance) : mpInstance(p_instance), mpNode(p_node) {}
+        const_iterator(const const_iterator& rhs) { *this = rhs; }
+
+        const_iterator& operator=(const const_iterator& rhs) { mpInstance = rhs.mpInstance; mpNode = rhs.mpNode; return *this; }
+
+        const T& operator*() const { return mpNode->instance; }
+        const T* operator->() const { return &mpNode->instance; }
+
+    private:
+        const List<T>* mpInstance = nullptr;
+        list_node* mpNode;
+    };
 
     //-------------------------------------------------------------------------
     // operation
@@ -51,31 +85,31 @@ public:
     T& emplace_back(Args&&... args)
     {
         // 空きコンテナ取得
-        Container& container = mFreeBuffer.at(mFreeBuffer.size() - 1);
+        list_node& node = *mFreeBuffer.at(mFreeBuffer.size() - 1);
         mFreeBuffer.pop_back();
 
         // ポインター接続
-        if (mpBegin)
+        if (mpHead)
         {
-            container.next = mpBegin;
-            container.prev = mpBegin->prev;
+            node.next = mpHead;
+            node.prev = mpHead->prev;
 
-            mpBegin->prev->next = &container;
-            mpBegin->prev = &container;
+            mpHead->prev->next = &node;
+            mpHead->prev = &node;
         }
         else
         {
-            container.next = &container;
-            container.prev = &container;
+            node.next = &node;
+            node.prev = &node;
 
-            mpBegin = &container;
+            mpHead = &node;
         }
 
         // 加算
         mSize++;
 
         // メモリー確保
-        T* p = new (&container.instance) T(std::forward<Args>(args)...);
+        T* p = new (&node.instance) T(std::forward<Args>(args)...);
         return *p;
     }
 
@@ -84,33 +118,38 @@ public:
     {
         // belList で確保された T であれば、このアドレスの前にポインターが入っている
         uint8_t* p = reinterpret_cast<uint8_t*>(&x);
-        Container* container = reinterpret_cast<Container*>(p - sizeof(Container*) * 2);
+        list_node* node = reinterpret_cast<list_node*>(p - sizeof(list_node*) * 2);
 
         // 接続を切る
         if (mSize == 1)
         {
             // 最後ならすべて削除
-            mpBegin = nullptr;
+            mpHead = nullptr;
         }
         else
         {
-            container->next->prev = container->prev;
-            container->prev->next = container->next;
-            if (mpBegin == container) { mpBegin = container->next; }
+            node->next->prev = node->prev;
+            node->prev->next = node->next;
+            if (mpHead == node) { mpHead = node->next; }
         }
-        container->next = nullptr;
-        container->prev = nullptr;
+        node->next = nullptr;
+        node->prev = nullptr;
 
         // デストラクター
         --mSize;
-        container->instance.~T();
+        node->instance.~T();
 
         // フリーへ
-        mFreeBuffer.push_back(container);
+        mFreeBuffer.push_back(node);
+    }
+    void erase(const_iterator it)
+    {
+
+        erase(it.mpNode->instance);
     }
 
     // 要素をすべて削除する
-    void clear() { while (!empty()) { erase(mpBegin->instance); } }
+    void clear() { while (!empty()) { erase(mpHead->instance); } }
 
     //-------------------------------------------------------------------------
     // getter
@@ -125,23 +164,16 @@ public:
     //! 格納可能な最大の要素数を取得する
     size_t max_size() const { return mMaxSize; }
 
-    //-------------------------------------------------------------------------
-private:
-    //! コンテナ
-    struct Container
-    {
-        Container* next = nullptr;
-        Container* prev = nullptr;
-        T          instance;
-    };
+    //! 先頭要素を指すイテレーターを取得する
+    const_iterator begin() const { return const_iterator(mpHead, this); }
 
     //-------------------------------------------------------------------------
 private:
     std::unique_ptr<uint8_t[]> mBuffer;
-    Vector<Container*>         mFreeBuffer;
+    Vector<list_node*>         mFreeBuffer;
     size_t     mMaxSize = 0;
     size_t     mSize    = 0;
-    Container* mpBegin  = nullptr;
+    list_node* mpHead  = nullptr;
 
     //-------------------------------------------------------------------------
     // internal
@@ -150,9 +182,9 @@ private:
     /*!
      * トップ要素を取得する
      */
-    Container& get_(size_t index) const
+    list_node& get_(size_t index) const
     {
-        return reinterpret_cast<Container*>(mBuffer.get())[index];
+        return reinterpret_cast<list_node*>(mBuffer.get())[index];
     }
 };
 //-----------------------------------------------------------------------------

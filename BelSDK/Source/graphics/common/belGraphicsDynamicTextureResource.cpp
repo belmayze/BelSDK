@@ -54,6 +54,9 @@ Texture DynamicTextureResource::allocate(const AllocateArg& arg)
         0, 1, &desc
     );
 
+    // @TODO: 必要なリソースサイズが確保できるオフセットを計算する
+    size_t offset = 0;
+
     // クリアカラーの最適化
     D3D12_CLEAR_VALUE clear_value;
     clear_value.Format = desc.Format;
@@ -74,7 +77,7 @@ Texture DynamicTextureResource::allocate(const AllocateArg& arg)
     Microsoft::WRL::ComPtr<ID3D12Resource> p_resource;
     if (FAILED(
         GraphicsEngine::GetInstance().getDevice().CreatePlacedResource(
-            mpHeap.Get(), 0, &desc,
+            mpHeap.Get(), offset, &desc,
             D3D12_RESOURCE_STATE_COPY_DEST,
             &clear_value, IID_PPV_ARGS(&p_resource)
         )

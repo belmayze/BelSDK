@@ -42,6 +42,9 @@
     <ClCompile Include="Source\test\math\testMatrix.cpp">
       <Filter>ソース ファイル\test\math</Filter>
     </ClCompile>
+    <ClCompile Include="Source\test\container\testList.cpp">
+      <Filter>ソース ファイル\test\container</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\test\test.h">
@@ -61,6 +64,9 @@
     </ClInclude>
     <ClInclude Include="Source\test\math\testMatrix.h">
       <Filter>ソース ファイル\test\math</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\test\container\testList.h">
+      <Filter>ソース ファイル\test\container</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

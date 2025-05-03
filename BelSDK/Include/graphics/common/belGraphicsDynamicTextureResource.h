@@ -39,7 +39,7 @@ public:
 public:
     /*!
      * 全体のテクスチャーメモリーを確保する
-     * @param[in] num 最大デスクリプター数
+     * @param[in] size 確保するメモリーサイズ
      */
     bool initialize(size_t size);
 

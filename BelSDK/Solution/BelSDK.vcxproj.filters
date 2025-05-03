@@ -318,6 +318,12 @@
     <ClInclude Include="..\Include\graphics\common\belGraphicsDynamicTextureResource.h">
       <Filter>ヘッダー ファイル\graphics\common</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\memory\belMemoryBlockAllocator.h">
+      <Filter>ヘッダー ファイル\memory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\container\belList.h">
+      <Filter>ヘッダー ファイル\container</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -448,6 +454,9 @@
     </ClCompile>
     <ClCompile Include="..\Source\graphics\common\belGraphicsDynamicTextureResource.cpp">
       <Filter>ソース ファイル\graphics\common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\memory\belMemoryBlockAllocator.cpp">
+      <Filter>ソース ファイル\memory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

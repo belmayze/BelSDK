@@ -23,6 +23,7 @@
     <ClInclude Include="..\Include\common\belIModule.h" />
     <ClInclude Include="..\Include\common\belOptionParser.h" />
     <ClInclude Include="..\Include\container\belDeque.h" />
+    <ClInclude Include="..\Include\container\belList.h" />
     <ClInclude Include="..\Include\container\belVector.h" />
     <ClInclude Include="..\Include\debug\belConsole.h" />
     <ClInclude Include="..\Include\debug\performance\belPerfTime.h" />
@@ -71,6 +72,7 @@
     <ClInclude Include="..\Include\math\belVector3.inl.h" />
     <ClInclude Include="..\Include\math\belVector4.h" />
     <ClInclude Include="..\Include\math\belVector4.inl.h" />
+    <ClInclude Include="..\Include\memory\belMemoryBlockAllocator.h" />
     <ClInclude Include="..\Include\memory\belSingleton.h" />
     <ClInclude Include="..\Include\resource\belResource.h" />
     <ClInclude Include="..\Include\resource\belResourceFactory.h" />
@@ -119,6 +121,7 @@
     <ClCompile Include="..\Source\math\belRadian.cpp" />
     <ClCompile Include="..\Source\math\belVector3.cpp" />
     <ClCompile Include="..\Source\math\belVector4.cpp" />
+    <ClCompile Include="..\Source\memory\belMemoryBlockAllocator.cpp" />
     <ClCompile Include="..\Source\resource\belResource.cpp" />
     <ClCompile Include="..\Source\resource\belResourceLoader.cpp" />
     <ClCompile Include="..\Source\resource\belResourceShaderResource.cpp" />

@@ -66,6 +66,9 @@ public:
     // getter
     //-------------------------------------------------------------------------
 public:
+    //! 有効判定
+    bool isValid() const { return mpResource.Get() != nullptr; }
+
     //! テクスチャーサイズを取得する
     uint32_t getWidth() const { return mWidth; }
     uint32_t getHeight() const { return mHeight; }
