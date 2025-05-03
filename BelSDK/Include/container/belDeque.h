@@ -23,7 +23,7 @@ public:
     Deque(size_t num) : mBuffer(std::make_unique<uint8_t[]>(sizeof(T) * num)), mMaxSize(num) {}
 
     //! デストラクター
-    ~Deque() {}
+    ~Deque() { clear(); }
 
     //! コピー禁止
     Deque(const Deque&) = delete;

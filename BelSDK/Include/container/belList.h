@@ -38,7 +38,7 @@ public:
     }
 
     //! デストラクター
-    ~List() {}
+    ~List() { clear(); }
 
     //! コピー禁止
     List(const List&) = delete;
@@ -110,6 +110,31 @@ public:
 
     using reverse_iterator = std::reverse_iterator<iterator>;
     using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
+    //-------------------------------------------------------------------------
+    // memory
+    //-------------------------------------------------------------------------
+public:
+    //! メモリーを確保する
+    //! @note 今まで追加していた要素はすべて削除されます
+    void allocate(size_t num)
+    {
+        clear();
+        mBuffer = std::make_unique<uint8_t[]>(sizeof(T) * ( num + 1));
+        mMaxSize = num;
+        mFreeBuffer.allocate(num);
+
+        // すべてフリーリストに入れる
+        for (size_t i = 0; i < num; ++i)
+        {
+            mFreeBuffer.push_back(&get_(i));
+        }
+
+        // 最後は end 用のバッファー
+        mpHead = &get_(num);
+        mpHead->next = mpHead;
+        mpHead->prev = mpHead;
+    }
 
     //-------------------------------------------------------------------------
     // operation

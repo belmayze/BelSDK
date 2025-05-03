@@ -57,6 +57,7 @@
 // bel/container
 #include "container/belDeque.h"
 #include "container/belVector.h"
+#include "container/belList.h"
 // bel/graphics
 #include "graphics/common/belGraphicsCommandContext.h"
 

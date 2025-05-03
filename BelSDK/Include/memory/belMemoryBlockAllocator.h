@@ -54,14 +54,18 @@ private:
         size_t size = 0;
         size_t offset = 0;
         size_t aligned_offset = 0;
+
+        MemoryBlock(size_t size, size_t offset, size_t aligned_offset)
+            : size(size), offset(offset), aligned_offset(aligned_offset) {
+        }
     };
 
     //-------------------------------------------------------------------------
     // メンバー変数
     //-------------------------------------------------------------------------
 private:
-    Vector<MemoryBlock> mFreeList;
-    Vector<MemoryBlock> mUseList;
+    List<MemoryBlock> mFreeList;
+    List<MemoryBlock> mUseList;
 };
 //-----------------------------------------------------------------------------
 }

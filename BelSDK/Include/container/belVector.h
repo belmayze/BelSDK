@@ -23,7 +23,7 @@ public:
     Vector(size_t num) : mBuffer(std::make_unique<uint8_t[]>(sizeof(T)* num)), mMaxSize(num) {}
 
     //! デストラクター
-    ~Vector() {}
+    ~Vector() { clear(); }
 
     //! コピー禁止
     Vector(const Vector&) = delete;
