@@ -120,7 +120,7 @@ public:
     void allocate(size_t num)
     {
         clear();
-        mBuffer = std::make_unique<uint8_t[]>(sizeof(T) * ( num + 1));
+        mBuffer = std::make_unique<uint8_t[]>(sizeof(list_node) * ( num + 1));
         mMaxSize = num;
         mFreeBuffer.allocate(num);
 
