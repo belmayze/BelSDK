@@ -8,6 +8,7 @@
 #pragma once
 // bel
 #include "memory/belSingleton.h"
+#include "memory/belMemoryBlockAllocator.h"
 
 namespace bel::gfx {
 //-----------------------------------------------------------------------------
@@ -49,8 +50,21 @@ public:
      */
     Texture allocate(const AllocateArg& arg);
 
+    /*!
+     * フリー
+     * @param[in] texture 解放するテクスチャー
+     */
+    void free(Texture&& texture);
+
     //-------------------------------------------------------------------------
 private:
+    //! キーバリュー
+    using MemoryKeyValue = std::pair<const void*, size_t>;
+
+    //-------------------------------------------------------------------------
+private:
+    MemoryBlockAllocator               mAllocator;
+    List<MemoryKeyValue>               mAllocatedList;
     Microsoft::WRL::ComPtr<ID3D12Heap> mpHeap;
     size_t                             mHeapSize = 0;
 };

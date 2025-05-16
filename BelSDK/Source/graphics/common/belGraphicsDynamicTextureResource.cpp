@@ -32,6 +32,10 @@ bool DynamicTextureResource::initialize(size_t size)
     }
     mHeapSize = size;
 
+    // アロケーター
+    mAllocator.initialize(size, 1024);
+    mAllocatedList.allocate(1024);
+
     return true;
 }
 //-----------------------------------------------------------------------------
@@ -54,8 +58,13 @@ Texture DynamicTextureResource::allocate(const AllocateArg& arg)
         0, 1, &desc
     );
 
-    // @TODO: 必要なリソースサイズが確保できるオフセットを計算する
-    size_t offset = 0;
+    // 必要なリソースサイズの空きを検索
+    auto offset = mAllocator.allocate(alloc_info.SizeInBytes, alloc_info.Alignment);
+    if (!offset.has_value())
+    {
+        // 空きがない場合は無効
+        return Texture();
+    }
 
     // クリアカラーの最適化
     D3D12_CLEAR_VALUE clear_value;
@@ -77,7 +86,7 @@ Texture DynamicTextureResource::allocate(const AllocateArg& arg)
     Microsoft::WRL::ComPtr<ID3D12Resource> p_resource;
     if (FAILED(
         GraphicsEngine::GetInstance().getDevice().CreatePlacedResource(
-            mpHeap.Get(), offset, &desc,
+            mpHeap.Get(), offset.value(), &desc,
             D3D12_RESOURCE_STATE_COPY_DEST,
             &clear_value, IID_PPV_ARGS(&p_resource)
         )
@@ -107,7 +116,24 @@ Texture DynamicTextureResource::allocate(const AllocateArg& arg)
         }
     }
 
+    // リソースとオフセットの紐づけ
+    mAllocatedList.emplace_back(&texture.getResource(), offset.value());
+
     return texture;
+}
+//-----------------------------------------------------------------------------
+void DynamicTextureResource::free(Texture&& texture)
+{
+    // リソースからオフセットを検索
+    auto it = std::find_if(mAllocatedList.begin(), mAllocatedList.end(), [&texture](const MemoryKeyValue& pair)
+        {
+            return pair.first == &texture.getResource();
+        });
+    BEL_ASSERT(it != mAllocatedList.end());
+
+    // 指定したオフセットを解放
+    mAllocator.free(it->second);
+    mAllocatedList.erase(it);
 }
 //-----------------------------------------------------------------------------
 }
