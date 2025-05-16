@@ -126,6 +126,9 @@ Texture DynamicTextureResource::allocate(const AllocateArg& arg)
     // リソースとオフセットの紐づけ
     mAllocatedList.emplace_back(&texture.getResource(), offset.value());
 
+    // @TODO: 同じヒープ領域のリソースを使いまわす場合
+    // 厳密には D3D12_RESOURCE_ALIASING_BARRIER が必要なので対応する
+
     return texture;
 }
 //-----------------------------------------------------------------------------
