@@ -21,9 +21,14 @@ class DepthStencil
 public:
     /*!
      * 初期化
+     */
+    bool initialize();
+
+    /*!
+     * テクスチャーを更新
      * @param[in] texture テクスチャー
      */
-    bool initialize(const Texture& texture);
+    void updateTexture(const Texture& texture);
 
     //-------------------------------------------------------------------------
     // getter

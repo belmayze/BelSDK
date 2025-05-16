@@ -56,10 +56,22 @@ public:
      */
     void free(Texture&& texture);
 
+    /*!
+     * 遅延解放の処理
+     */
+    void updateDelayedRelease();
+
+    /*!
+     * すべてのリソースを解放する
+     */
+    void release();
+
     //-------------------------------------------------------------------------
 private:
     //! キーバリュー
     using MemoryKeyValue = std::pair<const void*, size_t>;
+    //! 遅延削除リスト
+    using DelayedReleaseQueue = std::array<Vector<Microsoft::WRL::ComPtr<ID3D12Resource>>, 2>;
 
     //-------------------------------------------------------------------------
 private:
@@ -67,6 +79,9 @@ private:
     List<MemoryKeyValue>               mAllocatedList;
     Microsoft::WRL::ComPtr<ID3D12Heap> mpHeap;
     size_t                             mHeapSize = 0;
+
+    uint32_t            mDelayedIndex = 0;
+    DelayedReleaseQueue mDelayedReleaseQueue;
 };
 //-----------------------------------------------------------------------------
 }

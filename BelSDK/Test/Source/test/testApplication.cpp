@@ -66,30 +66,9 @@ void Application::initialize()
 
         // 3Dレイヤー
         {
-            // カラーバッファー
-            bel::gfx::Texture::InitializeArg init_arg;
-            init_arg.width = render_width;
-            init_arg.height = render_height;
-            init_arg.dimension = bel::gfx::TextureDimension::c2D;
-            init_arg.format = bel::gfx::TextureFormat::cR16G16B16A16_Float;
-            //m3DLayer.color_texture.initialize(init_arg);
-
-            // テクスチャー確保
-            {
-                bel::gfx::DynamicTextureResource::AllocateArg alloc_arg;
-                alloc_arg.width = bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().getWidth();
-                alloc_arg.height = bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().getHeight();
-                alloc_arg.format = bel::gfx::TextureFormat::cR16G16B16A16_Float;
-                m3DLayer.color_texture = bel::gfx::DynamicTextureResource::GetInstance().allocate(alloc_arg);
-            }
-
-            // デプスバッファー
-            init_arg.format = bel::gfx::TextureFormat::cD32_Float;
-            m3DLayer.depth_texture.initialize(init_arg);
-
             // レンダーターゲット
-            m3DLayer.render_target.initialize(m3DLayer.color_texture);
-            m3DLayer.depth_stencil.initialize(m3DLayer.depth_texture);
+            m3DLayer.render_target.initialize();
+            m3DLayer.depth_stencil.initialize();
 
             // レンダーバッファー
             m3DLayer.render_buffer.setRenderTarget(0, m3DLayer.render_target);
@@ -99,17 +78,8 @@ void Application::initialize()
 
         // UIレイヤー
         {
-            // カラーバッファー
-            bel::gfx::Texture::InitializeArg init_arg;
-            init_arg.width = render_width;
-            init_arg.height = render_height;
-            init_arg.dimension = bel::gfx::TextureDimension::c2D;
-            init_arg.format = bel::gfx::TextureFormat::cR8G8B8A8_uNorm;
-            init_arg.optimized_clear_color = bel::Color::cZero();
-            mUILayer.color_texture.initialize(init_arg);
-
             // レンダーターゲット
-            mUILayer.render_target.initialize(mUILayer.color_texture);
+            mUILayer.render_target.initialize();
 
             // レンダーバッファー
             mUILayer.render_buffer.setRenderTarget(0, mUILayer.render_target);
@@ -123,8 +93,8 @@ void Application::initialize()
 
         bel::gfx::Pipeline::InitializeArg init_arg;
         init_arg.num_render_target        = 1;
-        init_arg.render_target_formats[0] = m3DLayer.color_texture.getFormat();
-        init_arg.depth_stencil_format     = m3DLayer.depth_texture.getFormat();
+        init_arg.render_target_formats[0] = bel::gfx::TextureFormat::cR16G16B16A16_Float;
+        init_arg.depth_stencil_format     = bel::gfx::TextureFormat::cD32_Float;
         init_arg.num_constant_buffer      = 1;
 
         init_arg.depth_config.depth_enable = true;
@@ -312,6 +282,21 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
 
     // 3Dレイヤー
     {
+        // テクスチャー確保
+        {
+            bel::gfx::DynamicTextureResource::AllocateArg alloc_arg;
+            alloc_arg.width = bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().getWidth();
+            alloc_arg.height = bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().getHeight();
+            alloc_arg.format = bel::gfx::TextureFormat::cR16G16B16A16_Float;
+            m3DLayer.color_texture = bel::gfx::DynamicTextureResource::GetInstance().allocate(alloc_arg);
+
+            alloc_arg.format = bel::gfx::TextureFormat::cD32_Float;
+            m3DLayer.depth_texture = bel::gfx::DynamicTextureResource::GetInstance().allocate(alloc_arg);
+
+            m3DLayer.render_target.updateTexture(m3DLayer.color_texture);
+            m3DLayer.depth_stencil.updateTexture(m3DLayer.depth_texture);
+        }
+
         // レンダーバッファー切り替え
         m3DLayer.color_texture.barrierTransition(command, bel::gfx::ResourceState::cRenderTarget);
         m3DLayer.depth_texture.barrierTransition(command, bel::gfx::ResourceState::cDepthWrite);
@@ -353,10 +338,26 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
             descriptor_heap.setDescriptorHeap(handle, command);
             mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cQuadTriangle).drawInstanced(command);
         }
+
+        // ここでテクスチャー解放
+        bel::gfx::DynamicTextureResource::GetInstance().free(std::move(m3DLayer.color_texture));
+        bel::gfx::DynamicTextureResource::GetInstance().free(std::move(m3DLayer.depth_texture));
     }
 
     // UIレイヤー
     {
+        // テクスチャー確保
+        {
+            bel::gfx::DynamicTextureResource::AllocateArg alloc_arg;
+            alloc_arg.width = bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().getWidth();
+            alloc_arg.height = bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().getHeight();
+            alloc_arg.format = bel::gfx::TextureFormat::cR8G8B8A8_uNorm;
+            alloc_arg.optimized_clear_color = bel::Color::cZero();
+            mUILayer.color_texture = bel::gfx::DynamicTextureResource::GetInstance().allocate(alloc_arg);
+
+            mUILayer.render_target.updateTexture(mUILayer.color_texture);
+        }
+
         // レンダーバッファー切り替え
         mUILayer.color_texture.barrierTransition(command, bel::gfx::ResourceState::cRenderTarget);
         mUILayer.render_buffer.bind(command);
@@ -384,6 +385,9 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
             descriptor_heap.setDescriptorHeap(handle, command);
             mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cQuadTriangle).drawInstanced(command);
         }
+
+        // ここでテクスチャー解放
+        bel::gfx::DynamicTextureResource::GetInstance().free(std::move(mUILayer.color_texture));
     }
 }
 //-----------------------------------------------------------------------------

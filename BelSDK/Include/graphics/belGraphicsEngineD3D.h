@@ -125,7 +125,7 @@ private:
     //! デスクリプターハンドルの最大数
     static constexpr uint32_t cMaxDynamicDescriptorHandle = 8192;
     //! ダイナミックテクスチャーリソースサイズ
-    static constexpr size_t cMaxDynamicTextureResourceSize = 10 * 1024 * 1024;
+    static constexpr size_t cMaxDynamicTextureResourceSize = 20 * 1024 * 1024;
 
     //-------------------------------------------------------------------------
 private:

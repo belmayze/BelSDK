@@ -89,6 +89,9 @@ public:
     //! リソース取得
     ID3D12Resource& getResource() const { BEL_ASSERT(mpResource.Get() != nullptr); return *mpResource.Get(); }
 
+    //! リソースを放棄
+    Microsoft::WRL::ComPtr<ID3D12Resource> releaseResource() { return std::move(mpResource); }
+
     //! デスクリプターハンドルを取得
     const GlobalDescriptorHandle& getDescriptorHandle() const { return mDescriptorHandle; }
 

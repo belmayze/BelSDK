@@ -36,6 +36,12 @@ bool DynamicTextureResource::initialize(size_t size)
     mAllocator.initialize(size, 1024);
     mAllocatedList.allocate(1024);
 
+    // 遅延解放
+    for (auto& queue : mDelayedReleaseQueue)
+    {
+        queue.allocate(1024);
+    }
+
     return true;
 }
 //-----------------------------------------------------------------------------
@@ -63,6 +69,7 @@ Texture DynamicTextureResource::allocate(const AllocateArg& arg)
     if (!offset.has_value())
     {
         // 空きがない場合は無効
+        BEL_ERROR_LOG("ダイナミックテクスチャーの空きがありませんでした\n");
         return Texture();
     }
 
@@ -134,6 +141,26 @@ void DynamicTextureResource::free(Texture&& texture)
     // 指定したオフセットを解放
     mAllocator.free(it->second);
     mAllocatedList.erase(it);
+
+    // 遅延削除のリストに入れる
+    mDelayedReleaseQueue[mDelayedIndex].emplace_back(texture.releaseResource());
+}
+//-----------------------------------------------------------------------------
+void DynamicTextureResource::updateDelayedRelease()
+{
+    // インデックスを進める
+    mDelayedIndex = 1 - mDelayedIndex;
+
+    // このインデックスが解放対象
+    mDelayedReleaseQueue[mDelayedIndex].clear();
+}
+//-----------------------------------------------------------------------------
+void DynamicTextureResource::release()
+{
+    for (auto& queue : mDelayedReleaseQueue)
+    {
+        queue.clear();
+    }
 }
 //-----------------------------------------------------------------------------
 }

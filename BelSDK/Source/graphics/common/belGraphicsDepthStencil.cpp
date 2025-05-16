@@ -14,11 +14,8 @@ namespace bel::gfx {
 //-----------------------------------------------------------------------------
 // initialize
 //-----------------------------------------------------------------------------
-bool DepthStencil::initialize(const Texture& texture)
+bool DepthStencil::initialize()
 {
-    // テクスチャー保持
-    mpTexture = &texture;
-
     // デスクリプターヒープ作成
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> p_descriptor_heap;
     {
@@ -33,19 +30,25 @@ bool DepthStencil::initialize(const Texture& texture)
     }
     mpDescriptorHeap = std::move(p_descriptor_heap);
 
+    return true;
+}
+//-----------------------------------------------------------------------------
+void DepthStencil::updateTexture(const Texture& texture)
+{
+    // テクスチャー保持
+    mpTexture = &texture;
+
     // デスクリプターヒープからデプスステンシルを作成
     {
         D3D12_DEPTH_STENCIL_VIEW_DESC desc = {};
-        desc.Format        = to_native(texture.getFormat());
-        desc.ViewDimension = to_native_dsv(texture.getDimension());
+        desc.Format = to_native(mpTexture->getFormat());
+        desc.ViewDimension = to_native_dsv(mpTexture->getDimension());
         GraphicsEngine::GetInstance().getDevice().CreateDepthStencilView(
-            &texture.getResource(),
+            &mpTexture->getResource(),
             &desc,
             mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart()
         );
     }
-
-    return true;
 }
 //-----------------------------------------------------------------------------
 // command

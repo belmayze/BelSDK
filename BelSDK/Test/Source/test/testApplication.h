@@ -73,11 +73,11 @@ private:
     //! レイヤー
     struct Layer
     {
-        bel::gfx::Texture      color_texture;
-        bel::gfx::Texture      depth_texture;
-        bel::gfx::RenderTarget render_target;
-        bel::gfx::DepthStencil depth_stencil;
-        bel::gfx::RenderBuffer render_buffer;
+        mutable bel::gfx::Texture      color_texture;
+        mutable bel::gfx::Texture      depth_texture;
+        mutable bel::gfx::RenderTarget render_target;
+        mutable bel::gfx::DepthStencil depth_stencil;
+        mutable bel::gfx::RenderBuffer render_buffer;
     };
 
     //-------------------------------------------------------------------------

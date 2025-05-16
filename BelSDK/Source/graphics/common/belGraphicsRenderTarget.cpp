@@ -14,11 +14,8 @@ namespace bel::gfx {
 //-----------------------------------------------------------------------------
 // initialize
 //-----------------------------------------------------------------------------
-bool RenderTarget::initialize(const Texture& texture)
+bool RenderTarget::initialize()
 {
-    // テクスチャー保持
-    mpTexture = &texture;
-
     // デスクリプターヒープ作成
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> p_descriptor_heap;
     {
@@ -33,19 +30,25 @@ bool RenderTarget::initialize(const Texture& texture)
     }
     mpDescriptorHeap = std::move(p_descriptor_heap);
 
+    return true;
+}
+//-----------------------------------------------------------------------------
+void RenderTarget::updateTexture(const Texture& texture)
+{
+    // テクスチャー保持
+    mpTexture = &texture;
+
     // デスクリプターヒープからレンダーターゲットを作成
     {
         D3D12_RENDER_TARGET_VIEW_DESC desc = {};
-        desc.Format        = to_native(texture.getFormat());
-        desc.ViewDimension = to_native_rtv(texture.getDimension());
+        desc.Format = to_native(mpTexture->getFormat());
+        desc.ViewDimension = to_native_rtv(mpTexture->getDimension());
         GraphicsEngine::GetInstance().getDevice().CreateRenderTargetView(
-            &texture.getResource(),
+            &mpTexture->getResource(),
             &desc,
             mpDescriptorHeap->GetCPUDescriptorHandleForHeapStart()
         );
     }
-
-    return true;
 }
 //-----------------------------------------------------------------------------
 // command

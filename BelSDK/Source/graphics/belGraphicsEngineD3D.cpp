@@ -344,7 +344,8 @@ bool GraphicsEngineD3D::initialize()
             );
 
             // テクスチャーからレンダーターゲットを作る
-            mSwapChainRenderTargets[i_buffer].initialize(mSwapChainTextures[i_buffer]);
+            mSwapChainRenderTargets[i_buffer].initialize();
+            mSwapChainRenderTargets[i_buffer].updateTexture(mSwapChainTextures[i_buffer]);
 
             // レンダーターゲットからレンダーバッファーを作る
             mSwapChainRenderBuffers[i_buffer].setRenderTarget(0, mSwapChainRenderTargets[i_buffer]);
@@ -402,7 +403,11 @@ void GraphicsEngineD3D::waitCommandQueue()
 //-----------------------------------------------------------------------------
 void GraphicsEngineD3D::update()
 {
+    // HDR の情報を更新する
     updateHDRPaperWhite_();
+
+    // 処理のはじめに呼ばれるので、ダイナミックテクスチャーはここで遅延解放する
+    gfx::DynamicTextureResource::GetInstance().updateDelayedRelease();
 }
 //-----------------------------------------------------------------------------
 void GraphicsEngineD3D::present()
@@ -420,6 +425,9 @@ void GraphicsEngineD3D::present()
 void GraphicsEngineD3D::finalize()
 {
     mSwapChainTextures.reset();
+
+    // 終了時にはすべてのリソースを解放
+    gfx::DynamicTextureResource::GetInstance().release();
 }
 //-----------------------------------------------------------------------------
 // getter
