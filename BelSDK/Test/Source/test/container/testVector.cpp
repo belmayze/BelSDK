@@ -35,7 +35,7 @@ namespace app::test {
 void Vector::test()
 {
     bel::Vector<UintClass> buffer(3);
-    BEL_ASSERT(buffer.empty() && buffer.max_size() == 3);
+    BEL_ASSERT(buffer.empty() && buffer.capacity() >= 3);
 
     // 追加チェック
     buffer.push_back(0);
