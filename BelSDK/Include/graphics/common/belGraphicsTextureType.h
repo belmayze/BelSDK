@@ -180,6 +180,112 @@ constexpr DXGI_FORMAT to_native(TextureFormat format)
     return DXGI_FORMAT_R8G8B8A8_UNORM;
 }
 
+// テクスチャーのバイトサイズ
+constexpr size_t GetTextureByteSize(TextureFormat format)
+{
+    switch (format)
+    {
+        // 8bit カラー
+        case TextureFormat::cR8_uNorm:
+        case TextureFormat::cR8_sNorm:
+        case TextureFormat::cR8_uInt:
+        case TextureFormat::cR8_sInt:
+        case TextureFormat::cA8_uNorm:
+            return 1;
+        case TextureFormat::cR8G8_uNorm:
+        case TextureFormat::cR8G8_sNorm:
+        case TextureFormat::cR8G8_uInt:
+        case TextureFormat::cR8G8_sInt:
+            return 2;
+        case TextureFormat::cR8G8B8A8_uNorm:
+        case TextureFormat::cR8G8B8A8_sNorm:
+        case TextureFormat::cR8G8B8A8_sRGB:
+        case TextureFormat::cR8G8B8A8_uInt:
+        case TextureFormat::cR8G8B8A8_sInt:
+            return 4;
+
+            // 16ビットカラー
+        case TextureFormat::cR16_uNorm:
+        case TextureFormat::cR16_sNorm:
+        case TextureFormat::cR16_uInt:
+        case TextureFormat::cR16_sInt:
+        case TextureFormat::cR16_Float:
+            return 2;
+        case TextureFormat::cR16G16_uNorm:
+        case TextureFormat::cR16G16_sNorm:
+        case TextureFormat::cR16G16_uInt:
+        case TextureFormat::cR16G16_sInt:
+        case TextureFormat::cR16G16_Float:
+            return 4;
+        case TextureFormat::cR16G16B16A16_uNorm:
+        case TextureFormat::cR16G16B16A16_sNorm:
+        case TextureFormat::cR16G16B16A16_uInt:
+        case TextureFormat::cR16G16B16A16_sInt:
+        case TextureFormat::cR16G16B16A16_Float:
+            return 8;
+
+            // 32ビットカラー
+        case TextureFormat::cR32_uInt:
+        case TextureFormat::cR32_sInt:
+        case TextureFormat::cR32_Float:
+            return 4;
+        case TextureFormat::cR32G32_uInt:
+        case TextureFormat::cR32G32_sInt:
+        case TextureFormat::cR32G32_Float:
+            return 8;
+        case TextureFormat::cR32G32B32_uInt:
+        case TextureFormat::cR32G32B32_sInt:
+        case TextureFormat::cR32G32B32_Float:
+            return 12;
+        case TextureFormat::cR32G32B32A32_uInt:
+        case TextureFormat::cR32G32B32A32_sInt:
+        case TextureFormat::cR32G32B32A32_Float:
+            return 16;
+
+            // その他カラー
+        case TextureFormat::cR1_uNorm:
+            return 1;
+        case TextureFormat::cR5G6B5_uNorm:
+        case TextureFormat::cR5G5B5A1_uNorm:
+            return 2;
+        case TextureFormat::cR10G10B10A2_uNorm:
+        case TextureFormat::cR10G10B10A2_uInt:
+        case TextureFormat::cR11G11B10_uFloat:
+            return 4;
+
+            // デプス
+        case TextureFormat::cD16_uNorm:
+            return 2;
+        case TextureFormat::cD24_uNorm_S8_uInt:
+        case TextureFormat::cD32_Float:
+            return 4;
+        case TextureFormat::cD32_Float_S8_uInt:
+            return 16;
+
+            // BC圧縮 （ピクセル単位ではなくタイル単位のバイト数)
+        case TextureFormat::cBC1_uNorm:
+        case TextureFormat::cBC1_sRGB:
+        case TextureFormat::cBC4_uNorm:
+        case TextureFormat::cBC4_sNorm:
+            return 8;
+
+        case TextureFormat::cBC2_uNorm:
+        case TextureFormat::cBC2_sRGB:
+        case TextureFormat::cBC3_uNorm:
+        case TextureFormat::cBC3_sRGB:
+        case TextureFormat::cBC5_uNorm:
+        case TextureFormat::cBC5_sNorm:
+        case TextureFormat::cBC6_uFloat:
+        case TextureFormat::cBC6_Float:
+        case TextureFormat::cBC7_uNorm:
+        case TextureFormat::cBC7_sRGB:
+            return 16;
+    }
+
+    BEL_ASSERT(0);
+    return 1;
+}
+
 //-----------------------------------------------------------------------------
 // テクスチャーの次元
 //-----------------------------------------------------------------------------

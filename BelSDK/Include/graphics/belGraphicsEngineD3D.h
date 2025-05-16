@@ -153,6 +153,8 @@ private:
     uint32_t                                mCommandBufferIndex   = 0;
     HANDLE                                  mWaitFenceHandle = HANDLE();
 
+    D3D12_FEATURE_DATA_D3D12_OPTIONS mFeatureOptions;
+
     bool  mIsSupportedHDR = false;
     bool  mHDRPathInfoEnabled = false;
     DISPLAYCONFIG_PATH_INFO mHDRPathInfo = {};

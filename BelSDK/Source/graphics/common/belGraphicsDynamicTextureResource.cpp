@@ -20,7 +20,7 @@ bool DynamicTextureResource::initialize(size_t size)
     D3D12_HEAP_DESC desc = {};
     desc.SizeInBytes = size;
     desc.Alignment   = D3D12_DEFAULT_RESOURCE_PLACEMENT_ALIGNMENT;
-    desc.Flags       = D3D12_HEAP_FLAG_ALLOW_ONLY_RT_DS_TEXTURES;
+    desc.Flags       = D3D12_HEAP_FLAG_NONE;  // D3D12_RESOURCE_HEAP_TIER_2 のサポートが必要
     desc.Properties.CPUPageProperty      = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
     desc.Properties.CreationNodeMask     = 1;
     desc.Properties.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
@@ -65,9 +65,32 @@ Texture DynamicTextureResource::allocate(const AllocateArg& arg)
     if (arg.resource_flags.test(ResourceFlag::cDepthStencil)) { desc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL; }
 
     // スモールアライメントチェック
-    if (!arg.resource_flags.testAny(ResourceFlag::cRenderTarget, ResourceFlag::cDepthStencil))
     {
-        desc.Alignment = D3D12_SMALL_RESOURCE_PLACEMENT_ALIGNMENT;
+        // タイル数チェック
+        size_t byte = GetTextureByteSize(arg.format);
+        size_t x;
+        size_t y;
+        switch (byte)
+        {
+            case 1:  x = 64; y = 64; break;
+            case 2:  x = 64; y = 32; break;
+            case 4:  x = 32; y = 32; break;
+            case 8:  x = 32; y = 16; break;
+            case 12: x = 16; y = 16; break;
+            case 16: x = 16; y = 16; break;
+        }
+        size_t tile_x = Math::Roundup(arg.width, x) / x;
+        size_t tile_y = Math::Roundup(arg.height, y) / y;
+
+        // 1. Texture2D であること
+        // 2. RenderTarget / DepthStencil / MSAA が指定されていないこと
+        // 3. 4KB タイルが 16 枚以下
+        if (arg.dimension == TextureDimension::c2D &&
+            !arg.resource_flags.testAny(ResourceFlag::cRenderTarget, ResourceFlag::cDepthStencil) &&
+            (tile_x * tile_y <= 16))
+        {
+            desc.Alignment = D3D12_SMALL_RESOURCE_PLACEMENT_ALIGNMENT;
+        }
     }
 
     // リソースサイズ計算

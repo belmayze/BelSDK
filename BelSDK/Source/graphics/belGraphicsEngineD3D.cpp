@@ -187,6 +187,22 @@ bool GraphicsEngineD3D::initialize()
     }
 #   endif // BEL_TARGET_IS_DEBUG()
 
+    // 機能チェック
+    {
+        if (FAILED(mpDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &mFeatureOptions, sizeof(mFeatureOptions))))
+        {
+            BEL_ERROR_LOG("機能のサポートチェックに失敗しました\n");
+            return false;
+        }
+
+        // 複数のヒープを持つ必要がある
+        if (mFeatureOptions.ResourceHeapTier < D3D12_RESOURCE_HEAP_TIER_2)
+        {
+            BEL_ERROR_LOG("D3D12_RESOURCE_HEAP_TIER_2 のサポートが必要です\n");
+            return false;
+        }
+    }
+
     // メインのコマンドキューとコマンドリストを作る
     {
         mpMainCommandQueue = std::make_unique<gfx::CommandQueue>();
