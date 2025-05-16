@@ -288,9 +288,11 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
             alloc_arg.width = bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().getWidth();
             alloc_arg.height = bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().getHeight();
             alloc_arg.format = bel::gfx::TextureFormat::cR16G16B16A16_Float;
+            alloc_arg.resource_flags = bel::gfx::ResourceFlag::cRenderTarget;
             m3DLayer.color_texture = bel::gfx::DynamicTextureResource::GetInstance().allocate(alloc_arg);
 
             alloc_arg.format = bel::gfx::TextureFormat::cD32_Float;
+            alloc_arg.resource_flags = bel::gfx::ResourceFlag::cDepthStencil;
             m3DLayer.depth_texture = bel::gfx::DynamicTextureResource::GetInstance().allocate(alloc_arg);
 
             m3DLayer.render_target.updateTexture(m3DLayer.color_texture);
@@ -353,6 +355,7 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
             alloc_arg.height = bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().getHeight();
             alloc_arg.format = bel::gfx::TextureFormat::cR8G8B8A8_uNorm;
             alloc_arg.optimized_clear_color = bel::Color::cZero();
+            alloc_arg.resource_flags = bel::gfx::ResourceFlag::cRenderTarget;
             mUILayer.color_texture = bel::gfx::DynamicTextureResource::GetInstance().allocate(alloc_arg);
 
             mUILayer.render_target.updateTexture(mUILayer.color_texture);

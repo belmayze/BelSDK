@@ -36,6 +36,7 @@ public:
         Color   optimized_clear_color   = Color::cBlack();
         float   optimized_clear_depth   = 1.f;
         uint8_t optimized_clear_stencil = 0;
+        ResourceFlags resource_flags;
     };
 
     //-------------------------------------------------------------------------
@@ -95,6 +96,9 @@ public:
     //! デスクリプターハンドルを取得
     const GlobalDescriptorHandle& getDescriptorHandle() const { return mDescriptorHandle; }
 
+    //! リソースフラグ
+    const ResourceFlags& getResourceFlags() const { return mResourceFlags; }
+
     //-------------------------------------------------------------------------
     // command
     //-------------------------------------------------------------------------
@@ -118,6 +122,7 @@ private:
     TextureFormat         mFormat           = TextureFormat::cR8G8B8A8_uNorm;
     TextureDimension      mDimension        = TextureDimension::c2D;
     mutable ResourceState mResourceState    = ResourceState::cGenericRead;
+    ResourceFlags         mResourceFlags;
 
     GlobalDescriptorHandle mDescriptorHandle;
 };

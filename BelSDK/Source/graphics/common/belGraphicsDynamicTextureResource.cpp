@@ -56,13 +56,34 @@ Texture DynamicTextureResource::allocate(const AllocateArg& arg)
     desc.MipLevels        = arg.mip_levels;
     desc.Format           = to_native(arg.format);
     desc.SampleDesc.Count = 1;
-    desc.Flags            = TextureFormatInfo::IsDepth(arg.format) ? D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL
-                                                                   : D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+
+    // フラグチェック
+    BEL_ASSERT(!arg.resource_flags.test(ResourceFlag::cRenderTarget) || !TextureFormatInfo::IsDepth(arg.format));
+    BEL_ASSERT(!arg.resource_flags.test(ResourceFlag::cDepthStencil) || TextureFormatInfo::IsDepth(arg.format));
+
+    if (arg.resource_flags.test(ResourceFlag::cRenderTarget)) { desc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET; }
+    if (arg.resource_flags.test(ResourceFlag::cDepthStencil)) { desc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL; }
+
+    // スモールアライメントチェック
+    if (!arg.resource_flags.testAny(ResourceFlag::cRenderTarget, ResourceFlag::cDepthStencil))
+    {
+        desc.Alignment = D3D12_SMALL_RESOURCE_PLACEMENT_ALIGNMENT;
+    }
 
     // リソースサイズ計算
-    D3D12_RESOURCE_ALLOCATION_INFO alloc_info = GraphicsEngine::GetInstance().getDevice().GetResourceAllocationInfo(
+    D3D12_RESOURCE_ALLOCATION_INFO alloc_info;
+    alloc_info = GraphicsEngine::GetInstance().getDevice().GetResourceAllocationInfo(
         0, 1, &desc
     );
+
+    // アライメントが異なる場合、確保できなかったのでデフォルト値で再計算
+    if (alloc_info.Alignment != desc.Alignment)
+    {
+        desc.Alignment = 0;
+        alloc_info = GraphicsEngine::GetInstance().getDevice().GetResourceAllocationInfo(
+            0, 1, &desc
+        );
+    }
 
     // 必要なリソースサイズの空きを検索
     auto offset = mAllocator.allocate(alloc_info.SizeInBytes, alloc_info.Alignment);
@@ -88,6 +109,7 @@ Texture DynamicTextureResource::allocate(const AllocateArg& arg)
         clear_value.Color[2] = arg.optimized_clear_color.b();
         clear_value.Color[3] = arg.optimized_clear_color.a();
     }
+    D3D12_CLEAR_VALUE* p_clear_value = arg.resource_flags.testAny(ResourceFlag::cRenderTarget, ResourceFlag::cDepthStencil) ? &clear_value : nullptr;
     
     // リソース確保
     Microsoft::WRL::ComPtr<ID3D12Resource> p_resource;
@@ -95,7 +117,7 @@ Texture DynamicTextureResource::allocate(const AllocateArg& arg)
         GraphicsEngine::GetInstance().getDevice().CreatePlacedResource(
             mpHeap.Get(), offset.value(), &desc,
             D3D12_RESOURCE_STATE_COPY_DEST,
-            &clear_value, IID_PPV_ARGS(&p_resource)
+            p_clear_value, IID_PPV_ARGS(&p_resource)
         )
     ))
     {
@@ -117,6 +139,7 @@ Texture DynamicTextureResource::allocate(const AllocateArg& arg)
         init_arg.optimized_clear_color = arg.optimized_clear_color;
         init_arg.optimized_clear_depth = arg.optimized_clear_depth;
         init_arg.optimized_clear_stencil = arg.optimized_clear_stencil;
+        init_arg.resource_flags = arg.resource_flags;
         if (!texture.initializeFromGPUMemory(init_arg, std::move(p_resource), ResourceState::cCopyDest))
         {
             return Texture();

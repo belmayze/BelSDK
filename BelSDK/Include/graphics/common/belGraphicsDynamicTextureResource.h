@@ -32,6 +32,7 @@ public:
         Color   optimized_clear_color   = Color::cBlack();
         float   optimized_clear_depth   = 1.f;
         uint8_t optimized_clear_stencil = 0;
+        ResourceFlags resource_flags;
     };
 
     //-------------------------------------------------------------------------

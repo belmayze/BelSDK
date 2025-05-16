@@ -36,8 +36,13 @@ bool Texture::initialize(const InitializeArg& arg)
     desc.MipLevels        = arg.mip_levels;
     desc.Format           = to_native(arg.format);
     desc.SampleDesc.Count = 1;
-    desc.Flags            = TextureFormatInfo::IsDepth(arg.format) ? D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL
-                                                                   : D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+
+    // フラグチェック
+    BEL_ASSERT(!arg.resource_flags.test(ResourceFlag::cRenderTarget) || !TextureFormatInfo::IsDepth(arg.format));
+    BEL_ASSERT(!arg.resource_flags.test(ResourceFlag::cDepthStencil) || TextureFormatInfo::IsDepth(arg.format));
+
+    if (arg.resource_flags.test(ResourceFlag::cRenderTarget)) { desc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET; }
+    if (arg.resource_flags.test(ResourceFlag::cDepthStencil)) { desc.Flags |= D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL; }
     
     // クリアカラーの最適化
     D3D12_CLEAR_VALUE clear_value;
@@ -54,6 +59,7 @@ bool Texture::initialize(const InitializeArg& arg)
         clear_value.Color[2] = arg.optimized_clear_color.b();
         clear_value.Color[3] = arg.optimized_clear_color.a();
     }
+    D3D12_CLEAR_VALUE* p_clear_value = arg.resource_flags.testAny(ResourceFlag::cRenderTarget, ResourceFlag::cDepthStencil) ? &clear_value : nullptr;
 
     // リソース生成
     Microsoft::WRL::ComPtr<ID3D12Resource> p_resource;
@@ -61,7 +67,7 @@ bool Texture::initialize(const InitializeArg& arg)
         GraphicsEngine::GetInstance().getDevice().CreateCommittedResource(
             &props, D3D12_HEAP_FLAG_NONE, &desc,
             D3D12_RESOURCE_STATE_COPY_DEST,
-            &clear_value, IID_PPV_ARGS(&p_resource)
+            p_clear_value, IID_PPV_ARGS(&p_resource)
         )
     ))
     {
@@ -103,6 +109,7 @@ bool Texture::initializeFromGPUMemory(const InitializeArg& arg, Microsoft::WRL::
     mResourceState    = state;
     mpResource        = std::move(p_resource);
     mComponentMapping = arg.component_mapping;
+    mResourceFlags    = arg.resource_flags;
 
     // デスクリプターに登録
     mDescriptorHandle = GlobalDescriptorRegistry::GetInstance().registerTexture(*this);

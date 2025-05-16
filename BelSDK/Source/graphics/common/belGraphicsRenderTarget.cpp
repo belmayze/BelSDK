@@ -35,6 +35,9 @@ bool RenderTarget::initialize()
 //-----------------------------------------------------------------------------
 void RenderTarget::updateTexture(const Texture& texture)
 {
+    // リソースフラグチェック
+    BEL_ASSERT_MSG(texture.getResourceFlags().test(ResourceFlag::cRenderTarget), "RenderTargetに指定できません");
+
     // テクスチャー保持
     mpTexture = &texture;
 

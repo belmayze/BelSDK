@@ -35,6 +35,9 @@ bool DepthStencil::initialize()
 //-----------------------------------------------------------------------------
 void DepthStencil::updateTexture(const Texture& texture)
 {
+    // リソースフラグチェック
+    BEL_ASSERT_MSG(texture.getResourceFlags().test(ResourceFlag::cDepthStencil), "DepthStencilに指定できません");
+
     // テクスチャー保持
     mpTexture = &texture;
 

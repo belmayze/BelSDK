@@ -6,6 +6,8 @@
  * Copyright (c) belmayze. All rights reserved.
  */
 #pragma once
+//
+#include "common/belEnumFlags.h"
 
 namespace bel::gfx {
 //-----------------------------------------------------------------------------
@@ -282,6 +284,17 @@ constexpr D3D12_RESOURCE_STATES to_native(ResourceState state)
     BEL_ASSERT(0);
     return D3D12_RESOURCE_STATE_GENERIC_READ;
 }
+
+//-----------------------------------------------------------------------------
+// メモリー種別
+//-----------------------------------------------------------------------------
+enum ResourceFlag
+{
+    cRenderTarget,
+    cDepthStencil,
+    cNum
+};
+using ResourceFlags = EnumFlags<ResourceFlag>;
 
 //-----------------------------------------------------------------------------
 }
