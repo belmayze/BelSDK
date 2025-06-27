@@ -111,6 +111,7 @@ class TextureFactory
 {
     //-------------------------------------------------------------------------
 public:
+    //! リソースを使って初期化
     static Texture Create(Resource&& resource);
 };
 

@@ -37,7 +37,8 @@ Texture Texture::Create(const Image& image)
     header.dimension  = image.getDimension();
     header.component_mapping = image.getComponentMapping();
 
-    // できればメモリーコピー不要にしたい
+    // Image と別々の寿命にするためメモリーコピーを行う
+    // もし Texture に Image を内包できるならコピー不要にできると思う
     std::memcpy(memory.get() + sizeof(FileHeader), image.getMemoryPtr(0), image.getMemorySize());
 
     // オブジェクト生成

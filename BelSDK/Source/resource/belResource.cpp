@@ -13,15 +13,20 @@ namespace bel::res {
 // move
 //-----------------------------------------------------------------------------
 Resource::Resource(Resource&& rhs) noexcept
-    : mpBuffer(std::move(rhs.mpBuffer)), mSize(rhs.mSize)
+    : mpBuffer(std::move(rhs.mpBuffer)), mpBufferPtr(rhs.mpBufferPtr), mSize(rhs.mSize)
 {
-    rhs.mSize = 0;
+    rhs.mpBufferPtr = nullptr;
+    rhs.mSize       = 0;
 }
 //-----------------------------------------------------------------------------
 Resource& Resource::operator=(Resource&& rhs) noexcept
 {
-    mpBuffer = std::move(rhs.mpBuffer);
-    mSize    = rhs.mSize; rhs.mSize = 0;
+    mpBuffer    = std::move(rhs.mpBuffer);
+    mpBufferPtr = rhs.mpBufferPtr;
+    mSize       = rhs.mSize;
+    
+    rhs.mpBufferPtr = nullptr;
+    rhs.mSize       = 0;
     return *this;
 }
 //-----------------------------------------------------------------------------

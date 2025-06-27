@@ -20,7 +20,10 @@ public:
     
     //! リソース初期化
     Resource(std::unique_ptr<uint8_t[]>&& p_buffer, size_t size)
-        : mpBuffer(std::move(p_buffer)), mSize(size) {}
+        : mpBuffer(std::move(p_buffer)), mpBufferPtr(mpBuffer.get()), mSize(size) { }
+    //! 所有権を持たないリソース初期化
+    Resource(uint8_t* p_buffer, size_t size)
+        : mpBufferPtr(p_buffer), mSize(size) { }
 
     //! コピー禁止
     Resource(const Resource&) = delete;
@@ -41,7 +44,7 @@ public:
     const void* getBuffer(size_t offset = 0) const
     {
         BEL_ASSERT(offset < mSize);
-        return mpBuffer.get() + offset;
+        return mpBufferPtr + offset;
     }
 
     /*!
@@ -64,6 +67,7 @@ public:
     //-------------------------------------------------------------------------
 private:
     std::unique_ptr<uint8_t[]> mpBuffer;
+    uint8_t*                   mpBufferPtr = nullptr;
     size_t                     mSize = 0;
 };
 //-----------------------------------------------------------------------------
