@@ -68,10 +68,13 @@ public:
 
     //-------------------------------------------------------------------------
 private:
+    //!
+    static constexpr uint8_t cMagic[4] = { 'B', 'T', 'E', 'X' };
+
     //! ヘッダー構造体
     struct FileHeader
     {
-        uint8_t               magic[4]   = { 'B', 'T', 'E', 'X'};
+        uint8_t               magic[4]   = { cMagic[0], cMagic[1], cMagic[2], cMagic[3] };
         uint8_t               version    = 1;
         uint8_t               reserved   = 0;
         uint16_t              width      = 1;

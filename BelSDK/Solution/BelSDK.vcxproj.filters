@@ -324,6 +324,12 @@
     <ClInclude Include="..\Include\container\belList.h">
       <Filter>ヘッダー ファイル\container</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\resource\belResourceMaterial.h">
+      <Filter>ヘッダー ファイル\resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Include\resource\belResourceModel.h">
+      <Filter>ヘッダー ファイル\resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -457,6 +463,12 @@
     </ClCompile>
     <ClCompile Include="..\Source\memory\belMemoryBlockAllocator.cpp">
       <Filter>ソース ファイル\memory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\resource\belResourceMaterial.cpp">
+      <Filter>ソース ファイル\resource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\resource\belResourceModel.cpp">
+      <Filter>ソース ファイル\resource</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

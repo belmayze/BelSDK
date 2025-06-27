@@ -52,7 +52,7 @@ Texture TextureFactory::Create(Resource&& resource)
 
     // ヘッダー取得
     const Texture::FileHeader* p_header = reinterpret_cast<const Texture::FileHeader*>(resource.getBuffer());
-    if (memcmp(p_header->magic, "BTEX", 4) != 0)
+    if (memcmp(p_header->magic, Texture::cMagic, 4) != 0)
     {
         // ファイル破損
         return Texture();
