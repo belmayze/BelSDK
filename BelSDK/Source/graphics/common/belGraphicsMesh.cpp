@@ -113,8 +113,15 @@ bool Mesh::initialize(const InitializeArg& arg)
 //-----------------------------------------------------------------------------
 // command
 //-----------------------------------------------------------------------------
-void Mesh::drawIndexedInstanced(CommandContext& command, uint32_t num_instance) const
+void Mesh::drawIndexedInstanced(
+    CommandContext& command,
+    uint32_t num_instance,
+    uint32_t start_index,
+    uint32_t index_count) const
 {
+    // インデックス数の上限
+    index_count = std::min(mIndexCount - start_index, index_count);
+
     // 描画設定
     command.getCommandList().IASetPrimitiveTopology(mPrimitiveTopology);
 
@@ -123,7 +130,7 @@ void Mesh::drawIndexedInstanced(CommandContext& command, uint32_t num_instance) 
     command.getCommandList().IASetIndexBuffer(&mIndexBufferView);
 
     // 描画
-    command.getCommandList().DrawIndexedInstanced(mIndexCount, num_instance, 0, 0, 0);
+    command.getCommandList().DrawIndexedInstanced(index_count, num_instance, start_index, 0, 0);
 }
 //-----------------------------------------------------------------------------
 void Mesh::drawInstanced(CommandContext& command, uint32_t num_instance) const

@@ -45,8 +45,14 @@ public:
      * インデックスバッファーを使った描画
      * @param[in] command      コマンド
      * @param[in] num_instance 描画インスタンス数
+     * @param[in] start_index  描画するインデックスの開始番号
+     * @param[in] index_count  描画するインデックスの数
      */
-    void drawIndexedInstanced(CommandContext& command, uint32_t num_instance = 1) const;
+    void drawIndexedInstanced(
+        CommandContext& command,
+        uint32_t num_instance = 1,
+        uint32_t start_index = 0,
+        uint32_t index_count = std::numeric_limits<uint32_t>().max()) const;
 
     /*!
      * インデックスバッファーを使用しない描画

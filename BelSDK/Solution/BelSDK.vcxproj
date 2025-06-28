@@ -78,6 +78,7 @@
     <ClInclude Include="..\Include\resource\belResourceFactory.h" />
     <ClInclude Include="..\Include\resource\belResourceLoader.h" />
     <ClInclude Include="..\Include\resource\belResourceMaterial.h" />
+    <ClInclude Include="..\Include\resource\belResourceMesh.h" />
     <ClInclude Include="..\Include\resource\belResourceModel.h" />
     <ClInclude Include="..\Include\resource\belResourceShaderResource.h" />
     <ClInclude Include="..\Include\resource\belResourceTexture.h" />
@@ -127,6 +128,7 @@
     <ClCompile Include="..\Source\resource\belResource.cpp" />
     <ClCompile Include="..\Source\resource\belResourceLoader.cpp" />
     <ClCompile Include="..\Source\resource\belResourceMaterial.cpp" />
+    <ClCompile Include="..\Source\resource\belResourceMesh.cpp" />
     <ClCompile Include="..\Source\resource\belResourceModel.cpp" />
     <ClCompile Include="..\Source\resource\belResourceShaderResource.cpp" />
     <ClCompile Include="..\Source\resource\belResourceTexture.cpp" />

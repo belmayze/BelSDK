@@ -330,6 +330,9 @@
     <ClInclude Include="..\Include\resource\belResourceModel.h">
       <Filter>ヘッダー ファイル\resource</Filter>
     </ClInclude>
+    <ClInclude Include="..\Include\resource\belResourceMesh.h">
+      <Filter>ヘッダー ファイル\resource</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Source\belMain.cpp">
@@ -468,6 +471,9 @@
       <Filter>ソース ファイル\resource</Filter>
     </ClCompile>
     <ClCompile Include="..\Source\resource\belResourceModel.cpp">
+      <Filter>ソース ファイル\resource</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\resource\belResourceMesh.cpp">
       <Filter>ソース ファイル\resource</Filter>
     </ClCompile>
   </ItemGroup>
