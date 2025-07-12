@@ -43,6 +43,7 @@
 #if BEL_GRAPHICS_IS_D3D()
 #   include <d3d12.h>
 #   include <dxgi1_6.h>
+#   include <pix.h>
 #endif // BEL_GRAPHICS_IS_D3D
 
 // bel

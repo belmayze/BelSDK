@@ -282,6 +282,8 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
 
     // 3Dレイヤー
     {
+        PIXBeginEvent(&command.getCommandList(), 0, "Layer3D");
+
         // テクスチャー確保
         {
             bel::gfx::DynamicTextureResource::AllocateArg alloc_arg;
@@ -307,30 +309,38 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
         // クリア
         m3DLayer.render_buffer.clear(command, bel::Color::cBlack(), 1.f, 0, { bel::gfx::EClearType::cColor, bel::gfx::EClearType::cDepth });
 
-        // キューブ描画
         {
-            bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mPipeline.getNumDescriptor());
+            PIXBeginEvent(&command.getCommandList(), 0, "DrawOpa");
 
-            mPipeline.activateConstantBuffer(handle, 0, mCubeModelCB);
-            mPipeline.setPipeline(command);
-            descriptor_heap.setDescriptorHeap(handle, command);
-            mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cCube).drawIndexedInstanced(command);
+            // キューブ描画
+            {
+                bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mPipeline.getNumDescriptor());
+
+                mPipeline.activateConstantBuffer(handle, 0, mCubeModelCB);
+                mPipeline.setPipeline(command);
+                descriptor_heap.setDescriptorHeap(handle, command);
+                mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cCube).drawIndexedInstanced(command);
+            }
+            // スフィア描画
+            {
+                bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mPipeline.getNumDescriptor());
+
+                mPipeline.activateConstantBuffer(handle, 0, mSphereModelCB);
+                mPipeline.setPipeline(command);
+                descriptor_heap.setDescriptorHeap(handle, command);
+                mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cSphere).drawIndexedInstanced(command);
+            }
+
+            // バリア
+            m3DLayer.color_texture.barrierTransition(command, bel::gfx::ResourceState::cGenericRead);
+
+            PIXEndEvent(&command.getCommandList());
         }
-        // スフィア描画
-        {
-            bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mPipeline.getNumDescriptor());
-
-            mPipeline.activateConstantBuffer(handle, 0, mSphereModelCB);
-            mPipeline.setPipeline(command);
-            descriptor_heap.setDescriptorHeap(handle, command);
-            mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cSphere).drawIndexedInstanced(command);
-        }
-
-        // バリア
-        m3DLayer.color_texture.barrierTransition(command, bel::gfx::ResourceState::cGenericRead);
 
         // オフスクリーンレンダリングのテクスチャーを設定して描画
         {
+            PIXBeginEvent(&command.getCommandList(), 0, "ToneMapping");
+
             bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mToneMappingPipeline.getNumDescriptor());
 
             bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().bind(command);
@@ -339,15 +349,21 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
             mToneMappingPipeline.setPipeline(command);
             descriptor_heap.setDescriptorHeap(handle, command);
             mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cQuadTriangle).drawInstanced(command);
+
+            PIXEndEvent(&command.getCommandList());
         }
 
         // ここでテクスチャー解放
         bel::gfx::DynamicTextureResource::GetInstance().free(std::move(m3DLayer.color_texture));
         bel::gfx::DynamicTextureResource::GetInstance().free(std::move(m3DLayer.depth_texture));
+
+        PIXEndEvent(&command.getCommandList());
     }
 
     // UIレイヤー
     {
+        PIXBeginEvent(&command.getCommandList(), 0, "LayerUI");
+
         // テクスチャー確保
         {
             bel::gfx::DynamicTextureResource::AllocateArg alloc_arg;
@@ -368,17 +384,25 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
         // クリア
         mUILayer.render_buffer.clear(command, bel::Color::cZero(), 1.f, 0, {bel::gfx::EClearType::cColor});
 
-        //// 文字列描画
-        mTextRender.draw(command);
+        {
+            PIXBeginEvent(&command.getCommandList(), 0, "DrawDebug");
 
-        //// デバッグ描画
-        bel::debug::PerfTime::GetInstance().drawDebugText(command);
+            // 文字列描画
+            mTextRender.draw(command);
 
-        // バリア
-        mUILayer.color_texture.barrierTransition(command, bel::gfx::ResourceState::cGenericRead);
+            // デバッグ描画
+            bel::debug::PerfTime::GetInstance().drawDebugText(command);
+
+            // バリア
+            mUILayer.color_texture.barrierTransition(command, bel::gfx::ResourceState::cGenericRead);
+
+            PIXEndEvent(&command.getCommandList());
+        }
 
         // UI描画を合成
         {
+            PIXBeginEvent(&command.getCommandList(), 0, "ToneMapping");
+
             bel::gfx::DynamicDescriptorHandle handle = descriptor_heap.allocate(mUIComposePipeline.getNumDescriptor());
 
             bel::GraphicsEngine::GetInstance().getDefaultRenderBuffer().bind(command);
@@ -387,10 +411,14 @@ void Application::onMakeCommand(bel::gfx::CommandContext& command) const
             mUIComposePipeline.setPipeline(command);
             descriptor_heap.setDescriptorHeap(handle, command);
             mesh_holder.getMesh(bel::gfx::dev::MeshHolder::Type::cQuadTriangle).drawInstanced(command);
+
+            PIXEndEvent(&command.getCommandList());
         }
 
         // ここでテクスチャー解放
         bel::gfx::DynamicTextureResource::GetInstance().free(std::move(mUILayer.color_texture));
+
+        PIXEndEvent(&command.getCommandList());
     }
 }
 //-----------------------------------------------------------------------------

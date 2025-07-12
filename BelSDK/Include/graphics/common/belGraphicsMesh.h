@@ -66,9 +66,9 @@ private:
     Microsoft::WRL::ComPtr<ID3D12Resource> mpVertexResource;
     Microsoft::WRL::ComPtr<ID3D12Resource> mpIndexResource;
     D3D_PRIMITIVE_TOPOLOGY                 mPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    D3D12_VERTEX_BUFFER_VIEW               mVertexBufferView;
-    D3D12_INDEX_BUFFER_VIEW                mIndexBufferView;
-    uint32_t                               mIndexCount;
+    D3D12_VERTEX_BUFFER_VIEW               mVertexBufferView = {};
+    D3D12_INDEX_BUFFER_VIEW                mIndexBufferView = {};
+    uint32_t                               mIndexCount = 0;
 };
 //-----------------------------------------------------------------------------
 }
